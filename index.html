@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WRT Study Hub - Home</title>
     <link rel="stylesheet" href="css/home.css">
+    <script src="home.js" defer></script>
 </head>
 <body>
     <header>
@@ -30,57 +31,61 @@
     <!-- Latest News & Updates -->
     <section class="news-section">
         <h2>📢 Latest Industry News</h2>
-            <p>Stay updated with the latest developments in water damage restoration, mold remediation, and industry best practices.</p>
-            
-            <div id="news-container">
-                <p><script src="home.js"></script></p>
-            </div>
-        </section>
+        <p>Stay updated with the latest developments in water damage restoration, mold remediation, and industry best practices.</p>
+        <div id="news-container"></div>
+    </section>
 
-    <!-- Study Resources -->
-    <section class="resources-section">
-        <h2>🛠️ Study Resources & Tools</h2>
-        <div class="resource-grid">
-            <div class="resource-box">
-                <h3>📖 WRT Study Guide</h3>
-                <p>Everything you need to know about <strong>water categories, psychrometry, drying science, and more</strong>.</p>
-                <a href="study-guide.html">View Guide</a>
-            </div>
-            <div class="resource-box">
-                <h3>📊 Interactive Psychrometric Chart</h3>
-                <p>Use this <strong>dynamic tool</strong> to calculate grains per pound, dew point, and drying conditions.</p>
-                <a href="study-guide.html#psychrometry">Try It Now</a>
-            </div>
-            <div class="resource-box">
-                <h3>📑 LGR Dehumidifier Cheat Sheet</h3>
-                <p>Know exactly how much moisture your <strong>Low Grain Refrigerant (LGR) dehumidifier</strong> can handle.</p>
-                <a href="downloads/lgr-cheat-sheet.pdf" download="LGR_Cheat_Sheet.pdf">Download PDF</a>
-            </div>
+    <!-- Two Column Layout -->
+    <div class="home-container">
+        <!-- Left Column: Study Resources -->
+        <div class="left-column">
+            <section class="resources-section">
+                <h2>🛠️ Study Resources & Tools</h2>
+                <div class="resource-grid">
+                    <div class="resource-box">
+                        <h3>📖 WRT Study Guide</h3>
+                        <p>Everything you need to know about <strong>water categories, psychrometry, drying science, and more</strong>.</p>
+                        <a href="study-guide.html">View Guide</a>
+                    </div>
+                    <div class="resource-box">
+                        <h3>📊 Interactive Psychrometric Chart</h3>
+                        <p>Use this <strong>dynamic tool</strong> to calculate grains per pound, dew point, and drying conditions.</p>
+                        <a href="study-guide.html#psychrometry">Try It Now</a>
+                    </div>
+                    <div class="resource-box">
+                        <h3>📑 LGR Dehumidifier Cheat Sheet</h3>
+                        <p>Know exactly how much moisture your <strong>Low Grain Refrigerant (LGR) dehumidifier</strong> can handle.</p>
+                        <a href="downloads/lgr-cheat-sheet.pdf" download="LGR_Cheat_Sheet.pdf">Download PDF</a>
+                    </div>
+                </div>
+            </section>
+        </div>
 
+        <!-- Right Column: Psychrometric Calculator -->
+        <div class="right-column">
             <section class="psychro-calculator">
                 <h2>🌡️ Psychrometric Calculator</h2>
                 <p>Enter temperature and relative humidity to calculate key drying factors.</p>
-            
+
                 <div class="calculator-form">
                     <label for="temperature">🌡️ Temperature (°F):</label>
                     <input type="number" id="temperature" placeholder="Enter temperature" required>
-            
+
                     <label for="humidity">💧 Relative Humidity (%):</label>
                     <input type="number" id="humidity" placeholder="Enter humidity" required>
-            
+
                     <button id="calculate">📊 Calculate</button>
                 </div>
-            
+
                 <div id="results" class="hidden">
                     <h3>📋 Results:</h3>
                     <p><strong>Dew Point:</strong> <span id="dewPoint">--</span> °F</p>
                     <p><strong>Grains Per Pound (GPP):</strong> <span id="gpp">--</span></p>
                     <p><strong>Vapor Pressure:</strong> <span id="vaporPressure">--</span> inHg</p>
                 </div>
-            
-            
+            </section>
         </div>
-    </section>
+    </div>
 
     <!-- Featured Quiz Section -->
     <section class="quiz-section">
