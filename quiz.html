@@ -9,7 +9,7 @@
 </head>
 <body>
     <header>
-        <h1>WRT Study Hub</h1>
+        <h1>The Restoration Hub</h1>
         <nav>
             <ul>
                 <li><a href="index.html">Home</a></li>
@@ -24,7 +24,15 @@
     <section class="quiz-container">
         <h2>🎯 WRT Certification Practice Quiz</h2>
         <p>Test your knowledge with this interactive quiz covering key WRT topics.</p>
-        <div id="quiz"></div>
+        <div id="quiz-container">
+            <h2 id="question"></h2>
+            <div id="options"></div>
+            <p id="feedback"></p>
+            <button id="next-button" style="display:none;">Next Question</button>
+            <button id="restart-button" style="display:none;">Restart Quiz</button>
+            <p id="score">Score: 0 / 50</p>
+
+        </div>
         <button onclick="submitQuiz()">Submit Quiz</button>
         <button onclick="restartQuiz()">Restart Quiz</button>
         <p id="quiz-score"></p>
@@ -33,7 +41,7 @@
     <script src="script.js"></script>
 
     <footer>
-        <p>&copy; 2025 WRT Study Hub. Ready to ace your certification?</p>
+        <p>&copy; 2025 The Restoration Hub. Ready to ace your certification?</p>
     </footer>
 </body>
 </html>

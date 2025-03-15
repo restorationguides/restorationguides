@@ -51,77 +51,96 @@ const questions = [
         { question: "Why should drying equipment be removed gradually from a job site?", options: ["A) Prevents secondary damage", "B) Saves electricity", "C) Avoids over-drying", "D) Reduces labor costs"], answer: "A" },
 
     ];
-
+    
+    
     let currentQuestionIndex = 0;
-
-document.addEventListener("DOMContentLoaded", function () {
-    loadQuestion();
-});
-
-function loadQuestion() {
-    const quizContainer = document.getElementById("quiz");
-    quizContainer.innerHTML = "";
+    let score = 0;
     
-    let q = questions[currentQuestionIndex];
+    document.addEventListener("DOMContentLoaded", function () {
+        const questionElement = document.getElementById("question");
+        const optionsContainer = document.getElementById("options");
+        const feedbackElement = document.getElementById("feedback");
+        const nextButton = document.getElementById("next-button");
+        const restartButton = document.getElementById("restart-button");
+        const scoreElement = document.getElementById("score");
     
-    let questionBlock = document.createElement("div");
-    questionBlock.classList.add("question-block");
-    questionBlock.innerHTML = `<p>${currentQuestionIndex + 1}. ${q.question}</p>`;
-
-    q.options.forEach(option => {
-        let label = document.createElement("label");
-        label.classList.add("option-label");
-        let input = document.createElement("input");
-        input.type = "radio";
-        input.name = "question";
-        input.value = option.charAt(0);
-        label.appendChild(input);
-        label.appendChild(document.createTextNode(" " + option));
-        questionBlock.appendChild(label);
-        questionBlock.appendChild(document.createElement("br"));
-    });
-    
-    quizContainer.appendChild(questionBlock);
-    
-    let submitBtn = document.createElement("button");
-    submitBtn.innerText = "Submit Answer";
-    submitBtn.onclick = checkAnswer;
-    quizContainer.appendChild(submitBtn);
-    
-    let responseText = document.createElement("p");
-    responseText.id = "response-message";
-    quizContainer.appendChild(responseText);
-}
-
-function checkAnswer() {
-    const selected = document.querySelector(`input[name='question']:checked`);
-    if (!selected) return;
-    
-    let q = questions[currentQuestionIndex];
-    let responseMessage = document.getElementById("response-message");
-    
-    document.querySelectorAll(".option-label").forEach(label => {
-        let input = label.querySelector("input");
-        if (input.value === q.answer) {
-            label.style.backgroundColor = "#4CAF50"; // Green for correct
-            responseMessage.innerText = "Congrats mother fucker!";
-            responseMessage.style.color = "#4CAF50";
-        } else {
-            label.style.backgroundColor = "#FF6347"; // Red for incorrect
-            responseMessage.innerText = "Get Good";
-            responseMessage.style.color = "#FF6347";
+        function shuffleQuestions() {
+            questions.sort(() => Math.random() - 0.5); // Randomizes questions each restart
         }
-        input.disabled = true;
+    
+        function loadQuestion() {
+            if (currentQuestionIndex >= questions.length) {
+                showResults();
+                return;
+            }
+    
+            const currentQuestion = questions[currentQuestionIndex];
+            questionElement.textContent = currentQuestion.question;
+            optionsContainer.innerHTML = "";
+    
+            currentQuestion.options.forEach((option) => {
+                const optionButton = document.createElement("button");
+                optionButton.textContent = option;
+                optionButton.classList.add("option-button");
+                optionButton.dataset.choice = option.charAt(0);
+                optionButton.onclick = () => checkAnswer(optionButton);
+                optionsContainer.appendChild(optionButton);
+            });
+    
+            feedbackElement.textContent = "";
+            nextButton.style.display = "none";
+        }
+    
+        function checkAnswer(selectedButton) {
+            const correctAnswer = questions[currentQuestionIndex].answer;
+            const userChoice = selectedButton.dataset.choice;
+    
+            document.querySelectorAll(".option-button").forEach(button => {
+                button.disabled = true;
+                button.style.cursor = "not-allowed";
+            });
+    
+            if (userChoice === correctAnswer) {
+                selectedButton.style.backgroundColor = "green";
+                feedbackElement.textContent = "Correct, Mother Fucker!";
+                feedbackElement.style.color = "green";
+                score++;
+            } else {
+                selectedButton.style.backgroundColor = "red";
+                feedbackElement.textContent = "Get Good";
+                feedbackElement.style.color = "red";
+            }
+    
+            scoreElement.textContent = `Score: ${score} / ${questions.length}`;
+            nextButton.style.display = "block";
+        }
+    
+        function nextQuestion() {
+            currentQuestionIndex++;
+            loadQuestion();
+        }
+    
+        function showResults() {
+            questionElement.textContent = `Quiz Complete! Your final score: ${score} / ${questions.length}`;
+            optionsContainer.innerHTML = "";
+            feedbackElement.textContent = "";
+            nextButton.style.display = "none";
+            restartButton.style.display = "block";
+        }
+    
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            scoreElement.textContent = `Score: 0 / ${questions.length}`;
+            restartButton.style.display = "none";
+            shuffleQuestions(); // Randomize questions
+            loadQuestion();
+        }
+    
+        nextButton.addEventListener("click", nextQuestion);
+        restartButton.addEventListener("click", restartQuiz);
+    
+        shuffleQuestions(); // Randomize questions on first load
+        loadQuestion();
     });
     
-    setTimeout(nextQuestion, 1500);
-}
-
-function nextQuestion() {
-    currentQuestionIndex++;
-    if (currentQuestionIndex < questions.length) {
-        loadQuestion();
-    } else {
-        document.getElementById("quiz").innerHTML = `<p>Quiz complete! Refresh to try again.</p>`;
-    }
-}

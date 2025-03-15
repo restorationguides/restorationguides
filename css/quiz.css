@@ -1,90 +1,84 @@
-/* General Styling */
-body {
-    font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, #1e3c72, #2a5298);
-    color: white;
-    text-align: center;
-    margin: 0;
-    padding: 0;
-}
-
-header {
-    background: rgba(0, 0, 0, 0.8);
-    padding: 20px;
-    font-size: 1.5em;
-    font-weight: bold;
-}
-
+/* Quiz Section Styling */
 .quiz-container {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 15px;
+    background: white;
     padding: 30px;
-    width: 80%;
-    max-width: 600px;
-    margin: 50px auto;
-    box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.2);
-}
-
-.question-block {
-    background: rgba(0, 0, 0, 0.7);
-    padding: 20px;
+    margin: 30px auto;
+    width: 90%;
+    max-width: 800px;
     border-radius: 10px;
-    margin-bottom: 20px;
-    font-size: 1.2em;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
 }
 
-label {
-    display: flex;
-    align-items: center;
-    padding: 10px;
-    margin: 5px 0;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 5px;
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
+.quiz-container h2 {
+    color: #2c3e50;
+    font-size: 1.8em;
 }
 
-label:hover {
-    background: rgba(255, 255, 255, 0.5);
-}
-
-input[type="radio"] {
-    appearance: none;
-    margin-right: 10px;
-}
-
-/* Highlight selected answer */
-input[type="radio"]:checked + label {
-    background: rgba(211, 211, 211, 0.9) !important;
-    font-weight: bold;
-    color: black;
-    border: 2px solid white;
-}
-
-button {
+/* Answer Options Styling */
+.option-button {
+    display: block;
+    width: 100%;
+    max-width: 400px;
+    margin: 10px auto;
+    padding: 12px;
     background: #ffcc00;
-    border: none;
-    padding: 10px 20px;
-    font-size: 1em;
+    color: black;
     font-weight: bold;
     border-radius: 5px;
+    text-decoration: none;
+    border: 2px solid #2c3e50;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: 0.3s ease-in-out;
 }
 
-button:hover {
+.option-button:hover {
     background: #ff9900;
 }
 
-/* Correct & Incorrect Answer Styling */
+.option-button:disabled {
+    cursor: not-allowed;
+}
+
+/* Correct & Incorrect Answer Styles */
 .correct {
-    background: #4CAF50 !important;
+    background: green !important;
     color: white;
     font-weight: bold;
 }
 
 .incorrect {
-    background: #FF6347 !important;
+    background: red !important;
     color: white;
     font-weight: bold;
+}
+
+/* Feedback Text */
+#feedback {
+    font-size: 1.2em;
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+/* Buttons */
+.quiz-button {
+    display: inline-block;
+    padding: 12px 25px;
+    background: #ffcc00;
+    color: black;
+    font-weight: bold;
+    border-radius: 5px;
+    text-decoration: none;
+    border: 2px solid #2c3e50;
+    margin-top: 10px;
+    transition: 0.3s;
+}
+
+.quiz-button:hover {
+    background: #ff9900;
+}
+
+#next-button, #restart-button {
+    display: none;
+    margin-top: 20px;
 }
