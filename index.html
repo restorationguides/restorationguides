@@ -56,6 +56,28 @@
                 <p>Know exactly how much moisture your <strong>Low Grain Refrigerant (LGR) dehumidifier</strong> can handle.</p>
                 <a href="downloads/lgr-cheat-sheet.pdf" download="LGR_Cheat_Sheet.pdf">Download PDF</a>
             </div>
+
+            <section class="psychro-calculator">
+                <h2>🌡️ Psychrometric Calculator</h2>
+                <p>Enter temperature and relative humidity to calculate key drying factors.</p>
+            
+                <div class="calculator-form">
+                    <label for="temperature">🌡️ Temperature (°F):</label>
+                    <input type="number" id="temperature" placeholder="Enter temperature" required>
+            
+                    <label for="humidity">💧 Relative Humidity (%):</label>
+                    <input type="number" id="humidity" placeholder="Enter humidity" required>
+            
+                    <button id="calculate">📊 Calculate</button>
+                </div>
+            
+                <div id="results" class="hidden">
+                    <h3>📋 Results:</h3>
+                    <p><strong>Dew Point:</strong> <span id="dewPoint">--</span> °F</p>
+                    <p><strong>Grains Per Pound (GPP):</strong> <span id="gpp">--</span></p>
+                    <p><strong>Vapor Pressure:</strong> <span id="vaporPressure">--</span> inHg</p>
+                </div>
+            
             
         </div>
     </section>

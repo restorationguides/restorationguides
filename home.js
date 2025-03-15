@@ -53,3 +53,37 @@ document.addEventListener("DOMContentLoaded", function () {
 
     fetchIndustryNews();
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+    const calculateButton = document.getElementById("calculate");
+    const resultsDiv = document.getElementById("results");
+
+    calculateButton.addEventListener("click", function () {
+        const tempF = parseFloat(document.getElementById("temperature").value);
+        const rh = parseFloat(document.getElementById("humidity").value);
+
+        if (isNaN(tempF) || isNaN(rh) || tempF <= 0 || rh <= 0 || rh > 100) {
+            alert("Please enter valid values for temperature and humidity.");
+            return;
+        }
+
+        // Calculate Dew Point (Simplified Approximation)
+        const dewPoint = tempF - ((100 - rh) / 5);
+
+        // Calculate Grains Per Pound (GPP)
+        const saturationVP = 0.6108 * Math.exp((17.27 * tempF) / (tempF + 237.3));
+        const actualVP = (rh / 100) * saturationVP;
+        const gpp = actualVP * 7000; // Approximate formula for GPP
+
+        // Calculate Vapor Pressure (in inches of Mercury)
+        const vaporPressure = actualVP * 0.02953;
+
+        // Display results
+        document.getElementById("dewPoint").textContent = dewPoint.toFixed(2);
+        document.getElementById("gpp").textContent = gpp.toFixed(2);
+        document.getElementById("vaporPressure").textContent = vaporPressure.toFixed(4);
+
+        resultsDiv.classList.remove("hidden");
+    });
+});
+
