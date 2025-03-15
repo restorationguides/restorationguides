@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WRT Study Guide</title>
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/study.css">
+    <link rel="stylesheet" href="css/psychometric-chart-styles.css">
+</head>
+<script src="psychometric.js"></script>
+<body>
+    <header>
+        <h1>WRT Study Hub</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="quiz.html">WRT Quiz</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="study-guide.html">Study Guide</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="chalkboard">
+          <section class="study-guide">
+            <h2>📖 Understanding Water Damage Restoration</h2>
+            <p>Water damage restoration is a science-based process that involves removing moisture, preventing mold growth, and restoring structures. This study guide covers <strong>key principles</strong>, <strong>industry formulas</strong>, and <strong>best practices</strong> to help you master the WRT certification.</p>
+    
+            <h3>1️⃣ Water Categories & Classes</h3>
+            <h4>Water Categories:</h4>
+            <ul>
+                <li><strong>Category 1 (Clean Water):</strong> Water from sanitary sources, like a broken supply line.</li>
+                <li><strong>Category 2 (Gray Water):</strong> Contaminated water that may cause discomfort or illness (e.g., washing machine overflow).</li>
+                <li><strong>Category 3 (Black Water):</strong> Highly contaminated water that poses serious health risks (e.g., sewage backups).</li>
+            </ul>
+    
+            <h4>Water Classes:</h4>
+            <ul>
+                <li><strong>Class 1:</strong> Less than 5% of materials affected, minimal evaporation.</li>
+                <li><strong>Class 2:</strong> 5% - 40% of materials affected, requires enhanced drying.</li>
+                <li><strong>Class 3:</strong> More than 40% of materials affected, extensive moisture absorption.</li>
+                <li><strong>Class 4:</strong> Specialty drying needed for dense materials (e.g., hardwood, plaster, concrete).</li>
+            </ul>
+    
+            <h3>2️⃣ Drying Science & Equipment</h3>
+            <ul>
+                <li><strong>Air Movers:</strong> Increase airflow and accelerate evaporation.</li>
+                <li><strong>Dehumidifiers:</strong> Extract moisture from the air to maintain a controlled drying environment.</li>
+                <li><strong>Desiccants vs. LGR vs. Conventional Dehumidifiers:</strong> Each type has different moisture removal efficiency.</li>
+                <li><strong>Moisture Meters & Hygrometers:</strong> Essential tools to measure moisture levels in materials and air.</li>
+            </ul>
+    
+            <h3>3️⃣ Psychrometry: The Science of Drying</h3>
+            <p>Psychrometry is the study of air properties, including temperature, humidity, and vapor pressure. Understanding this helps optimize drying conditions.</p>
+            <ul>
+                <li><strong>Relative Humidity (RH):</strong> The percentage of water vapor in the air relative to its capacity.</li>
+                <li><strong>Grains Per Pound (GPP):</strong> Measures actual moisture content in the air.</li>
+                <li><strong>Dew Point:</strong> The temperature at which air becomes saturated, leading to condensation.</li>
+            </ul>
+            <h2>🌡️ Interactive Psychrometric Chart</h2>
+            <p>Use this chart to track temperature, relative humidity, and grains per pound of moisture.</p>
+            <canvas id="psychrometricCanvas"></canvas>
+            <div class="info-box" id="hoverInfo">Hover over the chart to see values.</div>
+            <div class="info-box" id="selectedInfo">Click on the chart to select a data point.</div>
+
+            <h3>4️⃣ Dehumidifier & Air Filtration Formulas</h3>
+            <h4>Dehumidifier Sizing Formula:</h4>
+            <p><strong>Formula:</strong> Cubic Feet ÷ Class Factor = Minimum AHAM Pints Needed</p>
+            <p><strong>Example Calculation:</strong></p>
+            <ul>
+                <li>Room Volume: 12,000 cubic feet</li>
+                <li>LGR (Class 2 Factor = 50): 12,000 ÷ 50 = <strong>240 PPD</strong></li>
+                <li>Conventional (Class 2 Factor = 40): 12,000 ÷ 40 = <strong>300 PPD</strong></li>
+            </ul>
+    
+            <h4>Air Filtration Formula:</h4>
+            <p><strong>Formula:</strong> Cubic Feet × Air Exchange (4 - 6) ÷ 60</p>
+            <p><strong>Example Calculation:</strong></p>
+            <ul>
+                <li>Room Volume: 12,000 cubic feet</li>
+                <li>Air Exchange Rate: 4 ACH</li>
+                <li>Air Filtration Requirement: (12,000 × 4) ÷ 60 = <strong>800 CFM</strong></li>
+            </ul>
+            
+            <h3>4️⃣ Dehumidifier Sizing & Class Factors</h3>
+            <p>Proper dehumidification is critical for efficient drying. Use the correct class factor based on the type of dehumidifier:</p>
+    
+            <table>
+                <tr>
+                    <th>Dehumidifier Type</th>
+                    <th>Class 1</th>
+                    <th>Class 2</th>
+                    <th>Class 3</th>
+                    <th>Class 4</th>
+                </tr>
+                <tr>
+                    <td>Conventional</td>
+                    <td>100</td>
+                    <td>40</td>
+                    <td>30</td>
+                    <td>N/A</td>
+                </tr>
+                <tr>
+                    <td>LGR (Low Grain Refrigerant)</td>
+                    <td>100</td>
+                    <td>50</td>
+                    <td>40</td>
+                    <td>40</td>
+                </tr>
+                <tr>
+                    <td>Desiccant</td>
+                    <td>1 ACH</td>
+                    <td>2 ACH</td>
+                    <td>3 ACH</td>
+                    <td>3 ACH</td>
+                </tr>
+            </table>
+    
+            <h3>5️⃣ Best Practices for Effective Drying</h3>
+            <ul>
+                <li>✅ <strong>Monitor moisture levels daily</strong> to track drying progress.</li>
+                <li>✅ <strong>Keep humidity below 50%</strong> to prevent mold growth (per Florida regulations).</li>
+                <li>✅ <strong>Use proper airflow</strong> to push moisture toward dehumidifiers.</li>
+                <li>✅ <strong>Document drying conditions</strong> for insurance and compliance.</li>
+            </ul>
+    
+            <div class="quiz-section">
+                <h3>🎯 Think You’re Ready?</h3>
+                <p>Put your <strong>knowledge to the test</strong> with our WRT practice quiz!</p>
+                <a href="quiz.html" class="quiz-button">Take the Quiz</a>
+            </div>
+        </section>
+    
+    <footer>
+        <p>&copy; 2025 WRT Study Hub. If you leave your air movers running too long, don’t blame me.</p>
+    </footer>
+</body>
+</html>

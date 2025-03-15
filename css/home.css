@@ -1,0 +1,178 @@
+/* General Styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+/* Header & Navigation */
+header {
+    background: #2c3e50;
+    color: white;
+    padding: 15px 0;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin: 0 15px;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+nav ul li a:hover {
+    text-decoration: underline;
+}
+
+/* Hero Section */
+.hero {
+    background: linear-gradient(90deg, #3498db, #2980b9);
+    color: white;
+    padding: 50px 20px;
+}
+
+.hero h2 {
+    font-size: 2em;
+}
+
+.hero p {
+    font-size: 1.2em;
+}
+
+.hero-btn {
+    display: inline-block;
+    padding: 12px 25px;
+    background: #ffcc00;
+    color: black;
+    font-weight: bold;
+    border-radius: 5px;
+    text-decoration: none;
+    margin-top: 10px;
+    transition: 0.3s;
+}
+
+.hero-btn:hover {
+    background: #ff9900;
+}
+
+/* News Section */
+.news-section {
+    background: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    margin: 30px auto;
+    width: 90%;
+    max-width: 800px;
+    text-align: left;
+}
+
+.news-box {
+    background: #ecf0f1;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+.news-box h3 {
+    color: #2c3e50;
+}
+
+.news-box a {
+    text-decoration: none;
+    color: #3498db;
+    font-weight: bold;
+}
+
+.news-box a:hover {
+    text-decoration: underline;
+}
+
+/* Resources Section */
+.resources-section {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    margin: 30px auto;
+    width: 90%;
+    max-width: 1000px;
+}
+
+.resource-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.resource-box {
+    background: #ecf0f1;
+    padding: 20px;
+    width: 30%;
+    min-width: 250px;
+    border-radius: 10px;
+    margin: 10px;
+    text-align: center;
+}
+
+.resource-box h3 {
+    color: #2c3e50;
+}
+
+.resource-box a {
+    display: inline-block;
+    text-decoration: none;
+    color: #3498db;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.resource-box a:hover {
+    text-decoration: underline;
+}
+
+/* Quiz Section */
+.quiz-section {
+    background: #2c3e50;
+    color: white;
+    padding: 40px 20px;
+    margin-top: 30px;
+}
+
+.quiz-section h2 {
+    font-size: 2em;
+}
+
+.quiz-btn {
+    display: inline-block;
+    padding: 12px 25px;
+    background: #ffcc00;
+    color: black;
+    font-weight: bold;
+    border-radius: 5px;
+    text-decoration: none;
+    margin-top: 10px;
+    transition: 0.3s;
+}
+
+.quiz-btn:hover {
+    background: #ff9900;
+}
+
+/* Footer */
+footer {
+    background: #2c3e50;
+    color: white;
+    padding: 10px 0;
+    margin-top: 30px;
+}

@@ -1,0 +1,122 @@
+/* Study Guide Styles - Based on SOP Global Styling */
+
+/* General Styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+/* Header & Navigation */
+header {
+    background: #2c3e50;
+    color: white;
+    padding: 15px 0;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin: 0 15px;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+nav ul li a:hover {
+    text-decoration: underline;
+}
+
+/* Study Guide Section */
+.study-guide {
+    background: white;
+    padding: 30px;
+    margin: 30px auto;
+    width: 90%;
+    max-width: 1000px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    text-align: left;
+}
+
+.study-guide h2, .study-guide h3, .study-guide h4 {
+    color: #2c3e50;
+    text-decoration: underline;
+}
+
+.study-guide ul {
+    padding-left: 20px;
+    list-style-type: none;
+}
+
+.study-guide ul li {
+    margin: 10px 0;
+    position: relative;
+    padding-left: 20px;
+}
+
+.study-guide ul li:before {
+    content: '\2714';
+    position: absolute;
+    left: 0;
+    color: #3498db;
+}
+
+/* Table Styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: #ecf0f1;
+    color: black;
+    border: 2px solid #2c3e50;
+}
+
+table, th, td {
+    border: 2px solid #2c3e50;
+}
+
+th, td {
+    padding: 10px;
+    text-align: center;
+    font-size: 0.9em;
+}
+
+th {
+    background: #3498db;
+    color: white;
+}
+
+/* Quiz Button */
+.quiz-button {
+    display: inline-block;
+    padding: 12px 25px;
+    background: #ffcc00;
+    color: black;
+    font-weight: bold;
+    border-radius: 5px;
+    text-decoration: none;
+    margin-top: 10px;
+    transition: 0.3s;
+}
+
+.quiz-button:hover {
+    background: #ff9900;
+}
+
+/* Footer */
+footer {
+    background: #2c3e50;
+    color: white;
+    padding: 10px 0;
+    margin-top: 30px;
+}
