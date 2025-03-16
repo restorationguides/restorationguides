@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Restoration Hub  - Home</title>
     <link rel="stylesheet" href="css/home.css">
+    <link rel="stylesheet" href="css/chatbot.css">
     <script src="home.js" defer></script>
 </head>
 <body>
@@ -93,6 +94,26 @@
         <p>Put your <strong>knowledge to the test</strong> with our WRT practice quiz!</p>
         <a href="quiz.html" class="quiz-btn">Take the Quiz</a>
     </section>
+
+<!-- Chatbot Toggle Button -->
+<div id="chatbot-container">
+    <button id="chatbot-toggle">💬 Chat</button>
+</div>
+
+<!-- Chatbot Window -->
+<div id="chatbot-window" class="hidden">
+    <div id="chatbot-header">
+        <span>Chatbot</span>
+        <button id="close-chat">X</button>
+    </div>
+    <div id="chatbot-messages"></div>
+    <div id="chatbot-input-container">
+        <input type="text" id="chatbot-input" placeholder="Ask me something...">
+        <button id="send-message">Send</button>
+    </div>
+</div>
+
+<script src="chatbot.js"></script>
 
     <footer>
         <p>&copy;2025 The Restoration Hub.</p>

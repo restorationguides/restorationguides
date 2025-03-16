@@ -6,6 +6,7 @@
     <title>The Restoration Hub - Contact</title>
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/contact.css">
+    <link rel="stylesheet" href="css/chatbot.css">
     <script src="contact.js"></script>
 </head>
 
@@ -53,6 +54,26 @@
         <button id="reveal-secret" class="contact-button">🔍 Reveal Secret Contact Method</button>
         <p id="secret-contact" class="hidden">404: Contact method not found. Please try shouting louder.</p>
     </section>
+
+    <!-- Chatbot Toggle Button -->
+<div id="chatbot-container">
+    <button id="chatbot-toggle">💬 Chat</button>
+</div>
+
+<!-- Chatbot Window -->
+<div id="chatbot-window" class="hidden">
+    <div id="chatbot-header">
+        <span>Chatbot</span>
+        <button id="close-chat">X</button>
+    </div>
+    <div id="chatbot-messages"></div>
+    <div id="chatbot-input-container">
+        <input type="text" id="chatbot-input" placeholder="Ask me something...">
+        <button id="send-message">Send</button>
+    </div>
+</div>
+
+<script src="chatbot.js"></script>
     
 
     <footer>

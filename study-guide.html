@@ -6,6 +6,7 @@
     <title>The Restoration Hub study guide</title>
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/study.css">
+    <link rel="stylesheet" href="css/chatbot.css">
     <link rel="stylesheet" href="css/psychometric-chart-styles.css">
 </head>
 <script src="psychometric.js"></script>
@@ -177,6 +178,26 @@
                 <a href="quiz.html" class="quiz-button">Take the Quiz</a>
             </div>
         </section>
+
+        <!-- Chatbot Toggle Button -->
+<div id="chatbot-container">
+    <button id="chatbot-toggle">💬 Chat</button>
+</div>
+
+<!-- Chatbot Window -->
+<div id="chatbot-window" class="hidden">
+    <div id="chatbot-header">
+        <span>Chatbot</span>
+        <button id="close-chat">X</button>
+    </div>
+    <div id="chatbot-messages"></div>
+    <div id="chatbot-input-container">
+        <input type="text" id="chatbot-input" placeholder="Ask me something...">
+        <button id="send-message">Send</button>
+    </div>
+</div>
+
+<script src="chatbot.js"></script>
     
     <footer>
         <p>&copy; 2025 The Restoration Hub.</p>
