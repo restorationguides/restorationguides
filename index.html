@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Restoration Hub  - Home</title>
+    <title>The Restoration Hub - Home</title>
     <link rel="stylesheet" href="css/home.css">
     <link rel="stylesheet" href="css/chatbot.css">
     <script src="home.js" defer></script>
@@ -23,29 +23,29 @@
     </header>
 
     <!-- Hero Section -->
-    <section class="hero">
+    <section class="hero fade-in">
         <h2>Welcome to the Restoration Hub</h2>
         <p>Your <strong>ultimate guide</strong> to <strong>acing the WRT certification</strong>, mastering psychrometry, and becoming a <strong>water damage restoration pro</strong>.</p>
         <a href="study-guide.html" class="hero-btn">Start Learning</a>
     </section>
 
     <!-- Latest News & Updates -->
-    <section class="news-section">
+    <section class="news-section fade-in">
         <h2>📢 Latest Industry News</h2>
         <p>Stay updated with the latest developments in water damage restoration, mold remediation, and industry best practices.</p>
         <div id="news-container"></div>
     </section>
 
     <!-- Two Column Layout -->
-    <div class="home-container">
+    <div class="home-container fade-in">
         <!-- Left Column: Study Resources -->
         <div class="left-column">
             <section class="resources-section">
                 <h2>🛠️ Study Resources & Tools</h2>
                 <div class="resource-grid">
                     <div class="resource-box">
-                        <h3>📖 WRT Study Guide</h3>
-                        <p>Everything you need to know about <strong>water categories, psychrometry, drying science, and more</strong>.</p>
+                        <h3>📖 Study Guide</h3>
+                        <p>Everything you need to know about <strong>mold, psychrometry, drying, and air filtration.</strong></p>
                         <a href="study-guide.html">View Guide</a>
                     </div>
                     <div class="resource-box">
@@ -55,7 +55,7 @@
                     </div>
                     <div class="resource-box">
                         <h3>📑 LGR Dehumidifier Cheat Sheet</h3>
-                        <p>Know exactly how much moisture your <strong>Low Grain Refrigerant (LGR) dehumidifier</strong> can handle.</p>
+                        <p>Know how much moisture your <strong>LGR dehumidifier</strong> can handle.</p>
                         <a href="downloads/lgr-cheat-sheet.pdf" download="LGR_Cheat_Sheet.pdf">Download PDF</a>
                     </div>
                 </div>
@@ -66,54 +66,83 @@
         <div class="right-column">
             <section class="psychro-calculator">
                 <h2>🌡️ Psychrometric Calculator</h2>
-                <p>Enter temperature and relative humidity to calculate key drying factors.</p>
+                <p>Enter <b>room size, temperature, and humidity</b> for precise drying calculations.</p>
 
                 <div class="calculator-form">
+                    <label for="dehuType">⚙️ Dehumidifier Type:</label>
+                    <select id="dehuType">
+                        <option value="">Select Dehumidifier Type</option>
+                        <option value="1">Standard</option>
+                        <option value="1.5">LGR</option>
+                        <option value="2">Desiccant</option>
+                    </select>
+
+                    <label for="classFactor">🏗️ Class Factor:</label>
+                    <select id="classFactor" disabled>
+                        <option value="">Select Dehu Type First</option>
+                    </select>
+
+                    <!-- Dehumidifier Capacity -->
+                    <label for="dehuCapacity">⚙️ Dehumidifier Capacity (Pints/Day):</label>
+                    <input type="number" id="dehuCapacity" placeholder="Enter capacity (e.g., 70)">
+
+                    <label for="length">📏 Length (ft):</label>
+                    <input type="number" id="length" placeholder="Enter length">
+
+                    <label for="width">📐 Width (ft):</label>
+                    <input type="number" id="width" placeholder="Enter width">
+
+                    <label for="height">📏 Height (ft):</label>
+                    <input type="number" id="height" placeholder="Enter height">
+
                     <label for="temperature">🌡️ Temperature (°F):</label>
-                    <input type="number" id="temperature" placeholder="Enter temperature" required>
+                    <input type="number" id="temperature" placeholder="Enter temperature">
 
                     <label for="humidity">💧 Relative Humidity (%):</label>
-                    <input type="number" id="humidity" placeholder="Enter humidity" required>
+                    <input type="number" id="humidity" placeholder="Enter humidity">
 
                     <button id="calculate">📊 Calculate</button>
                 </div>
 
                 <div id="results" class="hidden">
                     <h3>📋 Results:</h3>
+                    <!-- These IDs must exist in your HTML -->
                     <p><strong>Dew Point:</strong> <span id="dewPoint">--</span> °F</p>
                     <p><strong>Grains Per Pound (GPP):</strong> <span id="gpp">--</span></p>
-                    <p><strong>Vapor Pressure:</strong> <span id="vaporPressure">--</span> inHg</p>
+                    <p><strong>Airflow Needed (CFM):</strong> <span id="airflow">--</span></p>
+                    <p><strong>AHAM Pints Needed:</strong> <span id="ahamPints">--</span></p>
+                    <p><strong>Dehumidifiers Required:</strong> <span id="dehumidifiers">--</span></p>
+
                 </div>
             </section>
         </div>
     </div>
 
-    <!-- Featured Quiz Section -->
-    <section class="quiz-section">
+    <!-- Quiz Section -->
+    <section class="quiz-section fade-in">
         <h2>🎯 Think You’re Ready?</h2>
         <p>Put your <strong>knowledge to the test</strong> with our WRT practice quiz!</p>
         <a href="quiz.html" class="quiz-btn">Take the Quiz</a>
     </section>
 
-<!-- Chatbot Toggle Button -->
-<div id="chatbot-container">
-    <button id="chatbot-toggle">💬 Chat</button>
-</div>
-
-<!-- Chatbot Window -->
-<div id="chatbot-window" class="hidden">
-    <div id="chatbot-header">
-        <span>Chatbot</span>
-        <button id="close-chat">X</button>
+    <!-- Chatbot -->
+    <div id="chatbot-container">
+        <button id="chatbot-toggle">💬 Chat</button>
     </div>
-    <div id="chatbot-messages"></div>
-    <div id="chatbot-input-container">
-        <input type="text" id="chatbot-input" placeholder="Ask me something...">
-        <button id="send-message">Send</button>
-    </div>
-</div>
 
-<script src="chatbot.js"></script>
+    <div id="chatbot-window" class="hidden">
+        <div id="chatbot-header">
+            <span>Chatbot</span>
+            <button id="close-chat">X</button>
+        </div>
+        <div id="chatbot-messages"></div>
+        <div id="chatbot-input-container">
+            <input type="text" id="chatbot-input" placeholder="Ask me something...">
+            <button id="send-message">Send</button>
+        </div>
+    </div>
+
+    <script src="chatbot.js"></script>
 
     <footer>
         <p>&copy;2025 The Restoration Hub.</p>
