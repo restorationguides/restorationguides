@@ -49,6 +49,7 @@ const questions = [
         { question: "Which factor has the biggest impact on how quickly materials dry?", options: ["A) Size of the affected area", "B) Number of technicians on-site", "C) Airflow, temperature, and humidity", "D) Insurance policy details"], answer: "C" },
         { question: "What does a grain depression indicate in drying?", options: ["A) The difference between intake and exhaust GPP", "B) A drop in temperature", "C) An increase in relative humidity", "D) Moisture saturation in wood"], answer: "A" },
         { question: "Why should drying equipment be removed gradually from a job site?", options: ["A) Prevents secondary damage", "B) Saves electricity", "C) Avoids over-drying", "D) Reduces labor costs"], answer: "A" },
+    
 
     ];
     
@@ -102,12 +103,12 @@ const questions = [
     
             if (userChoice === correctAnswer) {
                 selectedButton.style.backgroundColor = "green";
-                feedbackElement.textContent = "Correct, Mother Fucker!";
+                feedbackElement.textContent = "Correct";
                 feedbackElement.style.color = "green";
                 score++;
             } else {
                 selectedButton.style.backgroundColor = "red";
-                feedbackElement.textContent = "Get Good";
+                feedbackElement.textContent = "Incorrect";
                 feedbackElement.style.color = "red";
             }
     

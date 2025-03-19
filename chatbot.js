@@ -38,10 +38,21 @@ document.addEventListener("DOMContentLoaded", function () {
             "humidity": "Relative humidity should be kept below 50% to prevent mold growth.",
             "psychrometry": "Psychrometry is the study of air properties, including temperature, humidity, and moisture content.",
             "mold": "Mold can begin growing within 24-48 hours in the right conditions. Use dehumidifiers to control humidity.",
+            "gpp" : "Grains per pround is a measurement of the moisture content in air",
+            "catgory 1": "Category 1 water is pottable water, often called 'clear water', and uses normal drying methods.",
+            "category 2" : "Category 2 water is significantly contaminated water, often called 'grey water', and requires special handling.", 
             "category 3": "Category 3 water is grossly contaminated, often called 'black water,' and requires special handling.",
             "quiz": "Want to test your WRT knowledge? Try the quiz on the site!",
             "dehumidifier": "LGR dehumidifiers are the best for water restoration because they remove moisture even in lower humidity environments.",
-            "contact": "If you need to contact me, you must first retrieve the Ethernet Cable of Destiny from the depths of Windows Vista."
+            "contact": "If you need to contact me, you must first retrieve the Ethernet Cable of Destiny from the depths of Windows Vista.",
+            "what is an open drying system" : "A drying system that exchanges indoor air with outdoor air, typically using ventilation.",
+            "what is a closed drying system": "A controlled drying environment where air movement, temperature, and humidity are regulated.",
+            "what is permeance" : "A measure of how easily moisture can pass through a material (e.g., vapor barriers have low permeance).",
+            "what is laminar airflow": "Smooth, layered air movement that reduces turbulence, often seen in controlled drying environments.",
+            "what are hygroscopic materials": "Materials that readily absorb moisture from the air, such as drywall and carpet.",
+            "what is sublimation?": "The process where a solid (e.g., ice) changes directly into a gas without becoming liquid",
+            "what is usually referred to as the black mold?": "stachybotrys"
+
         };
 
         // Handle Random Fact Command
