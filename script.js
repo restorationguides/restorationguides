@@ -1,7 +1,7 @@
 const questions = [
         { question: "What is the primary goal of water damage restoration?", options: ["A) Aesthetic appeal", "B) Moisture removal & prevention", "C) Increasing property value", "D) HVAC maintenance"], answer: "B" },
         { question: "Which category of water is considered highly contaminated and poses serious health risks?", options: ["A) Category 1", "B) Category 2", "C) Category 3", "D) Category 4"], answer: "C" },
-        { question: "What is the recommended humidity level to prevent mold growth?", options: ["A) Below 50%", "B) Below 60%", "C) Above 70%", "D) Exactly 80%"], answer: "A" },
+        { question: "What is the recommended humidity level to prevent mold growth?", options: ["A) Below 50%", "B) Below 60%", "C) Above 70%", "D) Exactly 80%"], answer: "B" },
         { question: "Which equipment is used to increase airflow and accelerate evaporation?", options: ["A) Dehumidifier", "B) Hygrometer", "C) Air Mover", "D) Moisture Meter"], answer: "C" },
         { question: "What is the formula to calculate AHAM pints needed for dehumidification?", options: ["A) Cubic Feet × Class Factor", "B) Cubic Feet ÷ Class Factor", "C) Air Changes ÷ 60", "D) CFM × GPP"], answer: "B" },
         { question: "What does 'GPP' stand for in psychrometry?", options: ["A) Gallons Per Pint", "B) Grains Per Pound", "C) Grams Per Percent", "D) Gas Pressure Percentage"], answer: "B" },
@@ -53,7 +53,21 @@ const questions = [
         { question: "At BriteSmile Dental, a sprinkler flood hit 15x12x10 Exam Room 1, Exam Room 2, a 25x6x10 hallway, and a 20x15x10 waiting room. It’s a Class 1 loss with 110 PPD LGRs. How many dehus are needed?", options: ["A) 1", "B) 2", "C) 3", "D) 4"], answer: "A" },
         { question: "A lightning storm floods a 50x30x10 main floor, 20x16x10 fitting room, and 12x10x10 break room at a boutique. Class 2 water with 70 PPD LGRs. How many dehumidifiers are needed?", options: ["A) 3", "B) 4", "C) 5", "D) 6"], answer: "D" },
         { question: "At Little Sprouts Preschool, a pipe burst flooded the 30x25x9 playroom, 20x16x9 nap room, and 10x8x9 restroom. Class 3 loss using 70 PPD LGRs. How many dehus do you need?", options: ["A) 3", "B) 4", "C) 5", "D) 6"], answer: "B" },
-        { question: "At Grounds & Glory Café, a leak soaked the 30x20x10 customer area, 18x15x10 kitchen, and 10x6x10 storage. It’s a Class 2 loss. Using 70 PPD LGRs, how many dehumidifiers are required?", options: ["A) 2", "B) 3", "C) 4", "D) 5"], answer: "B" }
+        { question: "At Grounds & Glory Café, a leak soaked the 30x20x10 customer area, 18x15x10 kitchen, and 10x6x10 storage. It’s a Class 2 loss. Using 70 PPD LGRs, how many dehumidifiers are required?", options: ["A) 2", "B) 3", "C) 4", "D) 5"], answer: "B" },
+        { question: "A small office floods: 25x15x9 workspace, 20x12x9 break room, and 10x8x9 storage room. It’s a Class 2 loss using 70 PPD LGRs. How many dehumidifiers are required?", options: ["A) 2", "B) 3", "C) 4", "D) 5"], answer: "B" }, // Total: 6,165 cu ft ÷ 50 = 123.3 ÷ 70 = 1.76 → 2
+        { question: "A hotel wing floods: 3 guest rooms each 20x15x10, and a hallway 60x6x10. It’s a Class 1 water loss, and you’re using 110 PPD LGRs. How many dehus are needed?", options: ["A) 1", "B) 2", "C) 3", "D) 4"], answer: "B" }, // 10,800 cu ft ÷ 100 = 108 ÷ 110 = ~1
+        { question: "Which of the following best defines AHAM in the restoration field?", options: ["A) Water extraction protocol", "B) Energy efficiency label", "C) Standard moisture testing level", "D) Dehumidifier performance under controlled conditions"], answer: "D" },
+        { question: "A crawlspace measures 40x10x3 feet with standing water. It’s a Class 3 loss. You're using 70 PPD LGRs. How many units are needed?", options: ["A) 1", "B) 2", "C) 3", "D) 4"], answer: "A" }, // 1,200 cu ft ÷ 40 = 30 ÷ 70 = <1
+        { question: "Which tool would you use to verify if a material has reached its drying goal?", options: ["A) Thermal imaging camera", "B) Psychrometric calculator", "C) Moisture meter", "D) Anemometer"], answer: "C" },
+        { question: "What is the AHAM value for a 30x20x10 ft room with Class 2 conditions?", options: ["A) 60", "B) 120", "C) 200", "D) 300"], answer: "B" }, // 6,000 cu ft ÷ 50 = 120
+        { question: "What should you do before placing dehumidifiers on a job site?", options: ["A) Start air movers", "B) Check insurance documents", "C) Measure the affected volume and classify the loss", "D) Turn off electricity"], answer: "C" },
+        { question: "A 40x25x12 ft lobby and a 20x20x12 reception area are soaked in a Class 1 event. Using 110 PPD LGRs, how many dehus are needed?", options: ["A) 2", "B) 3", "C) 4", "D) 5"], answer: "A" }, // Total = 18,000 cu ft ÷ 100 = 180 ÷ 110 = 1.63 → 2
+        { question: "What’s the formula to calculate cubic footage of a room?", options: ["A) Length + Width + Height", "B) Length × Width × Height", "C) Height × Perimeter", "D) Square footage × ACH"], answer: "B" },
+        { question: "What does 'LGR' stand for in dehumidification?", options: ["A) Low Grade Recovery", "B) Large Grain Reduction", "C) Low Grain Refrigerant", "D) Long Grain Radiant"], answer: "C" },
+        { question: "All restorers should follow the standard of care for the water restoration profession developed by the restoration industry entitled the IICRC ____.", options: ["A) S400", "B) S520","C) S500", "D) S600"], answer: "C" },
+        { question: "Federal regulations apply to the handling of ____ based paint and asbestos.", options: ["A) Lead", "B) Zinc", "C) Mercury", "D) Latex"], answer: "A" }
+
+
 
 
 

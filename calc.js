@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
       calculator.classList.remove("show");
       toggleBtn.textContent = "🧮 Open Calculator";
     });
+    
   
     buttons.forEach(btn => {
       btn.addEventListener("click", () => {
@@ -33,4 +34,8 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     });
   });
+  function backspace() {
+    const display = document.getElementById("calcDisplay");
+    display.value = display.value.slice(0, -1);
+  }
   
