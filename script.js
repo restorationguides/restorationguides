@@ -49,7 +49,13 @@ const questions = [
         { question: "Which factor has the biggest impact on how quickly materials dry?", options: ["A) Size of the affected area", "B) Number of technicians on-site", "C) Airflow, temperature, and humidity", "D) Insurance policy details"], answer: "C" },
         { question: "What does a grain depression indicate in drying?", options: ["A) The difference between intake and exhaust GPP", "B) A drop in temperature", "C) An increase in relative humidity", "D) Moisture saturation in wood"], answer: "A" },
         { question: "Why should drying equipment be removed gradually from a job site?", options: ["A) Prevents secondary damage", "B) Saves electricity", "C) Avoids over-drying", "D) Reduces labor costs"], answer: "A" },
-    
+        { question: "Grandma's water heater flooded her 20x18x10 living room, 14x12x10 bedroom, and 10x8x10 laundry room. It's a Class 2 loss, and you're using 70 PPD LGRs. How many dehumidifiers are needed?", options: ["A) 1", "B) 2", "C) 3", "D) 4"], answer: "B" },
+        { question: "At BriteSmile Dental, a sprinkler flood hit 15x12x10 Exam Room 1, Exam Room 2, a 25x6x10 hallway, and a 20x15x10 waiting room. It’s a Class 1 loss with 110 PPD LGRs. How many dehus are needed?", options: ["A) 1", "B) 2", "C) 3", "D) 4"], answer: "A" },
+        { question: "A lightning storm floods a 50x30x10 main floor, 20x16x10 fitting room, and 12x10x10 break room at a boutique. Class 2 water with 70 PPD LGRs. How many dehumidifiers are needed?", options: ["A) 3", "B) 4", "C) 5", "D) 6"], answer: "D" },
+        { question: "At Little Sprouts Preschool, a pipe burst flooded the 30x25x9 playroom, 20x16x9 nap room, and 10x8x9 restroom. Class 3 loss using 70 PPD LGRs. How many dehus do you need?", options: ["A) 3", "B) 4", "C) 5", "D) 6"], answer: "B" },
+        { question: "At Grounds & Glory Café, a leak soaked the 30x20x10 customer area, 18x15x10 kitchen, and 10x6x10 storage. It’s a Class 2 loss. Using 70 PPD LGRs, how many dehumidifiers are required?", options: ["A) 2", "B) 3", "C) 4", "D) 5"], answer: "B" }
+
+
 
     ];
     
@@ -59,7 +65,7 @@ const questions = [
     
     document.addEventListener("DOMContentLoaded", function () {
         const questionElement = document.getElementById("question");
-        const optionsContainer = document.getElementById("options");
+        const optionsContainer = document.getElementById("quiz-options");
         const feedbackElement = document.getElementById("feedback");
         const nextButton = document.getElementById("next-button");
         const restartButton = document.getElementById("restart-button");
@@ -114,6 +120,8 @@ const questions = [
     
             scoreElement.textContent = `Score: ${score} / ${questions.length}`;
             nextButton.style.display = "block";
+            nextButton.classList.add("fade-in");
+
         }
     
         function nextQuestion() {
@@ -137,6 +145,8 @@ const questions = [
             shuffleQuestions(); // Randomize questions
             loadQuestion();
         }
+
+        
     
         nextButton.addEventListener("click", nextQuestion);
         restartButton.addEventListener("click", restartQuiz);

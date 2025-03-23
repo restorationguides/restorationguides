@@ -24,8 +24,18 @@
         </nav>
     </header>
 
+    
     <section class="chalkboard">
+        
           <section class="study-guide">
+              <!-- Tabs Navigation -->
+              <div class="tab-container">
+                <button class="tab-button" data-tab="wrt">🛠️ WRT Study Guide</button>
+                <button class="tab-button" data-tab="amrt">🦠 AMRT Study Guide</button>
+              </div>
+              
+    <div id="wrt" class="tab-content active">
+        <h2>🛠️ Water Restoration Technician (WRT) Study Guide</h2>
             <h2>📖 Understanding Water Damage Restoration</h2>
             <p>Water damage restoration is a science-based process that involves removing moisture, preventing mold growth, and restoring structures. This study guide covers <strong>key principles</strong>, <strong>industry formulas</strong>, and <strong>best practices</strong> to help you master the WRT certification.</p>
     
@@ -55,18 +65,6 @@
     
             <h3>3️⃣ Psychrometry: The Science of Drying</h3>
             <p>Psychrometry is the study of air properties, including temperature, humidity, and vapor pressure. Understanding this helps optimize drying conditions.</p>
-            <ul>
-                <li><strong>Relative Humidity (RH):</strong> The percentage of water vapor in the air relative to its capacity.</li>
-                <li><strong>Grains Per Pound (GPP):</strong> Measures actual moisture content in the air.</li>
-                <li><strong>Dew Point:</strong> The temperature at which air becomes saturated, leading to condensation.</li>
-            </ul>
-            <h2>🌡️ Interactive Psychrometric Chart</h2>
-            <p>Use this chart to track temperature, relative humidity, and grains per pound of moisture.</p>
-            <canvas id="psychrometricCanvas"></canvas>
-            <div class="info-box" id="hoverInfo">Hover over the chart to see values.</div>
-            <div class="info-box" id="selectedInfo">Click on the chart to select a data point.</div>
-            <b>Check out the <a href="index.html">Psychrometric Calculator</a>at the bottom of the home page</b>
-            <ul>
                 <li><strong>Relative Humidity (RH)</strong> – The amount of moisture in the air compared to its maximum capacity.</li>
                 <li><strong>Dew Point</strong> – The temperature at which moisture condenses out of the air.</li>
                 <li><strong>Grains Per Pound (GPP)</strong> – A measurement of the moisture content in air.</li>
@@ -144,6 +142,10 @@
             <li><strong>Sublimation</strong> – The process where a solid (e.g., ice) changes directly into a gas without becoming liquid.</li>
             <li><strong>Vapor Barrier</strong> – A material used to resist moisture diffusion, preventing condensation in building materials.</li>
         </ul>
+        </div>
+         <!-- AMRT Content -->
+    <div id="amrt" class="tab-content">
+        <h2>🦠 Applied Microbial Remediation Technician (AMRT) Study Guide</h2>
 
             <section class="mold-section">
                 <h2>🦠 Mold Awareness & Remediation</h2>
@@ -239,7 +241,7 @@
                         <li><strong>Common Exposure:</strong> Found in spoiled apples, fruit juices, and cider.</li>
                     </ul>
               
-             
+                </div>
                 
             </section>
 
@@ -270,6 +272,7 @@
         <button id="send-message">Send</button>
     </div>
 </div>
+<script src="study_guide.js" defer></script>
 
 <script src="chatbot.js"></script>
     

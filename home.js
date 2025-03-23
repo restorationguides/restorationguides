@@ -54,95 +54,38 @@ document.addEventListener("DOMContentLoaded", function () {
     fetchIndustryNews();
 });
 
-document.addEventListener("DOMContentLoaded", function () {
-    let calculateBtn = document.getElementById("calculate");
-    let dehuTypeSelect = document.getElementById("dehuType");
-    let classFactorSelect = document.getElementById("classFactor");
-    let dehuCapacityInput = document.getElementById("dehuCapacity");
+    document.addEventListener("DOMContentLoaded", function () {
+        const calculateBtn = document.getElementById("calculateGPP");
 
-    // Function to update Class Factor options
-    function updateClassFactorOptions(dehuType) {
-        classFactorSelect.innerHTML = ""; // Clear previous options
 
-        if (dehuType === "1") { // Standard Dehumidifier
-            addClassFactorOption("100", "Class 1 (100)");
-            addClassFactorOption("50", "Class 2 (50)");
-            addClassFactorOption("40", "Class 3 (40)");
-            addClassFactorOption("30", "Class 4 (30)");
-        } else if (dehuType === "1.5") { // LGR Dehumidifier
-            addClassFactorOption("50", "Class 2 (50)");
-            addClassFactorOption("40", "Class 3 (40)");
-            addClassFactorOption("30", "Class 4 (30)");
-        } else if (dehuType === "2") { // Desiccant
-            addClassFactorOption("30", "Class 4 (30)");
+      calculateBtn.addEventListener("click", function () {
+        const temperature = parseFloat(document.getElementById("temperature").value);
+        const humidity = parseFloat(document.getElementById("humidity").value);
+
+        if (isNaN(temperature) || isNaN(humidity)) {
+          alert("Please enter valid values.");
+          return;
         }
 
-        classFactorSelect.disabled = false; // Unlock class factor selection
-    }
+        const atmosphericPressure = 29.92;
+        const A = 6.116441, m = 7.591386, Tn = 240.7263;
+        const tempC = (temperature - 32) * 5 / 9;
+        const es = A * Math.pow(10, (m * tempC) / (tempC + Tn));
+        const e = (humidity / 100) * es;
+        const vaporPressure = e * 0.02953;
+        const gpp = (7000 * 0.622 * vaporPressure) / (atmosphericPressure - vaporPressure);
 
-    function addClassFactorOption(value, text) {
-        let option = document.createElement("option");
-        option.value = value;
-        option.textContent = text;
-        classFactorSelect.appendChild(option);
-    }
+        const lnRH = Math.log(humidity / 100);
+        const alpha = ((m * tempC) / (Tn + tempC)) + lnRH;
+        const dewPointC = (Tn * alpha) / (m - alpha);
+        const dewPointF = (dewPointC * 9 / 5) + 32;
 
-    // Handle Dehumidifier Type Selection
-    dehuTypeSelect.addEventListener("change", function () {
-        let dehuType = dehuTypeSelect.value;
-        
-        if (dehuType) {
-            updateClassFactorOptions(dehuType);
-        } else {
-            classFactorSelect.disabled = true;
-            classFactorSelect.innerHTML = `<option value="">Select Dehu Type First</option>`;
-        }
-    });
-
-    calculateBtn.addEventListener("click", function () {
-        let length = parseFloat(document.getElementById("length").value) || 0;
-        let width = parseFloat(document.getElementById("width").value) || 0;
-        let height = parseFloat(document.getElementById("height").value) || 0;
-        let temperature = parseFloat(document.getElementById("temperature").value) || 0;
-        let humidity = parseFloat(document.getElementById("humidity").value) || 0;
-        let classFactor = parseFloat(classFactorSelect.value) || 0;
-        let dehuType = parseFloat(dehuTypeSelect.value) || 0;
-        let dehuCapacity = parseFloat(dehuCapacityInput.value) || 0;
-
-        if (!length || !width || !height || !temperature || !humidity || !classFactor || !dehuType || !dehuCapacity) {
-            alert("Please fill out all fields correctly.");
-            return;
-        }
-
-        // Calculate Cubic Feet of the Room
-        let cubicFeet = length * width * height;
-
-        // Corrected Dew Point Calculation
-        let dewPoint = temperature - ((100 - humidity) / 5);
-
-        // Corrected GPP Calculation
-        let gpp = (humidity / 100) * (temperature * 5);  
-
-        // Corrected Airflow Needed (CFM)
-        let airflow = (cubicFeet * 4) / 60;
-
-        // Corrected AHAM Pints Needed
-        let ahamPints = (cubicFeet * gpp) / (60 * classFactor);
-
-        // Corrected Required Dehumidifiers
-        let dehumidifiers = Math.ceil(ahamPints / dehuCapacity);
-
-        // Display Results
-        document.getElementById("dewPoint").textContent = dewPoint.toFixed(2);
+        document.getElementById("dewPoint").textContent = dewPointF.toFixed(2);
         document.getElementById("gpp").textContent = gpp.toFixed(2);
-        document.getElementById("airflow").textContent = airflow.toFixed(2);
-        document.getElementById("ahamPints").textContent = ahamPints.toFixed(2);
-        document.getElementById("dehumidifiers").textContent = dehumidifiers;
-
+        document.getElementById("vaporPressure").textContent = vaporPressure.toFixed(4);
         document.getElementById("results").classList.remove("hidden");
-        document.getElementById("results").classList.add("fade-in");
+      });
     });
-});
 
 
 

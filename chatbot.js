@@ -51,7 +51,19 @@ document.addEventListener("DOMContentLoaded", function () {
             "what is laminar airflow": "Smooth, layered air movement that reduces turbulence, often seen in controlled drying environments.",
             "what are hygroscopic materials": "Materials that readily absorb moisture from the air, such as drywall and carpet.",
             "what is sublimation?": "The process where a solid (e.g., ice) changes directly into a gas without becoming liquid",
-            "what is usually referred to as the black mold?": "stachybotrys"
+            "what is usually referred to as the black mold?": "stachybotrys",
+            "changelog": `
+            🛠️ <strong>Site Changelog</strong> 🛠️  
+            • Added a working <strong>Psychrometric Calculator</strong> with GPP, Dew Point & Vapor Pressure  
+            • Added a <strong>Chatbot</strong> that answers WRT-related questions  
+            • Built <strong>Quiz with feedback + scores</strong> and dynamic styling  
+            • Added <strong>Study Guide Tabs</strong> for WRT and AMRT  
+            • Improved <strong>Mobile Compatibility</strong>  
+            • Implemented <strong>Fade-in animations</strong> for a polished feel  
+            • Added <strong>Mycotoxin definitions</strong> to the AMRT section  
+            • Calculator now properly separates GPP and AHAM calcs  
+            • Built a <strong>custom news feed</strong> from industry RSS  
+            • 🧪 Bonus: Removed broken calculator popup + beautified buttons`
 
         };
 

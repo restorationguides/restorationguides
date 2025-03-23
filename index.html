@@ -62,58 +62,30 @@
             </section>
         </div>
 
-        <!-- Right Column: Psychrometric Calculator -->
-        <div class="right-column">
-            <section class="psychro-calculator">
-                <h2>🌡️ Psychrometric Calculator</h2>
-                <p>Enter <b>room size, temperature, and humidity</b> for precise drying calculations.</p>
+       
+<div class="right-column">
+    <section class="psychro-calculator">
+      <h2>🌡️ Psychrometric Calculator</h2>
+      <p>Enter <strong>temperature</strong> and <strong>relative humidity</strong> to calculate Grains Per Pound (GPP).</p>
+  
+      <div class="calculator-form">
+        <label for="temperature">🌡️ Temperature (°F):</label>
+        <input type="number" id="temperature" placeholder="Enter temperature" required>
+  
+        <label for="humidity">💧 Relative Humidity (%):</label>
+        <input type="number" id="humidity" placeholder="Enter humidity" required>
+  
+        <button id="calculateGPP">📊 Calculate GPP</button>
+      </div>
+  <div id="results" class="hidden">
+    <h3>📋 Results:</h3>
+    <p><strong>Dew Point:</strong> <span id="dewPoint">--</span> °F</p>
+    <p><strong>Grains Per Pound (GPP):</strong> <span id="gpp">--</span></p>
+    <p><strong>Vapor Pressure:</strong> <span id="vaporPressure">--</span> inHg</p>
+</div>
 
-                <div class="calculator-form">
-                    <label for="dehuType">⚙️ Dehumidifier Type:</label>
-                    <select id="dehuType">
-                        <option value="">Select Dehumidifier Type</option>
-                        <option value="1">Standard</option>
-                        <option value="1.5">LGR</option>
-                        <option value="2">Desiccant</option>
-                    </select>
 
-                    <label for="classFactor">🏗️ Class Factor:</label>
-                    <select id="classFactor" disabled>
-                        <option value="">Select Dehu Type First</option>
-                    </select>
-
-                    <!-- Dehumidifier Capacity -->
-                    <label for="dehuCapacity">⚙️ Dehumidifier Capacity (Pints/Day):</label>
-                    <input type="number" id="dehuCapacity" placeholder="Enter capacity (e.g., 70)">
-
-                    <label for="length">📏 Length (ft):</label>
-                    <input type="number" id="length" placeholder="Enter length">
-
-                    <label for="width">📐 Width (ft):</label>
-                    <input type="number" id="width" placeholder="Enter width">
-
-                    <label for="height">📏 Height (ft):</label>
-                    <input type="number" id="height" placeholder="Enter height">
-
-                    <label for="temperature">🌡️ Temperature (°F):</label>
-                    <input type="number" id="temperature" placeholder="Enter temperature">
-
-                    <label for="humidity">💧 Relative Humidity (%):</label>
-                    <input type="number" id="humidity" placeholder="Enter humidity">
-
-                    <button id="calculate">📊 Calculate</button>
-                </div>
-
-                <div id="results" class="hidden">
-                    <h3>📋 Results:</h3>
-                    <!-- These IDs must exist in your HTML -->
-                    <p><strong>Dew Point:</strong> <span id="dewPoint">--</span> °F</p>
-                    <p><strong>Grains Per Pound (GPP):</strong> <span id="gpp">--</span></p>
-                    <p><strong>Airflow Needed (CFM):</strong> <span id="airflow">--</span></p>
-                    <p><strong>AHAM Pints Needed:</strong> <span id="ahamPints">--</span></p>
-                    <p><strong>Dehumidifiers Required:</strong> <span id="dehumidifiers">--</span></p>
-
-                </div>
+  
             </section>
         </div>
     </div>
