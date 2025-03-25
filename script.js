@@ -1,6 +1,6 @@
 const questions = [
         { question: "What is the primary goal of water damage restoration?", options: ["A) Aesthetic appeal", "B) Moisture removal & prevention", "C) Increasing property value", "D) HVAC maintenance"], answer: "B" },
-        { question: "Which category of water is considered highly contaminated and poses serious health risks?", options: ["A) Category 1", "B) Category 2", "C) Category 3", "D) Category 4"], answer: "C" },
+        { question: "Which category of water is considered grossly contaminated and poses serious health risks?", options: ["A) Category 1", "B) Category 2", "C) Category 3", "D) Category 4"], answer: "C" },
         { question: "What is the recommended humidity level to prevent mold growth?", options: ["A) Below 50%", "B) Below 60%", "C) Above 70%", "D) Exactly 80%"], answer: "B" },
         { question: "Which equipment is used to increase airflow and accelerate evaporation?", options: ["A) Dehumidifier", "B) Hygrometer", "C) Air Mover", "D) Moisture Meter"], answer: "C" },
         { question: "What is the formula to calculate AHAM pints needed for dehumidification?", options: ["A) Cubic Feet × Class Factor", "B) Cubic Feet ÷ Class Factor", "C) Air Changes ÷ 60", "D) CFM × GPP"], answer: "B" },
