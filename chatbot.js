@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 "what are hygroscopic materials": "Materials that readily absorb moisture from the air, such as drywall and carpet.",
                 "what is sublimation?": "The process where a solid (e.g., ice) changes directly into a gas without becoming liquid.",
                 "what is usually referred to as the black mold?": "Stachybotrys.",
-                "what are the three types of containment?": "Source, Structure, & Full",
+                "what are the types of containment?": "Source, Structure, & Full",
                 "changelog": `
                 🛠️ <strong>Site Changelog</strong> 🛠️<br>
                 • Added a working <em>Psychrometric Calculator</em> with GPP, Dew Point & Vapor Pressure<br>
