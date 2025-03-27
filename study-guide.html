@@ -8,21 +8,10 @@
     <link rel="stylesheet" href="css/study.css">
     <link rel="stylesheet" href="css/chatbot.css">
     <link rel="stylesheet" href="css/psychometric-chart-styles.css">
-</head>
+<link rel="stylesheet" href="./css/nav.css">
+  <script src="nav.js" defer></script>
 <script src="psychometric.js"></script>
 <body>
-    <header>
-        <h1>The Restoration Hub</h1>
-        <nav>
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="quiz.html">WRT Quiz</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="study-guide.html">Study Guide</a></li>
-                <li><a href="contact.html">Contact</a></li>
-            </ul>
-        </nav>
-    </header>
 
     
     <section class="chalkboard">
@@ -145,7 +134,13 @@
             <li><strong>Sublimation</strong> – The process where a solid (e.g., ice) changes directly into a gas without becoming liquid.</li>
             <li><strong>Vapor Barrier</strong> – A material used to resist moisture diffusion, preventing condensation in building materials.</li>
         </ul>
+        <div class="quiz-section">
+            <h3>🎯 Think You’re Ready?</h3>
+            <p>Put your <strong>knowledge to the test</strong> with our WRT practice quiz!</p>
+            <a href="quiz.html" class="quiz-button">Take the Quiz</a>
         </div>
+        </div>
+        
          <!-- AMRT Content -->
     <div id="amrt" class="tab-content">
         <h2>🦠 Applied Microbial Remediation Technician (AMRT) Study Guide</h2>
@@ -153,7 +148,47 @@
             <section class="mold-section">
                 <h3>🦠 Mold Awareness & Remediation</h3>
                 <p>Mold can develop within 24-48 hours after water damage. Understanding its risks and remediation techniques is crucial for restoration professionals.</p>
-            
+                
+                <div class="mold-topic">
+                    <h3>📦 Containment Types</h3>
+                    <ul>
+                      <li><strong>Source Containment:</strong> Covers the immediate contaminated area (e.g., small patch of drywall).</li>
+                      <li><strong>Structure Containment:</strong> Covers an entire room or area, used for moderate contamination.</li>
+                      <li><strong>Full Containment:</strong> Seals off the entire structure or wing, used for large-scale or toxic mold jobs.</li>
+                    </ul>
+                  </div>
+
+                  <div class="mold-topic">
+                    <h3>🧼 Mold Cleaning Techniques</h3>
+                    <ul>
+                      <li><strong>HEPA Vacuuming:</strong> Removes loose spores before or after cleaning.</li>
+                      <li><strong>Wire Brushing / Scraping:</strong> For semi-porous surfaces like wood studs.</li>
+                      <li><strong>Damp Wiping:</strong> With antimicrobial or cleaning solution on non-porous surfaces.</li>
+                      <li><strong>Sanding / Soda Blasting:</strong> For removing stubborn contamination on wood or concrete.</li>
+                    </ul>
+                  </div>
+
+                  <div class="mold-topic">
+                    <h3>🧯 PPE & Worker Protection</h3>
+                    <ul>
+                      <li><strong>Respirators:</strong> Minimum N95 for low-risk, P100 or full-face for higher-risk jobs.</li>
+                      <li><strong>Tyvek Suits:</strong> Protect clothing and prevent cross-contamination.</li>
+                      <li><strong>Gloves, Goggles, Boots:</strong> Always used when entering containment zones.</li>
+                      <li><strong>Decon Chambers:</strong> Required on full containment projects (clean room, dirty room, shower area).</li>
+                    </ul>
+                  </div>
+                  
+                  <div class="mold-topic">
+                    <h3>📄 Documentation & Post-Remediation Verification</h3>
+                    <ul>
+                      <li><strong>Photo Documentation:</strong> Before, during, and after remediation.</li>
+                      <li><strong>Moisture Logs:</strong> Daily recordings of material and air moisture levels.</li>
+                      <li><strong>Material Disposal Records:</strong> Track everything removed due to contamination.</li>
+                      <li><strong>PRV:</strong> Must be performed by an independent party. Often includes visual inspection, air sampling, and surface sampling.</li>
+                    </ul>
+                  </div>
+                  
+                  
                 <div class="mold-topic">
                     <h3>⏳ Mold Growth Timeline</h3>
                     <p>Mold spores begin colonizing on wet surfaces within <b>24-48 hours</b>. If left untreated, mold will rapidly spread and penetrate porous materials.</p>
@@ -254,19 +289,21 @@
                         <li><strong>Effects:</strong> Gastrointestinal toxicant, immunosuppressive, and possibly neurotoxic.</li>
                         <li><strong>Common Exposure:</strong> Found in spoiled apples, fruit juices, and cider.</li>
                     </ul>
+
+                    <div class="quiz-section">
+                        <h3>🎯 Think You’re Ready?</h3>
+                        <p>Put your <strong>knowledge to the test</strong> with our AMRT practice quiz!</p>
+                        <a href="amrt-quiz.html" class="quiz-button">Take the AMRT Quiz</a>
+                      </div>
+                    
               
                 </div>
-                
+
+              
             </section>
 
             
             
-    
-            <div class="quiz-section">
-                <h3>🎯 Think You’re Ready?</h3>
-                <p>Put your <strong>knowledge to the test</strong> with our WRT practice quiz!</p>
-                <a href="quiz.html" class="quiz-button">Take the Quiz</a>
-            </div>
         </section>
 
         <!-- Chatbot Toggle Button -->
@@ -290,8 +327,7 @@
 
 <script src="chatbot.js"></script>
     
-    <footer>
-        <p>&copy; 2025 The Restoration Hub.</p>
-    </footer>
+    <footer><script src="footer.js" defer></script>
+  </footer>
 </body>
 </html>

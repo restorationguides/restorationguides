@@ -1,0 +1,134 @@
+.amrt-quiz body {
+    background: #f9f9f9;
+    color: #000;
+  }
+  
+  .amrt-quiz h1 {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 2em;
+    color: #1c1f26;
+  }
+  
+  .amrt-quiz #score {
+    text-align: center;
+    margin: 20px 0;
+    font-weight: bold;
+    font-size: 1.1em;
+  }
+  
+  .amrt-quiz #quiz-container {
+    max-width: 800px;
+    margin: auto;
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .amrt-quiz .question {
+    margin-bottom: 30px;
+  }
+  
+  .amrt-quiz .question h2 {
+    font-size: 1.2em;
+    margin-bottom: 15px;
+    color: #000;
+  }
+  
+  .amrt-quiz ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .amrt-quiz li {
+    background-color: #ffcc00;
+    padding: 15px;
+    margin-bottom: 10px;
+    text-align: center;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 1em;
+    border: 1px solid #888;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .amrt-quiz li:hover {
+    background-color: #ffdb4d;
+  }
+  
+  .amrt-quiz li.correct {
+    background-color: #4CAF50 !important;
+    color: white;
+  }
+  
+  .amrt-quiz li.wrong {
+    background-color: #f44336 !important;
+    color: white;
+  }
+  
+  #achievement-banner {
+    position: fixed;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #00ffd5;
+    color: #1c1f26;
+    font-weight: bold;
+    font-size: 1.2em;
+    padding: 15px 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    z-index: 999;
+    opacity: 0;
+    transition: all 0.7s ease-in-out;
+  }
+  
+  #achievement-banner.show {
+    top: 10px;
+    opacity: 1;
+  }
+  
+  .amrt-quiz #final-grade {
+    text-align: center;
+    font-size: 1.5em;
+    margin-top: 20px;
+  }
+  
+  .amrt-quiz .quiz-retry {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  .amrt-quiz .quiz-btn {
+    padding: 10px 20px;
+    background: #ffcc00;
+    border: 1px solid #888;
+    border-radius: 8px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .amrt-quiz .quiz-btn:hover {
+    background-color: #ffdb4d;
+  }
+  .mode-toggle {
+    text-align: center;
+    margin: 20px 0;
+  }
+  
+  .mode-toggle .quiz-btn {
+    margin: 5px 10px;
+  }
+  
+  
+  #timer {
+    text-align: center;
+    font-size: 1.2em;
+    color: #d63031;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  

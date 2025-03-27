@@ -80,12 +80,18 @@ document.addEventListener("DOMContentLoaded", function () {
                 "what is sublimation?": "The process where a solid (e.g., ice) changes directly into a gas without becoming liquid.",
                 "what is usually referred to as the black mold?": "Stachybotrys.",
                 "what are the types of containment?": "Source, Structure, & Full",
-                "changelog": `
-                🛠️ <strong>Site Changelog</strong> 🛠️<br>
-                • Added a working <em>Psychrometric Calculator</em> with GPP, Dew Point & Vapor Pressure<br>
-                • Built quiz system with scoring<br>
-                • Added Easter eggs and fun calculator stuff<br>
-                • Made chatbot do math... you're welcome.`
+                "How much does a gallon of water weigh?": "8.34lbs",
+               "changelog": `
+  🛠️ <strong>Site Changelog – v1.13</strong> 🛠️<br>
+  • Added a working <em>Psychrometric Calculator</em> with GPP, Dew Point & Vapor Pressure<br>
+  • Built full quiz system with scoring, retry logic, and randomization<br>
+  • Implemented <strong>Timed Mode</strong> with countdown and auto-fail<br>
+  • Fixed mode switching bug (you're welcome, Future Dylan)<br>
+  • Added AMRT questions & animated achievements<br>
+  • Created Study Guide Tabs for WRT & AMRT<br>
+  • Cleaned up AMRT study content formatting<br>
+  • Added calculator Easter eggs & bonus logic<br>
+  • Chatbot can now do math like a polite nerd 🤓<br>`
             };
 
             if (lowerInput.includes("random fact") || lowerInput.includes("tell me something random") || lowerInput.includes("give me a fact")) {

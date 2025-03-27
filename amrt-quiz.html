@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AMRT Quiz Challenge</title>
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="./css/amrt.css">
+  <link rel="stylesheet" href="./css/nav.css">
+
+  <!-- Nav script -->
+  <script src="nav.js" defer></script>
+</head>
+
+<body>
+  <div id="achievement-banner"></div>
+
+  <!-- NAV (injected via nav.js) -->
+
+  <div class="amrt-quiz">
+    <h1>AMRT Quiz Challenge</h1>
+
+   <div id="score">Score: 0 / 20</div>
+
+    <div id="achievements" style="text-align:center; font-weight:bold; margin: 15px 0; color: #00ffd5;"></div>
+
+    <div class="mode-toggle">
+      <button class="quiz-btn" onclick="isTimedMode = false; startQuiz()">Normal Mode</button>
+      <button class="quiz-btn" onclick="isTimedMode = true; startQuiz()">Timed Mode ⏱️</button>
+    </div>
+    
+    
+    <div id="timer"></div>
+
+    <div id="quiz-container"></div>
+
+    <div id="final-grade"></div>
+
+    <div class="quiz-retry">
+      <button class="quiz-btn" onclick="resetQuiz()">Retry Quiz</button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="amrt-questions.js" defer></script>
+  <script src="amrt.js" defer></script>
+</body>
+</html>
