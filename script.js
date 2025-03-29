@@ -8,7 +8,7 @@ const questions = [
         { question: "What is the formula for air filtration (CFM) based on air exchanges per hour?", options: ["A) Cubic Feet ÷ Class Factor", "B) Cubic Feet × ACH ÷ 60", "C) Temperature × Dew Point", "D) Grains Per Pound ÷ 100"], answer: "B" },
         { question: "Which dehumidifier class factor should be used for LGR in Class 2 water damage?", options: ["A) 40", "B) 50", "C) 60", "D) 30"], answer: "B" },
         { question: "What instrument is used to measure relative humidity in the air?", options: ["A) Moisture Meter", "B) Psychrometric Chart", "C) Hygrometer", "D) Air Mover"], answer: "C" },
-        { question: "What is the first step in water damage restoration?", options: ["A) Install air movers", "B) Begin dehumidification", "C) Identify water source and stop it", "D) Apply antimicrobial treatment"], answer: "C" },
+        { question: "What is the first step in water damage restoration?", options: ["A) Install air movers", "B) Begin dehumidification", "C) Identify and address safety hazards", "D) Apply antimicrobial treatment"], answer: "C" },
         { question: "What is the purpose of an LGR dehumidifier?", options: ["A) Remove excess humidity", "B) Increase evaporation rate", "C) Control air temperature", "D) Detect hidden leaks"], answer: "A" },
         { question: "What is the typical air exchange rate used in drying calculations?", options: ["A) 2-3 ACH", "B) 4-6 ACH", "C) 8-10 ACH", "D) 12-15 ACH"], answer: "B" },
         { question: "Which material requires specialty drying techniques?", options: ["A) Carpet", "B) Concrete", "C) Drywall", "D) Wood flooring"], answer: "B" },
