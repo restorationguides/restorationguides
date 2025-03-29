@@ -53,7 +53,7 @@ const questions = [
         { question: "At BriteSmile Dental, a sprinkler flood hit 15x12x10 Exam Room 1, Exam Room 2, a 25x6x10 hallway, and a 20x15x10 waiting room. It’s a Class 1 loss with 110 PPD LGRs. How many dehus are needed?", options: ["A) 1", "B) 2", "C) 3", "D) 4"], answer: "A" },
         { question: "A lightning storm floods a 50x30x10 main floor, 20x16x10 fitting room, and 12x10x10 break room at a boutique. Class 2 water with 70 PPD LGRs. How many dehumidifiers are needed?", options: ["A) 3", "B) 4", "C) 5", "D) 6"], answer: "D" },
         { question: "At Little Sprouts Preschool, a pipe burst flooded the 30x25x9 playroom, 20x16x9 nap room, and 10x8x9 restroom. Class 3 loss using 70 PPD LGRs. How many dehus do you need?", options: ["A) 3", "B) 4", "C) 5", "D) 6"], answer: "B" },
-        { question: "At Grounds & Glory Café, a leak soaked the 30x20x10 customer area, 18x15x10 kitchen, and 10x6x10 storage. It’s a Class 2 loss. Using 70 PPD LGRs, how many dehumidifiers are required?", options: ["A) 2", "B) 3", "C) 4", "D) 5"], answer: "A" },
+        { question: "At Grounds & Glory Café, a leak soaked the 30x20x10 customer area, 18x15x10 kitchen, and 10x6x10 storage. It’s a Class 2 loss. Using 70 PPD LGRs, how many dehumidifiers are required?", options: ["A) 2", "B) 3", "C) 4", "D) 5"], answer: "B" },
         { question: "A small office floods: 25x15x9 workspace, 20x12x9 break room, and 10x8x9 storage room. It’s a Class 2 loss using 70 PPD LGRs. How many dehumidifiers are required?", options: ["A) 2", "B) 3", "C) 4", "D) 5"], answer: "B" }, // Total: 6,165 cu ft ÷ 50 = 123.3 ÷ 70 = 1.76 → 2
         { question: "A hotel wing floods: 2 guest rooms each 20x15x10, and a hallway 60x6x10. It’s a Class 1 water loss, and you’re using 110 PPD LGRs. How many dehus are needed?", options: ["A) 1", "B) 2", "C) 3", "D) 4"], answer: "A" }, // 10,800 cu ft ÷ 100 = 108 ÷ 110 = ~1
         { question: "Which of the following best defines AHAM in the restoration field?", options: ["A) Water extraction protocol", "B) Energy efficiency label", "C) Standard moisture testing level", "D) Dehumidifier performance under controlled conditions"], answer: "D" },
@@ -65,7 +65,22 @@ const questions = [
         { question: "What’s the formula to calculate cubic footage of a room?", options: ["A) Length + Width + Height", "B) Length × Width × Height", "C) Height × Perimeter", "D) Square footage × ACH"], answer: "B" },
         { question: "What does 'LGR' stand for in dehumidification?", options: ["A) Low Grade Recovery", "B) Large Grain Reduction", "C) Low Grain Refrigerant", "D) Long Grain Radiant"], answer: "C" },
         { question: "All restorers should follow the standard of care for the water restoration profession developed by the restoration industry entitled the IICRC ____.", options: ["A) S400", "B) S520","C) S500", "D) S600"], answer: "C" },
-        { question: "Federal regulations apply to the handling of ____ based paint and asbestos.", options: ["A) Lead", "B) Zinc", "C) Mercury", "D) Latex"], answer: "A" }
+        { question: "Federal regulations apply to the handling of ____ based paint and asbestos.", options: ["A) Lead", "B) Zinc", "C) Mercury", "D) Latex"], answer: "A" },
+        { question: "What is the separation of primary and secondary carpet backing called?", options: ["A) Cupping", "B) Crowning", "C) Delamination", "D) Expansion"], answer: "C"},
+        { question: "What part of the carpet cushion eases stretching during installation?", options: ["A) Skin", "B) Foam", "C) Pad", "D) Mesh"], answer: "A"},
+        { question: "When should seams be cut when removing cushion?", options: ["A) Always", "B) When visible", "C) When necessary", "D) After drying"], answer: "C"},
+        { question: "What tool is used when disengaging carpet from corner to corner?", options: ["A) Squeegee", "B) Knee kicker", "C) Pry bar", "D) Air mover"], answer: "B"},
+        { question: "Injecting air under carpet near wet surfaces is called?", options: ["A) Vent drying", "B) Floatation", "C) Partially float", "D) Air pop"], answer: "C"},
+        { question: "When carpet is affected by category 3 water, it must be?", options: ["A) Cleaned and dried", "B) Deodorized and reset", "C) Removed and discarded", "D) Vacuumed and treated"], answer: "C"},
+        { question: "If parties disagree with removing cat 3 carpet/cushion, what should be done?", options: ["A) Remove anyway", "B) Wait for insurance", "C) Stop services", "D) Replace without asking"], answer: "C"},
+        { question: "When delamination is discovered, restorers must?", options: ["A) Leave it", "B) Ignore it", "C) Document, communicate, and recommend replacement", "D) Patch it"],answer: "C"},
+        { question: "Before drying wood floors, what must restorers determine?",options: ["A) Airflow rate", "B) Wood type", "C) Drying goal", "D) Moisture load"],answer: "C"},
+        { question: "Solid wood flooring will _____ and _____ with changes in humidity.", options: ["A) Swell, shrink", "B) Harden, soften", "C) Expand, contract", "D) Cup, crown"], answer: "C"},
+        { question: "After drying wood floors, how long should re-acclimation be allowed?", options: ["A) No time", "B) 1 hour", "C) Until refinishing", "D) 2 weeks minimum"], answer: "C"},
+        { question: "What happens when water permeates laminate flooring?", options: ["A) It evaporates", "B) unsalvageable", "C) It dries fast", "D) It insulates better"], answer: "B"},
+        { question: "What is it called when wood plank sides swell higher than the center?", options: ["A) Bowing", "B) Warping", "C) Crowning", "D) Cupping"], answer: "D"},
+        { question: "What is it called when wood plank center rises higher than the sides?", options: ["A) Crowning", "B) Peaking", "C) Cupping", "D) Leveling"], answer: "A"},
+        { question: "Drying goals include reversing cupping and reaching final EMC within?", options: ["A) 5–10%", "B) 1–2%", "C) 2–4%", "D) 0–5%"], answer: "C"}
 
 
 
