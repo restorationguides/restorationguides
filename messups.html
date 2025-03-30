@@ -1,0 +1,174 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RH vs Temperature Slider + Quiz</title>
+  <style>
+    body {
+      background-color: #1e1e2f;
+      color: #ffffff;
+      font-family: Arial, sans-serif;
+      padding: 1rem;
+      margin: 0;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    .slider-container, .output, .quiz {
+      max-width: 600px;
+      margin: 1rem auto;
+    }
+    input[type=range] {
+      width: 100%;
+    }
+    .output {
+      font-size: 1.5rem;
+    }
+    .box {
+      background: #2c2c3e;
+      border-radius: 10px;
+      padding: 1rem;
+      margin-top: 1rem;
+    }
+    .quiz {
+      text-align: left;
+      background: #2c2c3e;
+      padding: 1rem;
+      border-radius: 10px;
+    }
+    .question {
+      margin-bottom: 1.5rem;
+    }
+    label {
+      display: block;
+      margin: 0.2rem 0;
+      cursor: pointer;
+    }
+    .correct {
+      background-color: #2e7d32;
+      border-radius: 4px;
+      padding-left: 4px;
+    }
+    .incorrect {
+      background-color: #c62828;
+      border-radius: 4px;
+      padding-left: 4px;
+    }
+    .result {
+      margin-top: 1rem;
+      font-weight: bold;
+      text-align: center;
+    }
+    button {
+      background-color: #4caf50;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      display: block;
+      margin: 1rem auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>Relative Humidity Drop with Temperature</h1>
+  <p style="text-align:center">Assuming constant moisture content (GPP), see how RH drops as air temperature rises.</p>  <div class="slider-container">
+    <label for="tempSlider">Temperature (°F): <span id="tempValue">70</span></label><br>
+    <input type="range" id="tempSlider" min="40" max="120" value="70">
+  </div>  <div class="output box">
+    <div>Estimated Relative Humidity: <strong><span id="rhOutput">50</span>%</strong></div>
+  </div>  <div class="quiz">
+    <h2>Quick Quiz</h2>
+    <div id="questions">
+      <div class="question"><strong>1. What is evaporation?</strong>
+        <label><input type="radio" name="q1" value="A"> A. Water turning from gas to liquid</label>
+        <label><input type="radio" name="q1" value="B"> B. Liquid water turning into vapor</label>
+        <label><input type="radio" name="q1" value="C"> C. Vapor turning into solid</label>
+        <label><input type="radio" name="q1" value="D"> D. Moisture wicking through material</label>
+      </div>
+      <div class="question"><strong>2. What happens as GPP decreases?</strong>
+        <label><input type="radio" name="q2" value="A"> A. Vapor pressure increases</label>
+        <label><input type="radio" name="q2" value="B"> B. Vapor pressure stays the same</label>
+        <label><input type="radio" name="q2" value="C"> C. Vapor pressure decreases</label>
+        <label><input type="radio" name="q2" value="D"> D. Temperature increases</label>
+      </div>
+      <div class="question"><strong>3. When vapor pressure of wet materials increases and air is drier, what happens?</strong>
+        <label><input type="radio" name="q3" value="A"> A. Water condenses</label>
+        <label><input type="radio" name="q3" value="B"> B. Moisture evaporates into air</label>
+        <label><input type="radio" name="q3" value="C"> C. Nothing changes</label>
+        <label><input type="radio" name="q3" value="D"> D. Dew point increases</label>
+      </div>
+      <div class="question"><strong>4. What is permeance?</strong>
+        <label><input type="radio" name="q4" value="A"> A. The cause of water wicking up a material</label>
+        <label><input type="radio" name="q4" value="B"> B. The indicator of how well vapor can move through a material</label>
+        <label><input type="radio" name="q4" value="C"> C. The rate of evaporation from a non-porous surface</label>
+        <label><input type="radio" name="q4" value="D"> D. The condensation resistance of insulation</label>
+      </div>
+      <div class="question"><strong>5. Why are desiccant dehumidifiers good for Class 4 drying?</strong>
+        <label><input type="radio" name="q5" value="A"> A. They create the lowest vapor pressure of any dehumidifier</label>
+        <label><input type="radio" name="q5" value="B"> B. They use refrigerant to condense water</label>
+        <label><input type="radio" name="q5" value="C"> C. They increase RH to dry better</label>
+        <label><input type="radio" name="q5" value="D"> D. They circulate cooler air to draw moisture</label>
+      </div>
+      <div class="question"><strong>6. What happens to relative humidity when temperature increases (and moisture stays constant)?</strong>
+        <label><input type="radio" name="q6" value="A"> A. Relative humidity increases</label>
+        <label><input type="radio" name="q6" value="B"> B. Relative humidity decreases</label>
+        <label><input type="radio" name="q6" value="C"> C. Dew point increases</label>
+        <label><input type="radio" name="q6" value="D"> D. Water vapor condenses</label>
+      </div>
+      <div class="question"><strong>7. What is one method to help dry tile, marble, or stone surfaces with trapped subfloor moisture?</strong>
+        <label><input type="radio" name="q7" value="A"> A. Remove and replace the tile</label>
+        <label><input type="radio" name="q7" value="B"> B. Set up a containment chamber</label>
+        <label><input type="radio" name="q7" value="C"> C. Add thermal energy or heat</label>
+        <label><input type="radio" name="q7" value="D"> D. Cool the area to pull out vapor</label>
+      </div>
+    </div>
+    <button onclick="checkAnswers()">Check Answers</button>
+    <div class="result" id="result"></div>
+  </div>  <script>
+    const slider = document.getElementById('tempSlider');
+    const tempValue = document.getElementById('tempValue');
+    const rhOutput = document.getElementById('rhOutput');
+
+    const baseTemp = 70;
+    const baseRH = 50;
+
+    slider.addEventListener('input', () => {
+      const temp = parseInt(slider.value);
+      tempValue.textContent = temp;
+      let delta = temp - baseTemp;
+      let rh = baseRH - (delta * 0.7);
+      rh = Math.max(1, Math.min(100, rh.toFixed(1)));
+      rhOutput.textContent = rh;
+    });
+
+    function checkAnswers() {
+      const answers = ['B', 'C', 'B', 'B', 'A', 'B', 'C'];
+      let correct = 0;
+
+      answers.forEach((answer, i) => {
+        const radios = document.querySelectorAll(`input[name=q${i + 1}]`);
+        radios.forEach(radio => {
+          const label = radio.parentElement;
+          label.classList.remove('correct', 'incorrect');
+          if (radio.checked) {
+            if (radio.value === answer) {
+              label.classList.add('correct');
+              correct++;
+            } else {
+              label.classList.add('incorrect');
+            }
+          }
+        });
+      });
+
+      const resultDiv = document.getElementById('result');
+      resultDiv.textContent = `You got ${correct} out of ${answers.length} correct.`;
+      if (correct === answers.length) {
+        resultDiv.textContent += " You have passed the trial!";
+      }
+    }
+  </script></body>
+</html>
