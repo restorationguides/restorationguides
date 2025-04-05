@@ -1,0 +1,105 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Loan Taper Tracker</title>
+  <style>
+    body {
+      font-family: 'Quicksand', sans-serif;
+      background: linear-gradient(to right, #1f4037, #99f2c8);
+      color: #333;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+      font-size: 2rem;
+      color: #1a1a1a;
+    }
+    .week {
+      background: #fff;
+      padding: 15px;
+      margin: 15px 0;
+      border-radius: 10px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+    }
+    label {
+      font-weight: bold;
+    }
+    input[type="number"] {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .progress-bar-container {
+      background: #eee;
+      border-radius: 10px;
+      overflow: hidden;
+      height: 25px;
+      margin-top: 10px;
+    }
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(to right, #ff7e5f, #feb47b);
+      width: 0%;
+      text-align: center;
+      color: #000;
+      line-height: 25px;
+      font-weight: bold;
+      transition: width 0.4s ease-in-out;
+    }
+    .message {
+      text-align: center;
+      font-weight: bold;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Loan Taper Tracker</h1>  <div class="week">
+    <label for="goal">Target Loan-Free Goal ($):</label>
+    <input type="number" id="goal" placeholder="e.g. 200"><label for="thisWeek">Loan Amount This Week ($):</label>
+<input type="number" id="thisWeek" placeholder="e.g. 150" oninput="updateProgress()">
+
+<div class="progress-bar-container">
+  <div class="progress-bar" id="progressBar">0%</div>
+</div>
+<div class="message" id="encouragement"></div>
+
+  </div>  <script>
+    function updateProgress() {
+      const goal = parseFloat(document.getElementById("goal").value);
+      const current = parseFloat(document.getElementById("thisWeek").value);
+      const bar = document.getElementById("progressBar");
+      const msg = document.getElementById("encouragement");
+
+      if (isNaN(goal) || isNaN(current) || goal <= 0) {
+        bar.style.width = "0%";
+        bar.textContent = "0%";
+        msg.textContent = "";
+        return;
+      }
+
+      let progress = 100 - Math.min((current / goal) * 100, 100);
+      progress = Math.round(progress);
+
+      bar.style.width = progress + "%";
+      bar.textContent = progress + "% taper";
+
+      if (progress === 100) {
+        msg.textContent = "You didn't borrow this week. Freedom achieved!";
+      } else if (progress >= 75) {
+        msg.textContent = "Huge win. You're close to loan-free!";
+      } else if (progress >= 50) {
+        msg.textContent = "You're cutting it down fast. Keep going!";
+      } else if (progress >= 25) {
+        msg.textContent = "Solid progress. Stay focused.";
+      } else {
+        msg.textContent = "You started. That matters. Next week, go smaller.";
+      }
+    }
+  </script></body>
+</html>
