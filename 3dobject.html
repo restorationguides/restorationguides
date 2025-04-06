@@ -1,142 +1,135 @@
 <!DOCTYPE html><html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Bill Roadmap</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Weight Tracker Quest</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap');
     body {
-      font-family: 'Quicksand', sans-serif;
-      background: linear-gradient(to right, #2c3e50, #4ca1af);
-      color: #fff;
+      font-family: "Segoe UI", sans-serif;
+      background: #0e1f0f;
+      color: #d2f4c4;
+      text-align: center;
       padding: 20px;
-      max-width: 800px;
-      margin: auto;
     }
-    h1, h2 {
-      text-align: center;
-      color: #f5ffba;
-      text-shadow: 2px 2px #1c1c1c;
+    canvas {
+      background: #1f3520;
+      border: 2px solid #6fe86f;
+      border-radius: 10px;
+      max-width: 100%;
     }
-    h1 { font-size: 2.5rem; margin-bottom: 30px; }
-    .section {
-      margin-bottom: 25px;
-      padding: 20px;
-      border-radius: 15px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-      background: rgba(0,0,0,0.5);
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 10px;
     }
-    .urgent { border-left: 8px solid #ff4f4f; }
-    .upcoming { border-left: 8px solid #ffd24f; }
-    .planned { border-left: 8px solid #4fd4ff; }
-    .paid { border-left: 8px solid #7eff4f; text-decoration: line-through; opacity: 0.6; }
-    .label {
-      font-weight: 600;
-      display: inline-block;
-      min-width: 140px;
-      font-size: 1.1rem;
+    .goal-box {
+      background: #142814;
+      padding: 10px;
+      border: 2px solid #88ff88;
+      margin-top: 15px;
+      border-radius: 10px;
     }
-    .progress-container {
-      background: #333;
-      border-radius: 20px;
-      overflow: hidden;
-      margin: 8px 0 20px;
-      height: 24px;
-      box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+    .fairy {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      background: radial-gradient(circle, #fff6a5, #f6e05e);
+      border-radius: 50%;
+      animation: float 3s ease-in-out infinite;
+      pointer-events: none;
     }
-    .progress-bar {
-      height: 100%;
-      background: linear-gradient(to right, #00ffd0, #4fd4ff);
-      text-align: center;
-      color: #000;
-      line-height: 24px;
-      font-size: 0.9rem;
-      transition: width 0.5s ease-in-out;
+    @keyframes float {
+      0% { transform: translateY(0); opacity: 1; }
+      50% { transform: translateY(-10px); opacity: 0.7; }
+      100% { transform: translateY(0); opacity: 1; }
     }
-    .toggle-buttons {
-      text-align: center;
-      margin: 40px 0 20px;
-    }
-    .toggle-buttons button {
-      background: #f5ffba;
-      color: #333;
-      border: none;
-      padding: 10px 20px;
-      margin: 5px;
-      font-weight: bold;
+    .popup {
+      background: #88ff88;
+      color: #0e1f0f;
+      padding: 8px 12px;
       border-radius: 8px;
-      cursor: pointer;
-      box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      font-weight: bold;
+      box-shadow: 0 0 10px #6fe86f;
+      z-index: 100;
+      display: none;
     }
-    .toggle-buttons button.active {
-      background: #00ffd0;
-    }
-    .month-section { display: none; }
-    .month-section.active { display: block; }
   </style>
 </head>
 <body>
-  <h1>Bill Payment Roadmap</h1>  <div class="toggle-buttons">
-    <button onclick="showMonth('april')" class="active">April 2025</button>
-    <button onclick="showMonth('march')">March 2025</button>
-  </div>  <div id="april" class="month-section active">
-    <div class="section urgent">
-      <div><span class="label">Electric Bill 1:</span> $159.63 (Paying Today)</div>
-      <div class="progress-container"><div class="progress-bar" style="width: 100%">Paid</div></div>
-    </div><div class="section upcoming">
-  <div><span class="label">Water (Late):</span> $157.20</div>
-  <div class="progress-container"><div class="progress-bar" style="width: 10%">10%</div></div>
+  <h1>Weight Loss Tracker</h1>
+  <canvas id="weightChart" width="350" height="200"></canvas>
+  <div class="goal-box">
+    <p><strong>Start Weight:</strong> 216 lbs</p>
+    <p><strong>Goal Weight by May 10:</strong> 202.4 lbs</p>
+    <p><strong>Calories per Day:</strong> 2,000</p>
+  </div>  <div class="popup" id="popup">Fairy Bonus! You hit a milestone!</div>  <script>
+    const canvas = document.getElementById("weightChart");
+    const ctx = canvas.getContext("2d");
 
-  <div><span class="label">Xfinity:</span> $124.98</div>
-  <div class="progress-container"><div class="progress-bar" style="width: 0%">0%</div></div>
-
-  <div><span class="label">Electric Bill 2:</span> $131.33</div>
-  <div class="progress-container"><div class="progress-bar" style="width: 0%">0%</div></div>
-
-  <div><span class="label">Geico (1st payment):</span> $133.00</div>
-  <div class="progress-container"><div class="progress-bar" style="width: 0%">0%</div></div>
-</div>
-
-<div class="section planned">
-  <div><span class="label">Rent:</span> $750.00 (Start Saving Now)</div>
-  <div class="progress-container"><div class="progress-bar" style="width: 5%">5%</div></div>
-
-  <div><span class="label">Dental Loan:</span> $40.00</div>
-  <div class="progress-container"><div class="progress-bar" style="width: 0%">0%</div></div>
-
-  <div><span class="label">ChatGPT:</span> $20.00</div>
-  <div class="progress-container"><div class="progress-bar" style="width: 0%">0%</div></div>
-</div>
-
-<div class="section paid">
-  <div><span class="label">Proton:</span> $11.99</div>
-  <div><span class="label">YouTube:</span> $15.80</div>
-  <div><span class="label">Disney+:</span> $18.06</div>
-  <div><span class="label">Clio:</span> $5.99</div>
-  <div><span class="label">Patreon:</span> $1.00</div>
-  <div><span class="label">Google One:</span> $2.99</div>
-  <div><span class="label">Capital One Payment:</span> $153.00</div>
-</div>
-
-  </div>  <div id="march" class="month-section">
-    <div class="section paid">
-      <div><span class="label">Rent:</span> $750.00</div>
-      <div><span class="label">Electric:</span> $142.88</div>
-      <div><span class="label">Water:</span> $148.23</div>
-      <div><span class="label">Geico:</span> $92.65</div>
-      <div><span class="label">Dental Loan:</span> $40.00</div>
-      <div><span class="label">Proton:</span> $11.99</div>
-      <div><span class="label">YouTube:</span> $15.80</div>
-      <div><span class="label">Disney+:</span> $18.06</div>
-      <div><span class="label">Clio:</span> $5.99</div>
-      <div><span class="label">Google One:</span> $2.99</div>
-      <div><span class="label">Capital One:</span> $150.00</div>
-    </div>
-  </div>  <script>
-    function showMonth(month) {
-      document.querySelectorAll('.month-section').forEach(section => section.classList.remove('active'));
-      document.querySelectorAll('.toggle-buttons button').forEach(btn => btn.classList.remove('active'));
-      document.getElementById(month).classList.add('active');
-      event.target.classList.add('active');
+    const startWeight = 216;
+    const endWeight = 202.4;
+    const days = 34;
+    const data = [];
+    for (let i = 0; i < days; i++) {
+      let weight;
+      if (i < 7) {
+        weight = startWeight - (4 / 7) * i;
+      } else {
+        const fatLoss = (9.6 / (days - 7)) * (i - 6);
+        weight = startWeight - 4 - fatLoss;
+      }
+      data.push(weight);
     }
+
+    const labels = [...Array(days)].map((_, i) => `Day ${i + 1}`);
+    const chartHeight = canvas.height;
+    const chartWidth = canvas.width;
+    const padding = 20;
+    const maxWeight = startWeight;
+    const minWeight = endWeight;
+
+    ctx.beginPath();
+    ctx.moveTo(padding, chartHeight - padding);
+
+    data.forEach((weight, i) => {
+      const x = padding + (i / (days - 1)) * (chartWidth - 2 * padding);
+      const y = padding + ((maxWeight - weight) / (maxWeight - minWeight)) * (chartHeight - 2 * padding);
+      ctx.lineTo(x, y);
+    });
+
+    ctx.strokeStyle = "#88ff88";
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    ctx.fillStyle = "#fff";
+    ctx.font = "12px sans-serif";
+    ctx.fillText("216 lbs", 10, chartHeight - 5);
+    ctx.fillText("202.4 lbs", 10, 15);
+
+    // Fairy achievement effect
+    function summonFairy(x, y) {
+      const fairy = document.createElement("div");
+      fairy.classList.add("fairy");
+      fairy.style.left = x + "px";
+      fairy.style.top = y + "px";
+      document.body.appendChild(fairy);
+      setTimeout(() => fairy.remove(), 3000);
+    }
+
+    function showPopup() {
+      const popup = document.getElementById("popup");
+      popup.style.display = "block";
+      setTimeout(() => {
+        popup.style.display = "none";
+      }, 3000);
+    }
+
+    // Simulate reaching a goal milestone
+    setTimeout(() => {
+      summonFairy(150, 150);
+      showPopup();
+    }, 1000);
   </script></body>
 </html>
