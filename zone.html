@@ -1,0 +1,78 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wildlife Loss Map</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background: #f9f9f9;
+    }
+    .container {
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+    .map {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 4px;
+      background: #ddd;
+      padding: 4px;
+    }
+    .zone {
+      background: #fff;
+      border: 1px solid #aaa;
+      text-align: center;
+      padding: 10px 4px;
+      font-size: 0.8rem;
+      position: relative;
+    }
+    .zone span {
+      display: block;
+      font-weight: bold;
+    }
+    .equipment {
+      position: absolute;
+      bottom: 4px;
+      left: 4px;
+      font-size: 0.7rem;
+    }
+    .legend {
+      margin-top: 1rem;
+      padding: 0.5rem;
+      background: #fff;
+      border: 1px solid #aaa;
+      font-size: 0.8rem;
+    }
+    .legend div {
+      margin: 0.2rem 0;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>Wildlife Loss Map</h2>
+  <div class="map">
+    <div class="zone"><span>Breaker</span></div>
+    <div class="zone"><span>Display</span><div class="equipment">Δ ★</div></div>
+    <div class="zone"><span>Main Area</span><div class="equipment">Δ Δ ★</div></div>
+    <div class="zone"><span>Exhibit</span><div class="equipment">Δ</div></div>
+    <div class="zone"><span>Exhibit</span><div class="equipment">Δ</div></div>
+    <div class="zone"><span>Merch</span><div class="equipment">★ Δ</div></div>
+    <div class="zone"><span>Merch Closet</span><div class="equipment">★</div></div>
+    <div class="zone"><span>Front Desk</span></div>
+    <div class="zone"><span>Front Entry</span></div>
+    <div class="zone"><span>AC Closet</span><div class="equipment">★ O</div></div>
+    <div class="zone"><span>Security Office</span></div>
+  </div>  <div class="legend">
+    <strong>Legend:</strong>
+    <div>Δ – Air Mover</div>
+    <div>★ – Dehumidifier (Dehu)</div>
+    <div>O – Air Scrubber</div>
+  </div>
+</div>
+</body>
+</html>
