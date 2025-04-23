@@ -19,6 +19,7 @@
       background: #ccc;
       max-width: 600px;
       margin: 0 auto;
+      position: relative;
     }
     .zone {
       background: #fff;
@@ -30,36 +31,30 @@
       font-size: 0.75rem;
       position: relative;
       cursor: pointer;
+      flex-direction: column;
     }
     .zone.affected {
       background: #ffe5e5;
     }
     .equipment {
-      position: absolute;
-      bottom: 2px;
-      right: 4px;
       font-size: 0.7rem;
       color: #444;
     }
-    .legend {
+    .controls {
+      display: flex;
+      gap: 4px;
+      font-size: 0.6rem;
+      margin-top: 4px;
+    }
+    .controls button {
+      padding: 2px 5px;
+    }
+    .legend, .log-display {
       background: #fff;
       border: 1px solid #999;
-      margin-top: 1rem;
-      padding: 0.5rem;
-      max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
-      font-size: 0.8rem;
-    }
-    .legend div {
-      margin: 0.2rem 0;
-    }
-    .log-display {
-      max-width: 600px;
       margin: 1rem auto;
       padding: 0.5rem;
-      background: #fff;
-      border: 1px solid #999;
+      max-width: 600px;
       font-size: 0.8rem;
     }
     #downloadBtn {
@@ -78,21 +73,9 @@
 <body>
 <div class="container">
   <h2 style="text-align:center;">Wildlife Loss Map</h2>
-  <div class="map">
-    <div class="zone" onclick="logNote('Breaker')" style="grid-column: 1 / 2; grid-row: 1 / 2;">Breaker</div>
-    <div class="zone affected" onclick="logNote('Display')" style="grid-column: 1 / 2; grid-row: 2 / 4;">Display<br><div class="equipment">Δ ★</div></div>
-    <div class="zone affected" onclick="logNote('Main Area')" style="grid-column: 3 / 4; grid-row: 2 / 3;">Main Area<br><div class="equipment">★ Δ</div></div>
-    <div class="zone affected" onclick="logNote('Exhibit 1')" style="grid-column: 4 / 5; grid-row: 4 / 5;">Exhibit<br><div class="equipment">Δ</div></div>
-    <div class="zone" onclick="logNote('Exhibit 2')" style="grid-column: 5 / 6; grid-row: 2 / 3;">Exhibit</div>
-    <div class="zone" onclick="logNote('Exhibit 3')" style="grid-column: 3 / 4; grid-row: 2 / 3;">Exhibit</div>
-    <div class="zone affected" onclick="logNote('A/C Closet')" style="grid-column: 1 / 2; grid-row: 4 / 5;">A/C Closet<br><div class="equipment">★ O</div></div>
-    <div class="zone" onclick="logNote('Front Desk')" style="grid-column: 4 / 5; grid-row: 4 / 5;">Front Desk</div>
-    <div class="zone" onclick="logNote('Front Entry')" style="grid-column: 5 / 7; grid-row: 4 / 5;">Front Entry</div>
-    <div class="zone" onclick="logNote('Security Office')" style="grid-column: 4 / 5; grid-row: 5 / 6;">Security Office</div>
-    <div class="zone affected" onclick="logNote('Merch')" style="grid-column: 2 / 4; grid-row: 5 / 6;">Merch<br><div class="equipment">★ Δ</div></div>
-    <div class="zone" onclick="logNote('Merch Closet')" style="grid-column: 1 / 2; grid-row: 5 / 6;">Merch Closet<br><div class="equipment">★</div></div>
-  </div>
-  <div class="legend">
+  <div class="map" id="map">
+    <!-- Zones will be injected by JS -->
+  </div>  <div class="legend">
     <strong>Legend:</strong>
     <div>Δ – Air Mover</div>
     <div>★ – Dehumidifier (Dehu)</div>
@@ -103,16 +86,34 @@
     <div>Merch: 816 sqft</div>
     <div>Merch Closet: 267 sqft</div>
     <div>A/C Closet: 120 sqft</div>
-  </div>
-  <div class="log-display" id="log"></div>
+  </div>  <div class="log-display" id="log"></div>
   <button id="downloadBtn" onclick="downloadHTML()">Download Offline Copy</button>
 </div>
 <script>
-  function logNote(area) {
-    const logBox = document.getElementById('log');
-    const timestamp = new Date().toLocaleString();
-    logBox.innerHTML += `<div><strong>${timestamp}:</strong> Clicked on <em>${area}</em>.</div>`;
-  }function downloadHTML() { const blob = new Blob([document.documentElement.outerHTML], {type: 'text/html'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'wildlife_loss_map.html'; a.click(); URL.revokeObjectURL(url); } </script>
+const zones = [
+  { id: 'Breaker', col: 1, row: 1 },
+  { id: 'Display', col: 1, row: 2, height: 2, affected: true, equip: 'Δ ★' },
+  { id: 'Main Area', col: 3, row: 2, affected: true, equip: '★ Δ' },
+  { id: 'Exhibit 1', col: 4, row: 4, affected: true, equip: 'Δ' },
+  { id: 'Exhibit 2', col: 5, row: 2 },
+  { id: 'Exhibit 3', col: 3, row: 2 },
+  { id: 'A/C Closet', col: 1, row: 4, affected: true, equip: '★ O' },
+  { id: 'Front Desk', col: 4, row: 4 },
+  { id: 'Front Entry', col: 5, row: 4, width: 2 },
+  { id: 'Security Office', col: 4, row: 5 },
+  { id: 'Merch', col: 2, row: 5, width: 2, affected: true, equip: '★ Δ' },
+  { id: 'Merch Closet', col: 1, row: 5, equip: '★' },
+];const map = document.getElementById('map');
+
+function renderZones() { map.innerHTML = ''; zones.forEach((zone, index) => { const div = document.createElement('div'); div.className = 'zone' + (zone.affected ? ' affected' : ''); div.style.gridColumn = ${zone.col} / ${zone.col + (zone.width || 1)}; div.style.gridRow = ${zone.row} / ${zone.row + (zone.height || 1)}; div.innerHTML = <div>${zone.id}</div> ${zone.equip ?<div class="equipment">${zone.equip}</div>: ''} <div class="controls"> <button onclick="move(${index}, 'up')">↑</button> <button onclick="move(${index}, 'down')">↓</button> <button onclick="move(${index}, 'left')">←</button> <button onclick="move(${index}, 'right')">→</button> </div>; map.appendChild(div); }); }
+
+function move(index, direction) { const z = zones[index]; if (direction === 'up') z.row = Math.max(1, z.row - 1); if (direction === 'down') z.row++; if (direction === 'left') z.col = Math.max(1, z.col - 1); if (direction === 'right') z.col++; renderZones(); logNote(Moved ${z.id} ${direction}); }
+
+function logNote(note) { const logBox = document.getElementById('log'); const timestamp = new Date().toLocaleString(); logBox.innerHTML += <div><strong>${timestamp}:</strong> ${note}</div>; }
+
+function downloadHTML() { const html = document.documentElement.outerHTML; const blob = new Blob([html], {type: 'text/html'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'wildlife_loss_map.html'; a.click(); URL.revokeObjectURL(url); }
+
+renderZones(); </script>
 
 </body>
 </html>
