@@ -73,9 +73,7 @@
 <body>
 <div class="container">
   <h2 style="text-align:center;">Wildlife Loss Map</h2>
-  <div class="map" id="map">
-    <!-- Zones will be injected by JS -->
-  </div>  <div class="legend">
+  <div class="map" id="map"></div>  <div class="legend">
     <strong>Legend:</strong>
     <div>Δ – Air Mover</div>
     <div>★ – Dehumidifier (Dehu)</div>
@@ -90,30 +88,31 @@
   <button id="downloadBtn" onclick="downloadHTML()">Download Offline Copy</button>
 </div>
 <script>
-const zones = [
-  { id: 'Breaker', col: 1, row: 1 },
-  { id: 'Display', col: 1, row: 2, height: 2, affected: true, equip: 'Δ ★' },
-  { id: 'Main Area', col: 3, row: 2, affected: true, equip: '★ Δ' },
-  { id: 'Exhibit 1', col: 4, row: 4, affected: true, equip: 'Δ' },
-  { id: 'Exhibit 2', col: 5, row: 2 },
-  { id: 'Exhibit 3', col: 3, row: 2 },
-  { id: 'A/C Closet', col: 1, row: 4, affected: true, equip: '★ O' },
-  { id: 'Front Desk', col: 4, row: 4 },
-  { id: 'Front Entry', col: 5, row: 4, width: 2 },
-  { id: 'Security Office', col: 4, row: 5 },
-  { id: 'Merch', col: 2, row: 5, width: 2, affected: true, equip: '★ Δ' },
-  { id: 'Merch Closet', col: 1, row: 5, equip: '★' },
-];const map = document.getElementById('map');
+window.onload = function () {
+  const zones = [
+    { id: 'Breaker', col: 1, row: 1 },
+    { id: 'Display', col: 1, row: 2, height: 2, affected: true, equip: 'Δ ★' },
+    { id: 'Main Area', col: 3, row: 2, affected: true, equip: '★ Δ' },
+    { id: 'Exhibit 1', col: 4, row: 4, affected: true, equip: 'Δ' },
+    { id: 'Exhibit 2', col: 5, row: 2 },
+    { id: 'Exhibit 3', col: 3, row: 2 },
+    { id: 'A/C Closet', col: 1, row: 4, affected: true, equip: '★ O' },
+    { id: 'Front Desk', col: 4, row: 4 },
+    { id: 'Front Entry', col: 5, row: 4, width: 2 },
+    { id: 'Security Office', col: 4, row: 5 },
+    { id: 'Merch', col: 2, row: 5, width: 2, affected: true, equip: '★ Δ' },
+    { id: 'Merch Closet', col: 1, row: 5, equip: '★' },
+  ];const map = document.getElementById('map');
 
 function renderZones() { map.innerHTML = ''; zones.forEach((zone, index) => { const div = document.createElement('div'); div.className = 'zone' + (zone.affected ? ' affected' : ''); div.style.gridColumn = ${zone.col} / ${zone.col + (zone.width || 1)}; div.style.gridRow = ${zone.row} / ${zone.row + (zone.height || 1)}; div.innerHTML = <div>${zone.id}</div> ${zone.equip ?<div class="equipment">${zone.equip}</div>: ''} <div class="controls"> <button onclick="move(${index}, 'up')">↑</button> <button onclick="move(${index}, 'down')">↓</button> <button onclick="move(${index}, 'left')">←</button> <button onclick="move(${index}, 'right')">→</button> </div>; map.appendChild(div); }); }
 
-function move(index, direction) { const z = zones[index]; if (direction === 'up') z.row = Math.max(1, z.row - 1); if (direction === 'down') z.row++; if (direction === 'left') z.col = Math.max(1, z.col - 1); if (direction === 'right') z.col++; renderZones(); logNote(Moved ${z.id} ${direction}); }
+window.move = function(index, direction) { const z = zones[index]; if (direction === 'up') z.row = Math.max(1, z.row - 1); if (direction === 'down') z.row++; if (direction === 'left') z.col = Math.max(1, z.col - 1); if (direction === 'right') z.col++; renderZones(); logNote(Moved ${z.id} ${direction}); }
 
 function logNote(note) { const logBox = document.getElementById('log'); const timestamp = new Date().toLocaleString(); logBox.innerHTML += <div><strong>${timestamp}:</strong> ${note}</div>; }
 
-function downloadHTML() { const html = document.documentElement.outerHTML; const blob = new Blob([html], {type: 'text/html'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'wildlife_loss_map.html'; a.click(); URL.revokeObjectURL(url); }
+window.downloadHTML = function () { const html = document.documentElement.outerHTML; const blob = new Blob([html], {type: 'text/html'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'wildlife_loss_map.html'; a.click(); URL.revokeObjectURL(url); }
 
-renderZones(); </script>
+renderZones(); }; </script>
 
 </body>
 </html>
