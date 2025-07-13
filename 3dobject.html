@@ -1,135 +1,120 @@
 <!DOCTYPE html><html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Weight Tracker Quest</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Any2Any File Converter</title>
   <style>
     body {
-      font-family: "Segoe UI", sans-serif;
-      background: #0e1f0f;
-      color: #d2f4c4;
-      text-align: center;
-      padding: 20px;
+      font-family: sans-serif;
+      background: #1e1e1e;
+      color: white;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
-    canvas {
-      background: #1f3520;
-      border: 2px solid #6fe86f;
+    .container {
+      background: #2a2a2a;
+      padding: 2rem;
       border-radius: 10px;
-      max-width: 100%;
+      width: 100%;
+      max-width: 500px;
     }
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 10px;
+    input, select, button {
+      width: 100%;
+      margin-top: 1rem;
+      padding: 0.5rem;
+      border-radius: 5px;
+      border: none;
     }
-    .goal-box {
-      background: #142814;
-      padding: 10px;
-      border: 2px solid #88ff88;
-      margin-top: 15px;
-      border-radius: 10px;
-    }
-    .fairy {
-      position: absolute;
-      width: 30px;
-      height: 30px;
-      background: radial-gradient(circle, #fff6a5, #f6e05e);
-      border-radius: 50%;
-      animation: float 3s ease-in-out infinite;
-      pointer-events: none;
-    }
-    @keyframes float {
-      0% { transform: translateY(0); opacity: 1; }
-      50% { transform: translateY(-10px); opacity: 0.7; }
-      100% { transform: translateY(0); opacity: 1; }
-    }
-    .popup {
-      background: #88ff88;
-      color: #0e1f0f;
-      padding: 8px 12px;
-      border-radius: 8px;
-      position: fixed;
-      top: 20px;
-      right: 20px;
+    button {
+      background: #00c853;
+      color: white;
       font-weight: bold;
-      box-shadow: 0 0 10px #6fe86f;
-      z-index: 100;
+      cursor: pointer;
+    }
+    #output-link {
+      margin-top: 1rem;
       display: none;
+      text-align: center;
     }
   </style>
 </head>
 <body>
-  <h1>Weight Loss Tracker</h1>
-  <canvas id="weightChart" width="350" height="200"></canvas>
-  <div class="goal-box">
-    <p><strong>Start Weight:</strong> 216 lbs</p>
-    <p><strong>Goal Weight by May 10:</strong> 202.4 lbs</p>
-    <p><strong>Calories per Day:</strong> 2,000</p>
-  </div>  <div class="popup" id="popup">Fairy Bonus! You hit a milestone!</div>  <script>
-    const canvas = document.getElementById("weightChart");
-    const ctx = canvas.getContext("2d");
+  <h1>Any2Any Converter</h1>
+  <div class="container">
+    <input type="file" id="file-input">
+    <select id="format-select">
+      <option value="">Select output format</option>
+      <option value="png">Image to PNG</option>
+      <option value="jpeg">Image to JPEG</option>
+      <option value="webp">Image to WebP</option>
+      <option value="txt">Text to TXT</option>
+      <option value="pdf">Text to PDF</option>
+    </select>
+    <button id="convert-btn">Convert</button>
+    <div id="output-link">
+      <a id="download-link" href="#" download>Download Converted File</a>
+    </div>
+  </div>  <script>
+    document.getElementById('convert-btn').addEventListener('click', async () => {
+      const fileInput = document.getElementById('file-input');
+      const format = document.getElementById('format-select').value;
+      const outputLink = document.getElementById('output-link');
+      const downloadLink = document.getElementById('download-link');
 
-    const startWeight = 216;
-    const endWeight = 202.4;
-    const days = 34;
-    const data = [];
-    for (let i = 0; i < days; i++) {
-      let weight;
-      if (i < 7) {
-        weight = startWeight - (4 / 7) * i;
-      } else {
-        const fatLoss = (9.6 / (days - 7)) * (i - 6);
-        weight = startWeight - 4 - fatLoss;
+      if (!fileInput.files.length || !format) {
+        alert('Please select a file and output format.');
+        return;
       }
-      data.push(weight);
-    }
 
-    const labels = [...Array(days)].map((_, i) => `Day ${i + 1}`);
-    const chartHeight = canvas.height;
-    const chartWidth = canvas.width;
-    const padding = 20;
-    const maxWeight = startWeight;
-    const minWeight = endWeight;
+      const file = fileInput.files[0];
+      const reader = new FileReader();
 
-    ctx.beginPath();
-    ctx.moveTo(padding, chartHeight - padding);
+      reader.onload = function (e) {
+        let blob;
+        let mime;
+        let extension = format;
 
-    data.forEach((weight, i) => {
-      const x = padding + (i / (days - 1)) * (chartWidth - 2 * padding);
-      const y = padding + ((maxWeight - weight) / (maxWeight - minWeight)) * (chartHeight - 2 * padding);
-      ctx.lineTo(x, y);
+        if (format === 'txt') {
+          const text = e.target.result;
+          blob = new Blob([text], { type: 'text/plain' });
+          mime = 'text/plain';
+        } else if (format === 'pdf') {
+          const text = e.target.result;
+          const doc = new jsPDF();
+          doc.text(text, 10, 10);
+          blob = doc.output('blob');
+          mime = 'application/pdf';
+        } else {
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0);
+            canvas.toBlob((resultBlob) => {
+              downloadLink.href = URL.createObjectURL(resultBlob);
+              downloadLink.download = `converted.${extension}`;
+              outputLink.style.display = 'block';
+            }, `image/${format}`);
+          };
+          img.src = e.target.result;
+          return; // Exit early since we handle image async
+        }
+
+        // For text/pdf
+        downloadLink.href = URL.createObjectURL(blob);
+        downloadLink.download = `converted.${extension}`;
+        outputLink.style.display = 'block';
+      };
+
+      if (file.type.startsWith('image/')) {
+        reader.readAsDataURL(file);
+      } else {
+        reader.readAsText(file);
+      }
     });
-
-    ctx.strokeStyle = "#88ff88";
-    ctx.lineWidth = 3;
-    ctx.stroke();
-
-    ctx.fillStyle = "#fff";
-    ctx.font = "12px sans-serif";
-    ctx.fillText("216 lbs", 10, chartHeight - 5);
-    ctx.fillText("202.4 lbs", 10, 15);
-
-    // Fairy achievement effect
-    function summonFairy(x, y) {
-      const fairy = document.createElement("div");
-      fairy.classList.add("fairy");
-      fairy.style.left = x + "px";
-      fairy.style.top = y + "px";
-      document.body.appendChild(fairy);
-      setTimeout(() => fairy.remove(), 3000);
-    }
-
-    function showPopup() {
-      const popup = document.getElementById("popup");
-      popup.style.display = "block";
-      setTimeout(() => {
-        popup.style.display = "none";
-      }, 3000);
-    }
-
-    // Simulate reaching a goal milestone
-    setTimeout(() => {
-      summonFairy(150, 150);
-      showPopup();
-    }, 1000);
-  </script></body>
+  </script>  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script></body>
 </html>
