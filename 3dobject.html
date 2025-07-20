@@ -1,120 +1,171 @@
 <!DOCTYPE html><html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Any2Any File Converter</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Xactimate Mockup UI</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
     body {
-      font-family: sans-serif;
-      background: #1e1e1e;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f4f4f4;
+      color: #333;
+    }
+    header {
+      background: #34495e;
       color: white;
-      padding: 2rem;
+      padding: 1rem;
       display: flex;
-      flex-direction: column;
+      flex-wrap: wrap;
+      justify-content: space-between;
       align-items: center;
     }
-    .container {
-      background: #2a2a2a;
-      padding: 2rem;
-      border-radius: 10px;
+    header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    nav button {
+      padding: 0.5rem 1rem;
+      background: #2ecc71;
+      border: none;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    main {
+      padding: 1rem;
+    }
+    section {
+      display: none;
+    }
+    section.active {
+      display: block;
+    }
+    form input, form button {
+      margin: 0.5rem 0.5rem 0.5rem 0;
+      padding: 0.5rem;
+      width: 100%;
+      max-width: 300px;
+      display: block;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    table, th, td {
+      border: 1px solid #ccc;
+    }
+    th, td {
+      padding: 0.5rem;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+    #sketchCanvas {
+      border: 1px solid #ccc;
+      background: white;
+      margin-top: 1rem;
       width: 100%;
       max-width: 500px;
-    }
-    input, select, button {
-      width: 100%;
-      margin-top: 1rem;
-      padding: 0.5rem;
-      border-radius: 5px;
-      border: none;
+      height: auto;
     }
     button {
-      background: #00c853;
-      color: white;
-      font-weight: bold;
       cursor: pointer;
     }
-    #output-link {
-      margin-top: 1rem;
-      display: none;
-      text-align: center;
+    @media (min-width: 600px) {
+      form input, form button {
+        display: inline-block;
+        width: auto;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>Any2Any Converter</h1>
-  <div class="container">
-    <input type="file" id="file-input">
-    <select id="format-select">
-      <option value="">Select output format</option>
-      <option value="png">Image to PNG</option>
-      <option value="jpeg">Image to JPEG</option>
-      <option value="webp">Image to WebP</option>
-      <option value="txt">Text to TXT</option>
-      <option value="pdf">Text to PDF</option>
-    </select>
-    <button id="convert-btn">Convert</button>
-    <div id="output-link">
-      <a id="download-link" href="#" download>Download Converted File</a>
-    </div>
-  </div>  <script>
-    document.getElementById('convert-btn').addEventListener('click', async () => {
-      const fileInput = document.getElementById('file-input');
-      const format = document.getElementById('format-select').value;
-      const outputLink = document.getElementById('output-link');
-      const downloadLink = document.getElementById('download-link');
+  <header>
+    <h1>🛠️ Xactimate Mockup</h1>
+    <nav>
+      <button onclick="showSection('dashboard')">Dashboard</button>
+      <button onclick="showSection('sketch')">Sketch</button>
+      <button onclick="showSection('estimate')">Estimate</button>
+      <button onclick="showSection('report')">Report</button>
+    </nav>
+  </header>  <main>
+    <section id="dashboard" class="active">
+      <h2>Project Dashboard</h2>
+      <form id="project-form">
+        <input type="text" placeholder="Project Name" required />
+        <input type="date" />
+        <button type="submit">Create Project</button>
+      </form>
+      <ul id="project-list"></ul>
+    </section><section id="sketch">
+  <h2>Sketch Room Layout</h2>
+  <canvas id="sketchCanvas" width="500" height="400"></canvas>
+</section>
 
-      if (!fileInput.files.length || !format) {
-        alert('Please select a file and output format.');
-        return;
-      }
+<section id="estimate">
+  <h2>Estimate Builder</h2>
+  <form id="estimate-form">
+    <input type="text" placeholder="Line Item" required />
+    <input type="number" placeholder="Quantity" required />
+    <input type="number" placeholder="Unit Price ($)" required />
+    <button type="submit">Add</button>
+  </form>
+  <table id="estimate-table">
+    <thead>
+      <tr><th>Item</th><th>Qty</th><th>Price</th><th>Total</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  <h3 id="grand-total">Grand Total: $0.00</h3>
+</section>
 
-      const file = fileInput.files[0];
-      const reader = new FileReader();
+<section id="report">
+  <h2>Project Report</h2>
+  <div id="report-output">Generated report will appear here.</div>
+  <button onclick="generateReport()">Generate Report</button>
+</section>
 
-      reader.onload = function (e) {
-        let blob;
-        let mime;
-        let extension = format;
+  <script>
+    function showSection(id) {
+      document.querySelectorAll('main section').forEach(section => {
+        section.classList.remove('active');
+      });
+      document.getElementById(id).classList.add('active');
+    }
 
-        if (format === 'txt') {
-          const text = e.target.result;
-          blob = new Blob([text], { type: 'text/plain' });
-          mime = 'text/plain';
-        } else if (format === 'pdf') {
-          const text = e.target.result;
-          const doc = new jsPDF();
-          doc.text(text, 10, 10);
-          blob = doc.output('blob');
-          mime = 'application/pdf';
-        } else {
-          const img = new Image();
-          img.onload = () => {
-            const canvas = document.createElement('canvas');
-            canvas.width = img.width;
-            canvas.height = img.height;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0);
-            canvas.toBlob((resultBlob) => {
-              downloadLink.href = URL.createObjectURL(resultBlob);
-              downloadLink.download = `converted.${extension}`;
-              outputLink.style.display = 'block';
-            }, `image/${format}`);
-          };
-          img.src = e.target.result;
-          return; // Exit early since we handle image async
-        }
+    const estimateForm = document.getElementById('estimate-form');
+    const estimateTable = document.querySelector('#estimate-table tbody');
+    const grandTotalEl = document.getElementById('grand-total');
 
-        // For text/pdf
-        downloadLink.href = URL.createObjectURL(blob);
-        downloadLink.download = `converted.${extension}`;
-        outputLink.style.display = 'block';
-      };
+    let grandTotal = 0;
 
-      if (file.type.startsWith('image/')) {
-        reader.readAsDataURL(file);
-      } else {
-        reader.readAsText(file);
-      }
+    estimateForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const [item, qty, price] = [...estimateForm.querySelectorAll('input')].map(i => i.value);
+      const total = parseFloat(qty) * parseFloat(price);
+      grandTotal += total;
+
+      const row = document.createElement('tr');
+      row.innerHTML = `<td>${item}</td><td>${qty}</td><td>$${parseFloat(price).toFixed(2)}</td><td>$${total.toFixed(2)}</td>`;
+      estimateTable.appendChild(row);
+
+      grandTotalEl.textContent = `Grand Total: $${grandTotal.toFixed(2)}`;
+      estimateForm.reset();
     });
-  </script>  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script></body>
+
+    function generateReport() {
+      const report = Array.from(estimateTable.children).map(row => row.textContent.trim()).join('\n');
+      document.getElementById('report-output').textContent = `Estimate Report:\n${report}\n\n${grandTotalEl.textContent}`;
+    }
+  </script></body>
 </html>
