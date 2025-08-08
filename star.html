@@ -1,0 +1,622 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Star Catcher ⭐</title>
+  <style>
+    :root{
+      --bg: #0b1220;
+      --fg: #e9f2ff;
+      --accent: #7dd3fc;
+      --accent-2: #a78bfa;
+      --gold: #ffd166;
+      --danger: #ff7b7b;
+      --good: #4ade80;
+    }
+    html, body { height: 100%; margin: 0; }
+    body { background: radial-gradient(60% 80% at 50% 20%, #0f1a33, var(--bg)); color: var(--fg); font-family: system-ui, -apple-system, Segoe UI, Roboto, Emoji; }
+    #hud { position: fixed; inset: 0 auto auto 0; width: 100%; display: grid; grid-template-columns: 1fr auto auto auto; gap: .5rem; align-items: center; padding: .6rem .75rem; z-index: 5; pointer-events: none; }
+    #hud > * { pointer-events: auto; }
+    .pill { display:inline-flex; align-items:center; gap:.4rem; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12); padding:.45rem .7rem; border-radius: 999px; font-weight: 700; }
+    .btn { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.15); padding:.5rem .7rem; border-radius: .9rem; color: var(--fg); font-weight:700; box-shadow: 0 4px 12px rgba(0,0,0,.25); touch-action: manipulation; user-select: none; }
+    .btn:active { transform: translateY(1px); }
+    .btn.small{ padding:.35rem .5rem; font-size:.95rem }
+    .icon{ font-size: 1.1rem; }#game { position: fixed; inset: 0; width: 100vw; height: 100vh; touch-action: none; }
+
+.overlay { position: fixed; inset: 0; display: grid; place-items: center; background: linear-gradient(180deg, rgba(5,10,20,.92), rgba(5,8,16,.86)); z-index: 10; }
+.card { width: min(92vw, 520px); background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.14); border-radius: 22px; padding: 1.1rem; box-shadow: 0 20px 60px rgba(0,0,0,.45); }
+.title { font-size: clamp(1.6rem, 4.5vw, 2.2rem); font-weight: 900; letter-spacing: .5px; }
+.subtitle { opacity: .9; margin-top: .2rem; }
+.center { text-align: center; }
+.row { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:.5rem }
+.spacer { height: .75rem; }
+
+#toasts { position: fixed; inset: auto 0 1rem 0; display: grid; gap: .5rem; place-items: center; z-index: 30; }
+.toast { background: rgba(0,0,0,.55); border: 1px solid rgba(255,255,255,.18); padding: .55rem .8rem; border-radius: 14px; font-weight: 800; box-shadow: 0 6px 24px rgba(0,0,0,.35); }
+
+.modal { position: fixed; inset: 0; display:none; align-items:center; justify-content:center; background: rgba(0,0,0,.35); z-index: 20; }
+.modal.show { display:flex; }
+
+.shop-grid{ display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:.75rem; }
+.shop-item{ background: rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.15); border-radius:16px; padding:.75rem; display:grid; gap:.35rem; }
+.price{ font-weight:900; color:var(--gold) }
+.equip{ background: rgba(255,255,255,.09); border:1px solid rgba(255,255,255,.2); padding:.35rem .6rem; border-radius:10px; font-weight:800; text-align:center; }
+
+.badge { display:inline-flex; align-items:center; gap:.35rem; padding:.3rem .5rem; border-radius:999px; background: rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.15); font-size:.9rem }
+.heart { color: var(--danger); }
+.coin { color: var(--gold); }
+
+.hint { font-size: .95rem; opacity: .9; }
+
+@media (min-width:768px){
+  #hud { grid-template-columns: 1fr auto auto auto auto; }
+}
+
+  </style>
+</head>
+<body>
+  <canvas id="game"></canvas>  <div id="hud">
+    <div class="pill" id="scorePill">⭐ <span id="score">0</span></div>
+    <div class="pill" id="coinsPill">🪙 <span id="coins">0</span></div>
+    <div class="pill" id="livesPill">❤️ <span id="lives">3</span></div>
+    <button class="btn small" id="btnShop" aria-label="Open shop">🏪</button>
+    <button class="btn small" id="btnPause" aria-label="Pause">⏸️</button>
+    <button class="btn small" id="btnMute" aria-label="Mute">🔊</button>
+  </div>  <div class="overlay" id="startOverlay" role="dialog" aria-modal="true">
+    <div class="card center">
+      <div class="title">Star Catcher ⭐</div>
+      <div class="subtitle">Drag the basket to catch falling stars. Avoid spiky meteors!<br/>Collect coins to unlock cute skins.</div>
+      <div class="spacer"></div>
+      <div class="row">
+        <button class="btn" id="btnPlay">▶️ Play</button>
+        <button class="btn" id="btnHow">❓ How to Play</button>
+        <button class="btn" id="btnOpenShop">🏪 Shop</button>
+      </div>
+      <div class="spacer"></div>
+      <div class="badge">🎁 Daily Bonus: <span id="dailyBonus">0</span> coins</div>
+      <div class="spacer"></div>
+      <div class="hint">Tip: Long-press to pause. Double-tap to toggle slow-mo (if unlocked). 
+      </div>
+    </div>
+  </div>  <div id="toasts"></div>  <div class="modal" id="modalHow">
+    <div class="card">
+      <div class="title">How to Play</div>
+      <ul>
+        <li>Move your finger (or mouse) left/right; the basket follows your touch.</li>
+        <li>Catch ⭐ stars (+1 point). Catching streaks boost your combo!</li>
+        <li>Avoid ☄️ spikes (lose 1 life). Hearts = chances.</li>
+        <li>🪙 Coins sometimes drop—use them to buy skins and power-ups.</li>
+        <li>Power-ups: 🛡️ Shield, 🧲 Magnet, 🐢 Slow-mo.</li>
+        <li>Reach milestones to unlock achievements and get bonus coins.</li>
+      </ul>
+      <div class="row"><button class="btn" id="closeHow">Got it!</button></div>
+    </div>
+  </div>  <div class="modal" id="modalShop">
+    <div class="card">
+      <div class="title">Shop 🏪</div>
+      <div style="margin:.25rem 0 .6rem 0">Coins: <span class="price">🪙 <span id="shopCoins">0</span></span></div>
+      <div class="shop-grid" id="shopGrid"></div>
+      <div class="spacer"></div>
+      <div class="row"><button class="btn" id="closeShop">Close</button></div>
+    </div>
+  </div>  <script>
+  (()=>{
+    // --- Utility helpers ---
+    const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
+    const lerp=(a,b,t)=>a+(b-a)*t;
+    const rand=(min,max)=>Math.random()*(max-min)+min;
+    const chance=p=>Math.random()<p;
+
+    // --- Persistent data ---
+    const SAVE_KEY = 'starcatcher_save_v1';
+    const loadSave = () => {
+      try { return JSON.parse(localStorage.getItem(SAVE_KEY)) || {}; } catch { return {}; }
+    };
+    const saveData = data => localStorage.setItem(SAVE_KEY, JSON.stringify({...loadSave(), ...data}));
+
+    // --- Simple sound (WebAudio) ---
+    const AudioSys = (()=>{
+      const ctx = new (window.AudioContext||window.webkitAudioContext)();
+      let muted = !!loadSave().muted;
+      const play = (type='ping', vol=0.3)=>{
+        if(muted) return;
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.connect(g).connect(ctx.destination);
+        o.type = type==='coin'?'triangle': type==='hit'?'square':'sine';
+        const now = ctx.currentTime;
+        g.gain.setValueAtTime(vol, now);
+        const f0 = type==='coin'?880: type==='hit'?120: 660;
+        const f1 = type==='coin'?1320: type==='hit'?80: 440;
+        o.frequency.setValueAtTime(f0, now);
+        o.frequency.exponentialRampToValueAtTime(f1, now+0.15);
+        g.gain.exponentialRampToValueAtTime(0.0001, now+0.2);
+        o.start(now); o.stop(now+0.21);
+      };
+      return {
+        toggle(){ muted=!muted; saveData({muted}); return !muted; },
+        isMuted(){ return muted; },
+        ping(){ play('ping',0.25); },
+        coin(){ play('coin',0.35); },
+        hit(){ play('hit',0.35); },
+      };
+    })();
+
+    // --- Canvas setup ---
+    const canvas = document.getElementById('game');
+    const ctx = canvas.getContext('2d');
+    const DPR = Math.min(2, window.devicePixelRatio || 1);
+    let W = 0, H = 0;
+    function resize(){
+      W = canvas.width = Math.floor(window.innerWidth * DPR);
+      H = canvas.height = Math.floor(window.innerHeight * DPR);
+      canvas.style.width = '100vw';
+      canvas.style.height = '100vh';
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    // --- Game state ---
+    const state = {
+      running: false,
+      paused: false,
+      time: 0,
+      score: 0,
+      coins: loadSave().coins||0,
+      high: loadSave().high||0,
+      lives: 3,
+      combo: 0,
+      mult: 1,
+      slowMo: 0,
+      magnet: 0,
+      shield: 0,
+      difficulty: 1,
+      lastSpawn: 0,
+      entities: [],
+      particles: [],
+      theme: loadSave().theme || 'classic',
+      unlocked: loadSave().unlocked || ['classic'],
+      powerupsOwned: loadSave().powerupsOwned || {slow:true, magnet:true, shield:true},
+      daily: loadSave().daily || { last: 0, streak: 0 }
+    };
+
+    // --- DOM refs ---
+    const $ = sel => document.querySelector(sel);
+    const elScore = $('#score');
+    const elCoins = $('#coins');
+    const elLives = $('#lives');
+    const elShopCoins = $('#shopCoins');
+    const toasts = $('#toasts');
+
+    // Daily bonus
+    (function dailyBonus(){
+      const today = new Date(); today.setHours(0,0,0,0);
+      const last = state.daily.last ? new Date(state.daily.last) : 0;
+      let bonus = 0;
+      if(!last || today - last >= 24*3600*1000){
+        // new day
+        const yesterday = new Date(today.getTime()-24*3600*1000);
+        if(state.daily.last && (new Date(state.daily.last)).toDateString()===yesterday.toDateString()){
+          state.daily.streak = Math.min(7, (state.daily.streak||0)+1);
+        } else {
+          state.daily.streak = 1;
+        }
+        bonus = 3 + state.daily.streak; // 4..10 coins
+        state.coins += bonus;
+        state.daily.last = today.toISOString();
+        saveData({ coins: state.coins, daily: state.daily });
+        showToast(`🎁 Daily bonus +${bonus} coins (Streak ${state.daily.streak})`);
+      }
+      $('#dailyBonus').textContent = String(bonus);
+      updateHud();
+    })();
+
+    function showToast(msg){
+      const d = document.createElement('div');
+      d.className = 'toast';
+      d.textContent = msg;
+      toasts.appendChild(d);
+      setTimeout(()=>{ d.style.opacity='0'; d.style.transform='translateY(6px)'; }, 12);
+      setTimeout(()=> d.remove(), 2200);
+    }
+
+    function updateHud(){
+      elScore.textContent = state.score;
+      elCoins.textContent = state.coins;
+      elLives.textContent = state.lives;
+      elShopCoins.textContent = state.coins;
+    }
+
+    // --- Themes (cosmetic skins) ---
+    const THEMES = {
+      classic: { name:'Classic Basket', price:0, drawPlayer:drawBasket('#c08a4b','#6d4b22') },
+      space:   { name:'Space Pod', price:20, drawPlayer:drawPod('#9bd1ff','#4b8ec9') },
+      slime:   { name:'Slime Bowl', price:25, drawPlayer:drawSlime('#9ae6b4','#34d399') },
+      rainbow: { name:'Rainbow Cart', price:40, drawPlayer:drawRainbow },
+    };
+
+    // --- Player ---
+    const player = { x: 0.5, y: 0.92, w: 0.16, h: 0.045, vx: 0 };
+
+    function drawBasket(top='#c08a4b', rim='#6d4b22'){
+      return function(px,py,pw,ph){
+        const r = pw*0.2;
+        ctx.fillStyle = top;
+        roundRect(px-pw/2, py-ph, pw, ph, r);
+        ctx.fill();
+        ctx.lineWidth = ph*0.2; ctx.strokeStyle = rim;
+        ctx.strokeRect(px-pw/2, py-ph*1.02, pw, ph*0.65);
+        // cute eyes
+        const e = pw*0.06; const ey = py-ph*0.55; const dx = pw*0.15;
+        circle(px-dx, ey, e, '#000000aa'); circle(px+dx, ey, e, '#000000aa');
+      }
+    }
+    function drawPod(a='#9bd1ff', b='#4b8ec9'){
+      return function(px,py,pw,ph){
+        const r = pw*0.5;
+        const g = ctx.createLinearGradient(px,py-ph,px,py);
+        g.addColorStop(0,a); g.addColorStop(1,b);
+        ctx.fillStyle = g; roundRect(px-pw/2, py-ph, pw, ph*1.1, r); ctx.fill();
+        circle(px, py-ph*0.5, ph*0.25, '#ffffff66');
+      }
+    }
+    function drawSlime(a='#9ae6b4', b='#34d399'){
+      return function(px,py,pw,ph){
+        const g = ctx.createLinearGradient(px,py-ph,px,py);
+        g.addColorStop(0,a); g.addColorStop(1,b);
+        ctx.fillStyle = g; roundRect(px-pw/2, py-ph, pw, ph*1.2, pw*0.3); ctx.fill();
+        // bubbly bumps
+        circle(px-pw*0.25, py-ph*0.4, ph*0.2, '#ffffff44');
+        circle(px+pw*0.28, py-ph*0.5, ph*0.16, '#ffffff44');
+      }
+    }
+    function drawRainbow(px,py,pw,ph){
+      const grad = ctx.createLinearGradient(px-pw/2,py,px+pw/2,py);
+      ['#ff6b6b','#ffd166','#6ee7b7','#60a5fa','#a78bfa'].forEach((c,i)=>grad.addColorStop(i/4,c));
+      ctx.fillStyle = grad; roundRect(px-pw/2,py-ph,pw,ph*1.05,pw*0.25); ctx.fill();
+    }
+
+    // --- Entities ---
+    function makeStar(){
+      return { type:'star', x:rand(0.08,0.92), y:-0.05, r:rand(0.012,0.022), vy:rand(0.18,0.27), alive:true };
+    }
+    function makeSpike(){
+      return { type:'spike', x:rand(0.08,0.92), y:-0.06, r:rand(0.016,0.028), vy:rand(0.20,0.3), alive:true, rot:rand(0,Math.PI) };
+    }
+    function makeCoin(){
+      return { type:'coin', x:rand(0.08,0.92), y:-0.05, r:rand(0.014,0.022), vy:rand(0.18,0.26), alive:true };
+    }
+    function makePowerup(){
+      const kinds=['shield','magnet','slow'];
+      const k = kinds[Math.floor(rand(0,kinds.length))];
+      return { type:k, x:rand(0.08,0.92), y:-0.06, r:0.022, vy:rand(0.18,0.25), alive:true };
+    }
+
+    // --- Drawing primitives ---
+    function circle(cx, cy, r, color){ ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.fillStyle = color; ctx.fill(); }
+    function starShape(cx, cy, r, color){
+      ctx.save(); ctx.translate(cx,cy); ctx.rotate(state.time*0.002);
+      ctx.beginPath();
+      for(let i=0;i<10;i++){
+        const ang = i*Math.PI/5;
+        const rr = i%2===0?r:(r*0.45);
+        ctx.lineTo(Math.cos(ang)*rr, Math.sin(ang)*rr);
+      }
+      ctx.closePath();
+      const g = ctx.createRadialGradient(0,0,0,0,0,r);
+      g.addColorStop(0,'#fff'); g.addColorStop(1,color);
+      ctx.fillStyle = g; ctx.fill();
+      ctx.restore();
+    }
+    function spikeShape(cx, cy, r){
+      ctx.save(); ctx.translate(cx,cy); ctx.rotate(state.time*0.003);
+      for(let i=0;i<8;i++){
+        const a = i*Math.PI/4;
+        ctx.beginPath();
+        ctx.moveTo(0,0); ctx.lineTo(Math.cos(a)*r, Math.sin(a)*r);
+        ctx.lineTo(Math.cos(a+0.15)*r*0.55, Math.sin(a+0.15)*r*0.55);
+        ctx.closePath();
+        ctx.fillStyle = '#f97316'; ctx.fill();
+      }
+      circle(0,0,r*0.35,'#6b7280');
+      ctx.restore();
+    }
+    function coinShape(cx, cy, r){
+      const g = ctx.createRadialGradient(cx-r*0.3, cy-r*0.3, r*0.1, cx, cy, r);
+      g.addColorStop(0,'#fff7'); g.addColorStop(1,'#fbbf24');
+      circle(cx,cy,r,g);
+      ctx.beginPath(); ctx.arc(cx,cy,r*0.6,0,Math.PI*2);
+      ctx.strokeStyle = '#d97706'; ctx.lineWidth = r*0.25; ctx.stroke();
+    }
+    function powerShape(cx,cy,r,k){
+      if(k==='shield'){ circle(cx,cy,r,'#93c5fdaa'); circle(cx,cy,r*0.6,'#60a5faa9'); }
+      if(k==='magnet'){ ctx.save(); ctx.translate(cx,cy); ctx.rotate(0.2); ctx.fillStyle='#f87171';
+        roundRect(-r*0.85,-r*0.55,r*1.7,r*1.1,r*0.4); ctx.fill(); ctx.clearRect(-r*0.2,-r*0.55,r*0.4,r*0.8);
+        ctx.restore(); }
+      if(k==='slow'){ ctx.save(); ctx.translate(cx,cy);
+        circle(0,0,r,'#34d39988');
+        ctx.beginPath(); ctx.moveTo(0,0);
+        ctx.lineTo(0,-r*0.7); ctx.arc(0,0,r*0.7,-Math.PI/2, state.time*0.006);
+        ctx.strokeStyle='#10b981'; ctx.lineWidth=r*0.25; ctx.stroke();
+        ctx.restore(); }
+    }
+    function roundRect(x,y,w,h,r){
+      const rr = Math.min(r,h/2,w/2);
+      ctx.beginPath();
+      ctx.moveTo(x+rr,y);
+      ctx.arcTo(x+w,y,x+w,y+h,rr);
+      ctx.arcTo(x+w,y+h,x,y+h,rr);
+      ctx.arcTo(x,y+h,x,y,rr);
+      ctx.arcTo(x,y,x+w,y,rr);
+      ctx.closePath();
+    }
+
+    // --- Input ---
+    let inputX = player.x;
+    let touching = false; let touchStart = 0; let lastTap=0;
+
+    function onPoint(e){
+      const t = e.touches? e.touches[0]: e;
+      inputX = clamp(t.clientX / window.innerWidth, 0.06, 0.94);
+    }
+    function onDown(e){ touching = true; touchStart = Date.now(); onPoint(e); }
+    function onUp(){ touching = false; const dur = Date.now()-touchStart; if(dur>400) togglePause(); }
+    function onTap(){ const now=Date.now(); if(now-lastTap<300) activateSlowMo(); lastTap=now; }
+
+    canvas.addEventListener('pointerdown', onDown);
+    canvas.addEventListener('pointermove', onPoint);
+    window.addEventListener('pointerup', onUp);
+    canvas.addEventListener('touchstart', onTap);
+
+    // --- UI buttons ---
+    $('#btnPlay').onclick = startGame;
+    $('#btnHow').onclick = ()=> $('#modalHow').classList.add('show');
+    $('#closeHow').onclick = ()=> $('#modalHow').classList.remove('show');
+    $('#btnOpenShop').onclick = ()=> openShop();
+    $('#btnShop').onclick = ()=> openShop();
+    $('#closeShop').onclick = ()=> $('#modalShop').classList.remove('show');
+    $('#btnPause').onclick = ()=> togglePause();
+    $('#btnMute').onclick = ()=>{
+      const unmuted = AudioSys.toggle();
+      $('#btnMute').textContent = unmuted ? '🔊' : '🔇';
+      saveData({ muted: !unmuted });
+    };
+
+    function openShop(){ buildShop(); $('#modalShop').classList.add('show'); }
+
+    function buildShop(){
+      const grid = $('#shopGrid'); grid.innerHTML = '';
+      Object.entries(THEMES).forEach(([key, item])=>{
+        const owned = state.unlocked.includes(key);
+        const active = state.theme===key;
+        const div = document.createElement('div');
+        div.className='shop-item';
+        const preview = document.createElement('canvas');
+        preview.width=240; preview.height=120; const c=preview.getContext('2d');
+        // draw preview
+        const px=120, py=80, pw=100, ph=26;
+        c.fillStyle='#0b1220'; c.fillRect(0,0,240,120);
+        c.fillStyle='#1f2937'; c.fillRect(10,95,220,8);
+        // borrow drawer
+        const drawer = item.drawPlayer;
+        (function drawMini(){
+          const _ctx = c; // mini context
+          // patch small helpers
+          const saveCtx = ctx; window.ctx = c;
+          drawer(px,py,pw,ph);
+          window.ctx = saveCtx; // restore
+        })();
+        const name = document.createElement('div'); name.textContent = item.name;
+        const price = document.createElement('div'); price.className='price'; price.textContent = owned? (active?'Equipped':'Owned') : `🪙 ${item.price}`;
+        const btn = document.createElement('div'); btn.className='equip'; btn.textContent = owned? (active?'Equipped':'Equip') : 'Buy';
+        btn.onclick = ()=>{
+          if(!owned){
+            if(state.coins>=item.price){ state.coins -= item.price; state.unlocked.push(key); saveData({coins:state.coins, unlocked:state.unlocked}); showToast(`Unlocked ${item.name}!`); AudioSys.coin(); }
+            else { showToast('Not enough coins!'); return; }
+          }
+          state.theme = key; saveData({ theme: key }); buildShop(); updateHud();
+        };
+        div.appendChild(preview); div.appendChild(name); div.appendChild(price); div.appendChild(btn);
+        grid.appendChild(div);
+      });
+    }
+
+    // --- Achievements ---
+    const ACH = [
+      {id:'first', name:'First Catch', desc:'Catch your first star', test:s=>s.score>=1, reward:3},
+      {id:'streak10', name:'Hot Streak', desc:'Combo x10', test:s=>s.combo>=10, reward:5},
+      {id:'coins50', name:'Shiny Things', desc:'Collect 50 coins total', test:()=> (loadSave().coins||0)>=50, reward:5},
+      {id:'survive60', name:'One Minute Hero', desc:'Survive 60 seconds', test:s=>s.time>=60000, reward:6},
+      {id:'high100', name:'Centurion', desc:'Score 100 points', test:s=>s.score>=100, reward:10}
+    ];
+    const achieved = new Set(loadSave().achieved||[]);
+    function checkAchievements(){
+      ACH.forEach(a=>{
+        if(!achieved.has(a.id) && a.test(state)){
+          achieved.add(a.id);
+          state.coins += a.reward;
+          saveData({ coins: state.coins, achieved: [...achieved] });
+          showToast(`🏆 ${a.name} +${a.reward} 🪙`);
+          AudioSys.coin();
+        }
+      });
+    }
+
+    // --- Game loop ---
+    let last=performance.now();
+    function loop(t){
+      requestAnimationFrame(loop);
+      const dt = Math.min(50, t-last); last=t;
+      if(!state.running || state.paused) return;
+      const slowFactor = state.slowMo>0 ? 0.5 : 1;
+      state.time += dt*(1/slowFactor);
+      state.slowMo = Math.max(0, state.slowMo-dt);
+      state.magnet = Math.max(0, state.magnet-dt);
+      state.shield = Math.max(0, state.shield-dt);
+
+      // difficulty scales over time
+      state.difficulty = 1 + Math.min(2.5, state.time/45000);
+
+      // move player toward input
+      const targetX = inputX; player.x = lerp(player.x, targetX, 0.25);
+
+      // spawn entities
+      state.lastSpawn += dt;
+      const spawnEvery = Math.max(220 - state.difficulty*40, 80);
+      while(state.lastSpawn>spawnEvery){
+        state.lastSpawn -= spawnEvery;
+        const r = Math.random();
+        if(r < 0.06) state.entities.push(makeCoin());
+        else if(r < 0.10) state.entities.push(makePowerup());
+        else if(r < 0.28) state.entities.push(makeSpike());
+        else state.entities.push(makeStar());
+      }
+
+      // update entities
+      const speedScale = 0.0014 * state.difficulty * slowFactor;
+      const px = player.x * W; const py = player.y * H; const pw = player.w * W; const ph = player.h * H;
+      for(const e of state.entities){
+        e.y += e.vy * speedScale * H;
+        // magnet pull for coins/stars
+        if((state.magnet>0) && (e.type==='coin' || e.type==='star')){
+          const ex = e.x*W, ey = e.y*H; const dx = px-ex, dy = (py-ph*0.5)-ey; const d = Math.hypot(dx,dy)+0.001;
+          const pull = clamp(0.0008*H/d, 0, 0.025);
+          e.x += (dx/W)*pull; e.y += (dy/H)*pull;
+        }
+        // offscreen
+        if(e.y > 1.1) e.alive=false;
+
+        // collision
+        const ex = e.x*W, ey = e.y*H, rr = e.r*W;
+        if(ey > py-ph && Math.abs(ex-px) < pw*0.55){
+          if(e.type==='star'){
+            e.alive=false; scoreHit(1); sparkle(ex,ey,'#ffffff'); AudioSys.ping();
+          } else if(e.type==='coin'){
+            e.alive=false; state.coins++; saveData({coins:state.coins}); updateHud(); sparkle(ex,ey,'#fbbf24'); showTiny('+1'); AudioSys.coin();
+          } else if(e.type==='spike'){
+            if(state.shield>0){ e.alive=false; sparkle(ex,ey,'#93c5fd'); showToast('🛡️ Shield saved you!'); state.shield=0; }
+            else { e.alive=false; damage(); }
+          } else if(['shield','magnet','slow'].includes(e.type)){
+            e.alive=false; grantPower(e.type);
+          }
+        }
+      }
+      state.entities = state.entities.filter(e=>e.alive);
+
+      // draw
+      drawScene();
+
+      // achievements
+      checkAchievements();
+    }
+
+    function scoreHit(n){
+      state.combo++; state.mult = 1 + Math.floor(state.combo/10);
+      state.score += n*state.mult; updateHud();
+      if(state.score>state.high){ state.high=state.score; saveData({high:state.high}); }
+      showTiny(`+${n*state.mult}`);
+    }
+    function damage(){
+      state.combo=0; state.mult=1; state.lives--; updateHud(); AudioSys.hit(); shake(6);
+      showToast('💥 Ouch!');
+      if(state.lives<=0){ gameOver(); }
+    }
+
+    function grantPower(k){
+      if(k==='shield'){ state.shield = 6000; showToast('🛡️ Shield (6s)'); }
+      if(k==='magnet'){ state.magnet = 6000; showToast('🧲 Magnet (6s)'); }
+      if(k==='slow'){ state.slowMo = 5000; showToast('🐢 Slow-mo (5s)'); }
+    }
+    function activateSlowMo(){ if(state.running && !state.paused) { state.slowMo = 3500; showToast('🐢 Slow-mo!'); } }
+
+    // particles / feedback
+    function sparkle(x,y,color){
+      for(let i=0;i<10;i++){
+        state.particles.push({x,y,vx:rand(-1.2,1.2),vy:rand(-1.2,0.2),life:400,color});
+      }
+    }
+    function showTiny(text){
+      state.particles.push({ label: text, x: player.x*W, y: (player.y-0.05)*H, vy:-0.5, life:600, color:'#fff'});
+    }
+    let shakeT=0; function shake(a=4){ shakeT=150; canvas.style.transform=`translate(0px,0px)`; setTimeout(()=>canvas.style.transform='',200); }
+
+    function drawScene(){
+      // background stars
+      ctx.clearRect(0,0,W,H);
+      ctx.fillStyle = '#0b1220'; ctx.fillRect(0,0,W,H);
+      ctx.fillStyle = '#0f172a'; ctx.fillRect(0,H*0.94,W,H*0.06);
+      for(let i=0;i<40;i++){
+        const sx = (i*97 % W); const sy = (i*37 + Math.sin(state.time*0.0003+i)*50) % H; ctx.fillStyle = '#ffffff11'; ctx.fillRect(sx,sy,2,2);
+      }
+
+      // particles
+      for(const p of state.particles){
+        if(p.label){
+          p.y += p.vy; p.life-=16; ctx.globalAlpha = Math.max(0, p.life/600);
+          ctx.font = `${14*DPR}px 700 system-ui`; ctx.fillStyle=p.color; ctx.textAlign='center'; ctx.fillText(p.label, p.x, p.y);
+          ctx.globalAlpha = 1;
+          continue;
+        }
+        p.x += p.vx; p.y += p.vy; p.vy += 0.03; p.life -= 16;
+        ctx.globalAlpha = Math.max(0, p.life/400);
+        circle(p.x, p.y, 2*DPR, p.color);
+        ctx.globalAlpha = 1;
+      }
+      state.particles = state.particles.filter(p=>p.life>0);
+
+      // entities
+      for(const e of state.entities){
+        const ex=e.x*W, ey=e.y*H, rr=e.r*W;
+        if(e.type==='star') starShape(ex,ey,rr,'#93c5fd');
+        else if(e.type==='spike') spikeShape(ex,ey,rr);
+        else if(e.type==='coin') coinShape(ex,ey,rr);
+        else powerShape(ex,ey,rr,e.type);
+      }
+
+      // player
+      const drawer = THEMES[state.theme].drawPlayer;
+      drawer(player.x*W, player.y*H, player.w*W, player.h*H);
+
+      // active power borders
+      if(state.shield>0){ ctx.strokeStyle='#60a5fa'; ctx.lineWidth=4*DPR; ctx.strokeRect(4*DPR,4*DPR,W-8*DPR,H-8*DPR); }
+      if(state.magnet>0){ ctx.strokeStyle='#f472b6'; ctx.lineWidth=2*DPR; ctx.setLineDash([10*DPR,6*DPR]); ctx.strokeRect(10*DPR,10*DPR,W-20*DPR,H-20*DPR); ctx.setLineDash([]); }
+      if(state.slowMo>0){ ctx.fillStyle='rgba(16,185,129,0.08)'; ctx.fillRect(0,0,W,H); }
+
+      if(shakeT>0){ shakeT-=16; canvas.style.transform = `translate(${Math.sin(state.time*0.1)*2}px, ${Math.cos(state.time*0.13)*2}px)`; }
+      else canvas.style.transform = '';
+    }
+
+    function startGame(){
+      $('#startOverlay').style.display='none';
+      state.running=true; state.paused=false; state.time=0; state.score=0; state.combo=0; state.mult=1; state.lives=3; state.entities.length=0; state.particles.length=0;
+      updateHud();
+    }
+
+    function togglePause(){
+      if(!state.running) return;
+      state.paused = !state.paused;
+      showToast(state.paused?'⏸️ Paused':'▶️ Resumed');
+    }
+
+    function gameOver(){
+      state.running=false; state.paused=false;
+      saveData({coins:state.coins, high: state.high, theme: state.theme, unlocked: state.unlocked});
+      const over = document.createElement('div');
+      over.className='overlay';
+      over.innerHTML = `<div class="card center">
+        <div class="title">Game Over</div>
+        <div class="subtitle">Score: <b>${state.score}</b> &nbsp;•&nbsp; Best: <b>${state.high}</b></div>
+        <div class="spacer"></div>
+        <div class="row"><button class="btn" id="again">Play Again</button><button class="btn" id="shopHere">Shop</button></div>
+      </div>`;
+      document.body.appendChild(over);
+      $('#again').onclick = ()=>{ over.remove(); startGame(); };
+      $('#shopHere').onclick = ()=>{ over.remove(); openShop(); };
+    }
+
+    // Kick things off
+    updateHud();
+    requestAnimationFrame(loop);
+  })();
+  </script></body>
+</html>
