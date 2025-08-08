@@ -375,4 +375,540 @@
         deck.push({ id: id++, color, value: String(n) });
       }
       for(const act of ACTIONS){
-        deck.push({ 
+        deck.push({ id: id++, color, value: act });
+        deck.push({ id: id++, color, value: act });
+      }
+    }
+    for(let i=0;i<4;i++) deck.push({ id: id++, color: 'wild', value: 'wild' });
+    for(let i=0;i<4;i++) deck.push({ id: id++, color: 'wild', value: 'wild4' });
+    return shuffle(deck);
+  }
+
+  function newPlayers(){
+    return [
+      { id:0, name:'You', isHuman:true, hand:[], unoDeclared:false },
+      { id:1, name:'Bot Luna', isHuman:false, hand:[], unoDeclared:false },
+      { id:2, name:'Bot Kato', isHuman:false, hand:[], unoDeclared:false },
+      { id:3, name:'Bot Zed', isHuman:false, hand:[], unoDeclared:false },
+    ];
+  }
+
+  function deal(){
+    state.deck = createDeck();
+    state.discard = [];
+    state.players = newPlayers();
+    state.direction = 1;
+    state.pendingDraw = 0;
+    state.pendingSkip = false;
+    state.turnCount = 0;
+    state.hasDrawnThisTurn = false;
+    state.humanCanPass = false;
+    state.lock = false;
+    state.pendingWild = null;
+
+    // Deal 7 each
+    for(let r=0;r<7;r++){
+      for(const p of state.players){
+        p.hand.push(state.deck.pop());
+      }
+    }
+
+    // Flip a starting discard (avoid wild4 as first)
+    let first = state.deck.pop();
+    while(first.value === 'wild4'){
+      state.deck.unshift(first);
+      shuffle(state.deck);
+      first = state.deck.pop();
+    }
+    state.discard.push(first);
+    state.activeColor = (first.color === 'wild') ? COLORS[rand(0,3)] : first.color;
+
+    // If first is an action, apply it to the first player
+    // We'll start with a random player to mix it up
+    state.current = rand(0, state.players.length - 1);
+
+    if(first.value === 'reverse'){
+      if(state.players.length === 2){
+        state.pendingSkip = true;
+      } else {
+        state.direction *= -1;
+      }
+    } else if(first.value === 'skip'){
+      state.pendingSkip = true;
+    } else if(first.value === 'draw2'){
+      state.pendingDraw = 2;
+      state.pendingSkip = true;
+    } else if(first.value === 'wild'){
+      state.activeColor = COLORS[rand(0,3)];
+    }
+  }
+
+  // ---- Rendering ----
+  function cardLabel(value){
+    switch(value){
+      case 'skip': return '🚫';
+      case 'reverse': return '⟲';
+      case 'draw2': return '+2';
+      case 'wild': return 'WILD';
+      case 'wild4': return '+4';
+      default: return value;
+    }
+  }
+
+  function cardHTML(card, { small=false, playable=false, faceDown=false } = {}){
+    if(faceDown){
+      return `<div class="card small" style="background: repeating-linear-gradient(135deg,#23374d 0 9px,#2c3e50 9px 18px);border:3px solid rgba(0,0,0,.35);"></div>`;
+    }
+    const isWild = (card.color === 'wild');
+    const cls = ['card', small ? 'small' : '', isWild ? 'wild' : card.color, playable ? 'playable' : ''].filter(Boolean).join(' ');
+    const label = cardLabel(card.value);
+    const corners = (card.value === 'wild' || card.value === 'wild4') ? '' : `
+      <div class="corner tl">${label}</div>
+      <div class="corner br">${label}</div>`;
+    const pips = isWild ? `
+      <div class="pips">
+        <span class="pip red"></span>
+        <span class="pip yellow"></span>
+        <span class="pip green"></span>
+        <span class="pip blue"></span>
+      </div>` : '';
+    return `
+      <div class="${cls}" data-id="${card.id}" data-color="${card.color}" data-value="${card.value}">
+        ${corners}
+        <div class="center">${label}</div>
+        ${pips}
+      </div>
+    `;
+  }
+
+  function renderOpponents(){
+    const wrap = el('opponents');
+    wrap.innerHTML = state.players.slice(1).map((p, idx) => {
+      const isTurn = state.current === p.id;
+      const uno = p.hand.length === 1;
+      return `
+        <div class="opponent ${isTurn ? 'turn' : ''}">
+          <div class="name">${p.name}</div>
+          <div class="row">
+            <span class="badge"><span class="mini-back"></span> ${p.hand.length} cards</span>
+            <span class="badge">ID ${p.id}</span>
+          </div>
+          ${uno ? `<div class="uno-flag">UNO!</div>` : ''}
+          <div class="turn-indicator"></div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function renderPiles(){
+    el('deck-count').textContent = state.deck.length;
+    const top = state.discard[state.discard.length - 1];
+    el('discard-pile').innerHTML = cardHTML(top, { small:false });
+    // current color dot
+    const dot = el('color-dot');
+    dot.className = `dot ${state.activeColor || ''}`;
+    // direction
+    el('dir-ind').textContent = state.direction === 1 ? '↻ clockwise' : '↺ counter-clockwise';
+    // deck interactivity
+    const deckEl = el('draw-pile').querySelector('.deck');
+    deckEl.setAttribute('aria-disabled', String(!(getCurrent().isHuman)));
+  }
+
+  function renderHand(){
+    const you = state.players[0];
+    const wrap = el('hand');
+    const playableIds = you.hand.filter(c => isPlayable(c)).map(c => c.id);
+    wrap.innerHTML = you.hand.map(c => cardHTML(c, { playable: playableIds.includes(c.id) })).join('');
+    el('hand-count').textContent = `${you.hand.length} card${you.hand.length===1?'':'s'}`;
+
+    // Controls
+    el('btn-uno').disabled = !(state.current === 0 && you.hand.length === 2);
+    el('btn-pass').disabled = !(state.current === 0 && state.hasDrawnThisTurn);
+    el('btn-draw').disabled = !(state.current === 0);
+  }
+
+  function renderStatus(msg){
+    el('status').textContent = msg;
+  }
+
+  function renderAll(){
+    el('round-label').textContent = `Round ${state.round}`;
+    renderOpponents();
+    renderPiles();
+    renderHand();
+  }
+
+  // ---- Rules ----
+  function getCurrent(){ return state.players[state.current]; }
+  function nextIndex(idx = state.current){
+    const n = state.players.length;
+    return (idx + state.direction + n) % n;
+  }
+
+  function isPlayable(card){
+    const top = state.discard[state.discard.length - 1];
+    const activeColor = state.activeColor;
+    if(card.color === 'wild') return true;
+    return card.color === activeColor || card.value === top.value;
+  }
+
+  function drawCard(player, count=1){
+    const drawn = [];
+    for(let i=0;i<count;i++){
+      if(state.deck.length === 0) reshuffle();
+      const card = state.deck.pop();
+      if(!card){ break; } // extremely rare, but guard
+      player.hand.push(card);
+      drawn.push(card);
+    }
+    return drawn;
+  }
+
+  function reshuffle(){
+    const top = state.discard.pop();
+    let pool = state.discard.splice(0);
+    shuffle(pool);
+    state.deck = pool;
+    state.discard.push(top);
+  }
+
+  async function beginTurn(){
+    const player = getCurrent();
+    state.turnCount++;
+    state.hasDrawnThisTurn = false;
+    state.humanCanPass = false;
+    state.lock = false;
+    state.pendingWild = null;
+
+    renderAll();
+
+    // Start-of-turn penalties
+    if(state.pendingDraw > 0){
+      renderStatus(`${player.name} must draw ${state.pendingDraw} and is skipped`);
+      await wait(600);
+      drawCard(player, state.pendingDraw);
+      state.pendingDraw = 0;
+      state.pendingSkip = false;
+      renderAll();
+      await wait(400);
+      return endTurn(); // skip turn
+    }
+    if(state.pendingSkip){
+      renderStatus(`${player.name} is skipped`);
+      state.pendingSkip = false;
+      await wait(600);
+      return endTurn();
+    }
+
+    if(player.isHuman){
+      renderStatus(`Your turn${hasPlayable(player) ? ' — play a card' : ' — draw a card'}`);
+      if(!hasPlayable(player)) toast('No playable card. Draw one.');
+    } else {
+      renderStatus(`${player.name}'s turn`);
+      await wait(650);
+      await aiTakeTurn(player);
+    }
+  }
+
+  function hasPlayable(player){
+    return player.hand.some(c => isPlayable(c));
+  }
+
+  function removeFromHand(player, cardId){
+    const idx = player.hand.findIndex(c => c.id === cardId);
+    if(idx >= 0) return player.hand.splice(idx,1)[0];
+    return null;
+  }
+
+  async function playCard(player, card, chosenColor=null){
+    // Validate
+    if(card.color === 'wild'){
+      if(!chosenColor) {
+        // Should be handled by modal before calling play
+        return false;
+      }
+      state.activeColor = chosenColor;
+    } else {
+      state.activeColor = card.color;
+    }
+
+    state.discard.push(card);
+
+    // Apply effect
+    if(card.value === 'reverse'){
+      if(state.players.length === 2){
+        state.pendingSkip = true;
+      } else {
+        state.direction *= -1;
+      }
+    } else if(card.value === 'skip'){
+      state.pendingSkip = true;
+    } else if(card.value === 'draw2'){
+      state.pendingDraw += 2;
+      state.pendingSkip = true;
+    } else if(card.value === 'wild4'){
+      state.pendingDraw += 4;
+      state.pendingSkip = true;
+    }
+
+    renderAll();
+    await wait(200);
+
+    // UNO check (penalty if human didn't press UNO when going to 1 card)
+    if(player.hand.length === 1){
+      if(player.isHuman){
+        if(!player.unoDeclared){
+          // Penalty
+          toast('You forgot to press UNO! +2 penalty', 1600);
+          await wait(300);
+          drawCard(player, 2);
+          renderAll();
+          await wait(200);
+        }
+      } else {
+        // Bots always auto-declare
+        player.unoDeclared = true;
+      }
+    }
+
+    // Win check
+    if(player.hand.length === 0){
+      return endGame(player);
+    }
+
+    // Reset UNO toggle after playing
+    player.unoDeclared = false;
+
+    await wait(300);
+    endTurn();
+    return true;
+  }
+
+  function endTurn(){
+    state.current = nextIndex();
+    beginTurn();
+  }
+
+  // ---- Human Interactions ----
+  function onCardClick(e){
+    if(state.lock) return;
+    const cardEl = e.target.closest('.card');
+    if(!cardEl) return;
+    if(state.current !== 0) return; // not your turn
+    const you = state.players[0];
+    const cardId = Number(cardEl.dataset.id);
+    const card = you.hand.find(c => c.id === cardId);
+    if(!card) return;
+
+    if(!isPlayable(card)){
+      toast('That card cannot be played.');
+      return;
+    }
+
+    // UNO logic: allow pressing UNO any time you have 2 cards, but not required until you play to 1
+    // If card is wild, open modal
+    if(card.color === 'wild'){
+      state.pendingWild = { playerIndex: 0, cardId: card.id };
+      openColorModal(async (colorChosen) => {
+        if(colorChosen){
+          const real = removeFromHand(you, card.id);
+          await playCard(you, real, colorChosen);
+        }
+        state.pendingWild = null;
+      });
+      return;
+    }
+
+    // Normal play
+    const real = removeFromHand(you, card.id);
+    playCard(you, real);
+  }
+
+  function onDeckClick(){
+    if(state.lock) return;
+    if(state.current !== 0) return;
+    if(state.hasDrawnThisTurn){
+      toast('You can draw only once per turn.');
+      return;
+    }
+    state.hasDrawnThisTurn = true;
+    const you = state.players[0];
+    drawCard(you, 1);
+    renderAll();
+    const drawn = you.hand[you.hand.length - 1];
+    if(isPlayable(drawn)){
+      renderStatus('You drew a playable card: you may play or pass.');
+      toast('You can play the drawn card (or any playable).', 1500);
+    } else {
+      renderStatus('No play after draw. You may pass.');
+    }
+    state.humanCanPass = true;
+    el('btn-pass').disabled = false;
+  }
+
+  function onUNOClick(){
+    if(state.current !== 0) return;
+    const you = state.players[0];
+    if(you.hand.length !== 2){
+      toast('Press UNO when you have exactly 2 cards.');
+      return;
+    }
+    you.unoDeclared = true;
+    toast('UNO declared!');
+    // Provide subtle visual feedback (flash outline)
+    el('btn-uno').disabled = true;
+  }
+
+  function onPassClick(){
+    if(state.current !== 0) return;
+    if(!state.humanCanPass){
+      toast('You can pass only after drawing.');
+      return;
+    }
+    state.humanCanPass = false;
+    endTurn();
+  }
+
+  // ---- AI ----
+  async function aiTakeTurn(bot){
+    // Pick a playable card
+    let playable = bot.hand.filter(c => isPlayable(c));
+
+    if(playable.length === 0){
+      // draw one
+      renderStatus(`${bot.name} draws a card`);
+      await wait(500);
+      drawCard(bot, 1);
+      renderAll();
+      await wait(250);
+      playable = bot.hand.filter(c => isPlayable(c));
+      if(playable.length === 0){
+        renderStatus(`${bot.name} passes`);
+        await wait(400);
+        return endTurn();
+      }
+    }
+
+    // Heuristic: prefer non-wilds, then draw2/skip/reverse, keep wild4 for emergencies
+    playable.sort((a,b)=> {
+      const score = (c)=>{
+        if(c.color === 'wild' && c.value === 'wild4') return 0;
+        if(c.color === 'wild') return 1;
+        if(c.value === 'draw2') return 4;
+        if(c.value === 'skip') return 3;
+        if(c.value === 'reverse') return 2;
+        if(!isNaN(Number(c.value))) return 5;
+        return 1;
+      };
+      return score(b) - score(a);
+    });
+
+    const card = playable[0];
+
+    if(card.color === 'wild'){
+      // Choose best color from hand composition
+      const counts = { red:0, yellow:0, green:0, blue:0 };
+      for(const c of bot.hand){
+        if(counts[c.color] !== undefined) counts[c.color]++;
+      }
+      let best = 'red', bestCnt=-1;
+      for(const col of COLORS){
+        if(counts[col] > bestCnt){ bestCnt = counts[col]; best = col; }
+      }
+      // remove then play
+      removeFromHand(bot, card.id);
+      renderStatus(`${bot.name} plays ${card.value === 'wild4' ? 'Wild +4' : 'Wild'} (chooses ${best})`);
+      await wait(450);
+      await playCard(bot, card, best);
+    } else {
+      removeFromHand(bot, card.id);
+      renderStatus(`${bot.name} plays ${prettyCard(card)}`);
+      await wait(450);
+      await playCard(bot, card, null);
+    }
+  }
+
+  function prettyCard(card){
+    const colorName = card.color[0].toUpperCase() + card.color.slice(1);
+    const label = cardLabel(card.value);
+    if(card.color === 'wild') return (card.value==='wild4' ? 'Wild +4' : 'Wild');
+    if(['skip','reverse','draw2'].includes(card.value)) return `${colorName} ${label}`;
+    return `${colorName} ${label}`;
+  }
+
+  // ---- Modals ----
+  function openColorModal(onChoose){
+    const modal = el('color-modal');
+    modal.classList.add('show');
+    const handler = (e)=>{
+      const btn = e.target.closest('.color-choice');
+      if(!btn) return;
+      modal.classList.remove('show');
+      qsa('.color-choice').forEach(b => b.removeEventListener('click', handler));
+      onChoose(btn.dataset.color);
+    };
+    qsa('.color-choice').forEach(b => b.addEventListener('click', handler));
+  }
+
+  // ---- End Game ----
+  function endGame(winner){
+    const modal = el('end-modal');
+    el('end-title').textContent = winner.isHuman ? 'You win! 🎉' : `${winner.name} wins!`;
+    const others = state.players.filter(p => p.id !== winner.id);
+    const points = others.reduce((sum,p)=> sum + handPoints(p.hand), 0);
+    el('end-desc').textContent = `Round score: ${points} points`;
+    modal.classList.add('show');
+  }
+
+  function handPoints(hand){
+    // optional scoring heuristic
+    let total = 0;
+    for(const c of hand){
+      if(!isNaN(Number(c.value))) total += Number(c.value);
+      else if(c.value === 'draw2' || c.value === 'skip' || c.value === 'reverse') total += 20;
+      else if(c.value === 'wild' || c.value === 'wild4') total += 50;
+    }
+    return total;
+  }
+
+  // ---- Events ----
+  function bindEvents(){
+    el('hand').addEventListener('click', onCardClick);
+    el('draw-pile').addEventListener('click', onDeckClick);
+    el('btn-draw').addEventListener('click', onDeckClick);
+    el('btn-pass').addEventListener('click', onPassClick);
+    el('btn-uno').addEventListener('click', onUNOClick);
+
+    el('btn-again').addEventListener('click', () => {
+      el('end-modal').classList.remove('show');
+      state.round++;
+      initGame();
+    });
+    el('btn-close').addEventListener('click', () => {
+      el('end-modal').classList.remove('show');
+    });
+
+    el('new-game').addEventListener('click', () => {
+      state.round = 1;
+      initGame();
+    });
+
+    // Prevent accidental scrolling while dragging cards on mobile
+    el('hand').addEventListener('touchmove', (e)=>{}, {passive:true});
+  }
+
+  // ---- Init ----
+  function initGame(){
+    deal();
+    renderAll();
+    beginTurn();
+  }
+
+  // Boot
+  bindEvents();
+  initGame();
+
+})();
+</script>
+</body>
+</html>
