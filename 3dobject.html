@@ -95,4 +95,284 @@
   }
   .pile-area{ display:flex; align-items:center; justify-content:center; gap: 14px; }
   .pile{
-    position:relative; width: min(28vw, 120px); aspect-ratio: 
+    position:relative; width: min(28vw, 120px); aspect-ratio: 3/4;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .stack{
+    position:absolute; inset:0; pointer-events:none;
+  }
+  .stack::before, .stack::after{
+    content:""; position:absolute; inset:0; border-radius: var(--card-radius);
+    background: repeating-linear-gradient(135deg, #23374d 0 9px, #2c3e50 9px 18px);
+    transform: translate(var(--x, -6px), var(--y, -6px));
+    border: 3px solid rgba(0,0,0,.35);
+    box-shadow: var(--card-shadow);
+  }
+  .stack::after{ --x: 6px; --y: 6px; opacity:.9; }
+  .deck{
+    position: relative; width:100%; height:100%;
+    border-radius: var(--card-radius);
+    background: repeating-linear-gradient(135deg, #23374d 0 9px, #2c3e50 9px 18px);
+    border: 3px solid rgba(0,0,0,.35); box-shadow: var(--card-shadow);
+  }
+  .deck[aria-disabled="true"]{ opacity:.5; filter:saturate(.4); }
+  .deck .count{
+    position:absolute; bottom:-8px; right:-8px;
+    background:#111; color:#fff; border:2px solid #000; border-radius:999px;
+    font-weight:900; font-size:.9rem; padding:4px 8px;
+    box-shadow: 0 6px 14px rgba(0,0,0,.4);
+  }
+  .discard{
+    position:relative; width:100%; height:100%;
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  .info{
+    display:flex; flex-direction:column; gap:8px; align-items:center; justify-content:center;
+    text-align:center; padding: 6px;
+  }
+  .row{ display:flex; align-items:center; gap: 10px; flex-wrap:wrap; justify-content:center; }
+  .dot{
+    width:14px; height:14px; border-radius:50%; display:inline-block; border:2px solid rgba(255,255,255,.35);
+    box-shadow: 0 2px 8px rgba(0,0,0,.35) inset;
+  }
+  .dot.red{ background: var(--red); } .dot.green{ background: var(--green); }
+  .dot.blue{ background: var(--blue); } .dot.yellow{ background: var(--yellow); }
+  .dir{ font-size: 1.15rem; padding: 4px 8px; background: rgba(255,255,255,.07); border-radius: 8px; }
+  .status{ min-height: 1.4em; color: var(--muted); font-size: .98rem; }
+
+  #player{
+    display:flex; flex-direction:column; gap:8px;
+    padding: 6px 12px 12px;
+    margin-top: 2px;
+    background: rgba(255,255,255,.04);
+    border-top: 1px solid rgba(255,255,255,.08);
+  }
+  #player .label{ font-weight:700; color: var(--muted); display:flex; align-items:center; justify-content:space-between; }
+  #hand{
+    display:flex; gap: 10px; overflow-x:auto; padding: 10px 4px 2px;
+  }
+  .card{
+    position: relative;
+    width: clamp(58px, 17vw, 110px);
+    aspect-ratio: 3/4;
+    border-radius: var(--card-radius);
+    padding: 6px;
+    color: #fff;
+    display:flex; align-items:center; justify-content:center;
+    font-weight: 900; letter-spacing:.5px;
+    user-select: none;
+    box-shadow: var(--card-shadow);
+    transform-origin: center bottom;
+    transition: transform .08s ease, filter .12s ease, box-shadow .12s ease, outline-color .12s ease;
+  }
+  .card.small{ width: clamp(42px, 12vw, 68px); }
+  .card .center{ font-size: clamp(1rem, 5vw, 2rem); text-shadow: 0 2px 4px rgba(0,0,0,.35); }
+  .corner{
+    position:absolute; font-size: .95rem; font-weight: 900;
+    text-shadow: 0 2px 4px rgba(0,0,0,.35);
+  }
+  .tl{ top: 4px; left:6px; } .br{ bottom:4px; right:6px; transform: rotate(180deg) }
+  .card.playable{ outline: 3px solid rgba(0,230,118,.85); }
+  .card.disabled{ filter: grayscale(.6) brightness(.8) contrast(.8); }
+  .card:active{ transform: translateY(2px) scale(.98); }
+
+  .red{ background: linear-gradient(135deg, var(--red) 0%, var(--red-2) 100%); }
+  .green{ background: linear-gradient(135deg, var(--green) 0%, var(--green-2) 100%); }
+  .blue{ background: linear-gradient(135deg, var(--blue) 0%, var(--blue-2) 100%); }
+  .yellow{ color:#111; background: linear-gradient(135deg, var(--yellow) 0%, var(--yellow-2) 100%); text-shadow:none; }
+  .wild{
+    background: radial-gradient(circle at 30% 30%, #111 0%, #000 60%);
+    border: 3px solid #0a0a0a;
+  }
+  .wild .pips{
+    position:absolute; bottom:6px; left:50%; transform: translateX(-50%);
+    display:flex; gap:3px;
+  }
+  .pip{ width:8px; height:8px; border-radius:50%; }
+  .pip.red{ background:var(--red);} .pip.green{background:var(--green);} .pip.blue{background:var(--blue);} .pip.yellow{background:var(--yellow);}
+
+  .controls{
+    display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:center;
+    padding: 6px 0 0;
+  }
+  button{
+    appearance:none; border:none; background:#243447; color:#fff;
+    padding: 12px 14px; border-radius: 12px; font-weight:800; letter-spacing:.3px;
+    box-shadow: 0 6px 16px rgba(0,0,0,.35);
+    min-width: 96px;
+  }
+  button.primary{ background: linear-gradient(135deg, #00e676, #00c853); color:#082; color:#063b25; }
+  button.warn{ background: linear-gradient(135deg, #ff2d55, #ff3b30); }
+  button.secondary{ background: #1f2c3a; }
+  button:disabled{ opacity:.5; filter:saturate(.5); }
+
+  .modal{
+    position: fixed; inset:0; display:none; place-items:center; padding: 16px; z-index: 999;
+    background: rgba(0,0,0,.45); backdrop-filter: blur(4px);
+  }
+  .modal.show{ display:grid; }
+  .sheet{
+    width: 100%; max-width: 420px; background: #0f2033; border: 1px solid rgba(255,255,255,.1); border-radius:16px;
+    padding: 16px; text-align:center; box-shadow: 0 10px 30px rgba(0,0,0,.5);
+  }
+  .color-choices{ display:grid; grid-template-columns: repeat(2,1fr); gap: 10px; margin-top: 10px; }
+  .color-choice{
+    height:64px; border-radius: 12px; border: 3px solid rgba(0,0,0,.35); box-shadow: var(--card-shadow);
+  }
+  .choice-red{ background: var(--red); } .choice-green{ background: var(--green); }
+  .choice-blue{ background: var(--blue); } .choice-yellow{ background: var(--yellow); }
+
+  .toast{
+    position: fixed; bottom: calc(env(safe-area-inset-bottom) + 16px); left: 50%; transform: translateX(-50%);
+    background: rgba(0,0,0,.75); color:#fff; padding: 10px 14px; border-radius: 999px; font-weight:700;
+    z-index: 998; opacity:0; pointer-events:none; transition: opacity .2s ease;
+  }
+  .toast.show{ opacity:1; }
+
+</style>
+</head>
+<body>
+  <div id="app">
+    <header>
+      <div class="title">UNO (fan-made)</div>
+      <div class="right">
+        <span class="pill" id="round-label">Round 1</span>
+        <button id="new-game" class="secondary">New Game</button>
+      </div>
+    </header>
+
+    <section id="opponents"></section>
+
+    <section id="table">
+      <div class="pile-area">
+        <div class="pile" id="draw-pile">
+          <div class="stack"></div>
+          <div class="deck" role="button" aria-label="Draw pile">
+            <div class="count" id="deck-count">0</div>
+          </div>
+        </div>
+      </div>
+      <div class="info">
+        <div class="row">
+          <span>Current color</span>
+          <span class="dot" id="color-dot"></span>
+        </div>
+        <div class="row">
+          <span class="dir" id="dir-ind">↻ clockwise</span>
+        </div>
+        <div class="status" id="status">Welcome! Dealing cards...</div>
+      </div>
+      <div class="pile-area">
+        <div class="pile">
+          <div class="discard" id="discard-pile">
+            <!-- Top discard card -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="player">
+      <div class="label">
+        <div>Your hand</div>
+        <div id="hand-count" class="pill">0 cards</div>
+      </div>
+      <div id="hand"></div>
+      <div class="controls">
+        <button id="btn-uno" class="warn" disabled>UNO!</button>
+        <button id="btn-draw" class="secondary">Draw</button>
+        <button id="btn-pass" class="secondary" disabled>Pass</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- Choose Color Modal -->
+  <div id="color-modal" class="modal" aria-modal="true" role="dialog" aria-label="Choose color">
+    <div class="sheet">
+      <h3>Choose a color</h3>
+      <div class="color-choices">
+        <button class="color-choice choice-red" data-color="red" aria-label="Red"></button>
+        <button class="color-choice choice-yellow" data-color="yellow" aria-label="Yellow"></button>
+        <button class="color-choice choice-green" data-color="green" aria-label="Green"></button>
+        <button class="color-choice choice-blue" data-color="blue" aria-label="Blue"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- End Game Modal -->
+  <div id="end-modal" class="modal" aria-modal="true" role="dialog" aria-label="Game over">
+    <div class="sheet">
+      <h2 id="end-title">Game Over</h2>
+      <p id="end-desc"></p>
+      <div style="margin-top:12px; display:flex; gap:10px; justify-content:center;">
+        <button id="btn-again" class="primary">Play Again</button>
+        <button id="btn-close" class="secondary">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast">Message</div>
+
+<script>
+(() => {
+  // ---- Utilities ----
+  const COLORS = ['red','yellow','green','blue'];
+  const ACTIONS = ['skip','reverse','draw2'];
+  const WILDS = ['wild','wild4'];
+
+  const qs = sel => document.querySelector(sel);
+  const qsa = sel => Array.from(document.querySelectorAll(sel));
+  const el = id => document.getElementById(id);
+
+  const wait = ms => new Promise(res => setTimeout(res, ms));
+  const rand = (min, max) => Math.floor(Math.random()*(max-min+1))+min;
+
+  function shuffle(a){
+    for(let i=a.length-1;i>0;i--){
+      const j = Math.floor(Math.random()* (i+1));
+      [a[i],a[j]] = [a[j],a[i]];
+    }
+    return a;
+  }
+
+  function toast(msg, duration=1500){
+    const t = el('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(()=> t.classList.remove('show'), duration);
+  }
+
+  // ---- Game State ----
+  const state = {
+    players: [],
+    current: 0,
+    direction: 1,
+    deck: [],
+    discard: [],
+    activeColor: null,
+    pendingDraw: 0,
+    pendingSkip: false,
+
+    turnCount: 0,
+    round: 1,
+
+    // Human turn helpers
+    hasDrawnThisTurn: false,
+    humanCanPass: false,
+    lock: false,
+
+    pendingWild: null, // { playerIndex, cardId, type }
+  };
+
+  // ---- Setup ----
+  function createDeck(){
+    const deck = [];
+    let id = 1;
+    for(const color of COLORS){
+      deck.push({ id: id++, color, value: '0' });
+      for(let n=1; n<=9; n++){
+        deck.push({ id: id++, color, value: String(n) });
+        deck.push({ id: id++, color, value: String(n) });
+      }
+      for(const act of ACTIONS){
+        deck.push({ 
