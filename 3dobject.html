@@ -3,85 +3,235 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Markdown Notepad Timeline</title>
+<title>Dark Threads Markdown Notepad</title>
 <style>
-    body { font-family: sans-serif; background: #fafafa; margin: 0; }
-    header { background: #333; color: white; padding: 1rem; text-align: center; }
-    #composer { background: white; padding: 1rem; border-bottom: 1px solid #ddd; }
-    #composer textarea { width: 100%; height: 100px; padding: .5rem; resize: none; }
-    #composer input { margin-top: .5rem; }
-    #timeline { max-width: 600px; margin: auto; padding: 1rem; }
-    .post { background: white; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 1rem; padding: 1rem; }
-    .post img, .post video { max-width: 100%; margin-top: .5rem; border-radius: 8px; }
-    .post time { color: #555; font-size: 0.8rem; }
+  :root {
+    --bg: #101010;
+    --card: #181818;
+    --border: #2a2a2a;
+    --text: #f5f5f5;
+    --muted: #aaa;
+    --accent: #5e5ce6;
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, sans-serif;
+  }
+  header {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+  }
+  h1 { font-size: 1.2rem; margin: 0; }
+  .btn {
+    background: var(--accent);
+    border: none;
+    color: white;
+    padding: .5rem 1rem;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+  #composer {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem;
+  }
+  textarea {
+    width: 100%;
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: .5rem;
+    padding: .5rem;
+    resize: vertical;
+  }
+  .controls {
+    margin-top: .5rem;
+    display: flex;
+    gap: .5rem;
+    flex-wrap: wrap;
+  }
+  select {
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: .3rem;
+    border-radius: .3rem;
+  }
+  input[type="file"] {
+    color: var(--muted);
+  }
+  #timeline {
+    padding: 1rem;
+    max-width: 600px;
+    margin: auto;
+  }
+  .post {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+  .post img, .post video {
+    max-width: 100%;
+    border-radius: .5rem;
+    margin-top: .5rem;
+  }
+  time {
+    color: var(--muted);
+    font-size: .8rem;
+    display: block;
+    margin-top: .5rem;
+  }
 </style>
 </head>
 <body>
+
 <header>
-    <h1>Markdown Notepad Timeline</h1>
+  <h1>Markdown Threads</h1>
+  <div>
+    <button class="btn" id="exportJson">Export JSON</button>
+    <button class="btn" id="exportMd">Export MD</button>
+    <input type="file" id="importFile" accept=".json" style="display:none;">
+    <button class="btn" id="importBtn">Import</button>
+  </div>
 </header>
 
 <section id="composer">
-    <textarea id="postText" placeholder="Write your post in Markdown..."></textarea>
+  <textarea id="postText" placeholder="Write in Markdown..."></textarea>
+  <div class="controls">
+    <select id="fontWeight">
+      <option value="normal">Normal Weight</option>
+      <option value="bold">Bold</option>
+      <option value="lighter">Light</option>
+    </select>
+    <select id="fontStyle">
+      <option value="normal">Normal Style</option>
+      <option value="italic">Italic</option>
+      <option value="oblique">Oblique</option>
+    </select>
     <input type="file" id="mediaUpload" accept="image/*,video/*" multiple>
-    <button id="postBtn">Post</button>
+    <button class="btn" id="postBtn">Post</button>
+  </div>
 </section>
 
 <section id="timeline"></section>
 
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
-    const postBtn = document.getElementById("postBtn");
-    const postText = document.getElementById("postText");
-    const mediaUpload = document.getElementById("mediaUpload");
-    const timeline = document.getElementById("timeline");
+const postText = document.getElementById("postText");
+const fontWeightSel = document.getElementById("fontWeight");
+const fontStyleSel = document.getElementById("fontStyle");
+const mediaUpload = document.getElementById("mediaUpload");
+const postBtn = document.getElementById("postBtn");
+const timeline = document.getElementById("timeline");
 
-    let posts = JSON.parse(localStorage.getItem("timelinePosts") || "[]");
+let posts = JSON.parse(localStorage.getItem("timelinePosts") || "[]");
 
-    function renderPosts() {
-        timeline.innerHTML = "";
-        posts.forEach(post => {
-            const div = document.createElement("div");
-            div.className = "post";
-            div.innerHTML = `
-                <div>${marked.parse(post.text)}</div>
-                ${post.media.map(m => m.type.startsWith("video") 
-                    ? `<video controls src="${m.src}"></video>`
-                    : `<img src="${m.src}" alt="media">`).join("")}
-                <time>${new Date(post.date).toLocaleString()}</time>
-            `;
-            timeline.prepend(div);
-        });
-    }
+function renderPosts() {
+  timeline.innerHTML = "";
+  posts.forEach(post => {
+    const div = document.createElement("div");
+    div.className = "post";
+    div.style.fontWeight = post.fontWeight || "normal";
+    div.style.fontStyle = post.fontStyle || "normal";
+    div.innerHTML = `
+      <div>${marked.parse(post.text)}</div>
+      ${post.media.map(m => m.type.startsWith("video") 
+        ? `<video controls src="${m.src}"></video>` 
+        : `<img src="${m.src}" alt="">`).join("")}
+      <time>${new Date(post.date).toLocaleString()}</time>
+    `;
+    timeline.prepend(div);
+  });
+}
 
-    postBtn.addEventListener("click", () => {
-        const text = postText.value.trim();
-        if (!text && mediaUpload.files.length === 0) return;
+function savePost(text, media, fontWeight, fontStyle) {
+  posts.push({ text, media, fontWeight, fontStyle, date: new Date().toISOString() });
+  localStorage.setItem("timelinePosts", JSON.stringify(posts));
+  postText.value = "";
+  mediaUpload.value = "";
+  renderPosts();
+}
 
-        let mediaArray = [];
-        Array.from(mediaUpload.files).forEach(file => {
-            const reader = new FileReader();
-            reader.onload = e => {
-                mediaArray.push({ src: e.target.result, type: file.type });
-                if (mediaArray.length === mediaUpload.files.length) {
-                    savePost(text, mediaArray);
-                }
-            };
-            reader.readAsDataURL(file);
-        });
+postBtn.addEventListener("click", () => {
+  const text = postText.value.trim();
+  if (!text && mediaUpload.files.length === 0) return;
 
-        if (mediaUpload.files.length === 0) savePost(text, []);
+  const fontWeight = fontWeightSel.value;
+  const fontStyle = fontStyleSel.value;
+  let mediaArray = [];
+
+  if (mediaUpload.files.length > 0) {
+    let loaded = 0;
+    Array.from(mediaUpload.files).forEach(file => {
+      const reader = new FileReader();
+      reader.onload = e => {
+        mediaArray.push({ src: e.target.result, type: file.type });
+        loaded++;
+        if (loaded === mediaUpload.files.length) {
+          savePost(text, mediaArray, fontWeight, fontStyle);
+        }
+      };
+      reader.readAsDataURL(file);
     });
+  } else {
+    savePost(text, [], fontWeight, fontStyle);
+  }
+});
 
-    function savePost(text, media) {
-        posts.push({ text, media, date: new Date().toISOString() });
+// Export JSON
+document.getElementById("exportJson").addEventListener("click", () => {
+  const blob = new Blob([JSON.stringify(posts)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "timeline.json";
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
+// Export as Markdown
+document.getElementById("exportMd").addEventListener("click", () => {
+  const mdContent = posts.map(p => p.text).join("\n\n---\n\n");
+  const blob = new Blob([mdContent], { type: "text/markdown" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "timeline.md";
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
+// Import JSON
+document.getElementById("importBtn").addEventListener("click", () => {
+  document.getElementById("importFile").click();
+});
+document.getElementById("importFile").addEventListener("change", e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const imported = JSON.parse(reader.result);
+      if (Array.isArray(imported)) {
+        posts = imported;
         localStorage.setItem("timelinePosts", JSON.stringify(posts));
-        postText.value = "";
-        mediaUpload.value = "";
         renderPosts();
+      }
+    } catch (err) {
+      alert("Invalid file");
     }
+  };
+  reader.readAsText(file);
+});
 
-    renderPosts();
+renderPosts();
 </script>
 </body>
 </html>
