@@ -89,6 +89,7 @@
   }
   function cardBack(){ const b=document.createElement('div'); b.className='face back'; const s=document.createElement('span'); s.textContent='UNO'; b.appendChild(s); return b; }
   function renderBotBack(){ 
+    // Pure back-only element (no face in DOM at all)
     const wrap=document.createElement('div'); wrap.className='card'; 
     const inner=document.createElement('div'); inner.className='inner'; wrap.appendChild(inner); 
     const back=cardBack(); back.classList.add('back'); inner.appendChild(back); 
@@ -104,7 +105,7 @@
     if(owner.human){ 
       wrap.addEventListener('click',()=> onPlayAttempt(owner,c,wrap)); 
     } else {
-      // hide bot cards: show back only
+      // safety: bots shouldn't reveal faces
       inner.style.transform='rotateY(180deg)';
     }
     return wrap;
@@ -134,9 +135,10 @@
       label.textContent = p.name + (i===state.turn?' • Turn':'') + (p.human?' (You)':'') + (p.persona? ' — '+p.persona.name:'') + count;
       zone.appendChild(label); zone.appendChild(row);
       if(p.human){
+        // HUMAN: full faces & click handlers
         p.hand.forEach(c=> row.appendChild(renderCard(p,c)));
       } else {
-        // bots: only backs
+        // BOTS: backs only, zero faces rendered
         for(let k=0;k<p.hand.length;k++){ row.appendChild(renderBotBack()); }
       }
     }
@@ -167,6 +169,7 @@
   }
 
   function onPlayAttempt(player,c,wrap){
+    // This is the key: don't let bots steal your turn
     if(state.players[state.turn]!==player) return toast('Not your turn');
     const top=state.discard[state.discard.length-1];
     if(!canPlay(top,c)) return toast("Can't play that");
@@ -220,6 +223,7 @@
   function nextTurnIfNeeded(){
     render();
     const cur=state.players[state.turn];
+    // IMPORTANT: Only fire AI when it's a bot's turn.
     if(!cur.human){ setTimeout(()=> botAct(cur), state.botspeed); }
   }
 
@@ -409,7 +413,10 @@
     drawCards(cur,1); log('You draw 1.'); 
     const top=state.discard[state.discard.length-1]; 
     const c=cur.hand[cur.hand.length-1]; 
-    if(!canPlay(top,c)) { state.turn=mod(state.turn+state.dir,state.players.length);} 
+    if(!canPlay(top,c)) { 
+      // can't play what you drew—turn passes
+      state.turn=mod(state.turn+state.dir,state.players.length);
+    } 
     nextTurnIfNeeded(); 
   });
 
