@@ -86,6 +86,15 @@ function update(mult){
 
   // Physics
   moveWithCollisions(player, world.tiles);
+// Keep player inside level horizontally
+player.x = Math.max(0, Math.min(player.x, world.width - player.w));
+
+// Kill-plane to prevent infinite falling (then respawn at spawn)
+const KILL_Y = world.height + 200;
+if (player.y > KILL_Y) {
+  respawn();
+  return;
+}
 
   // Coins
   for (const coin of world.coins){
