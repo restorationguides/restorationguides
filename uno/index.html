@@ -1,0 +1,92 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>UNO – Circle of Life Edition</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="savanna" aria-hidden="true">
+    <div class="layer sun"></div>
+    <div class="layer hills"></div>
+    <div class="layer grass"></div>
+  </div>
+
+  <div class="overlay" id="startOverlay">
+    <div class="menu">
+      <h1>UNO – Circle of Life Edition</h1>
+      <p>Pick your rivals’ <b>personalities</b>. Includes Lion King’s <b>Wild Circle of Life</b>: everyone passes one card left, then the player chooses color. No highlights—just vibes.</p>
+
+      <div class="grid" id="botGrid"></div>
+
+      <div class="grid small">
+        <div class="card">
+          <label for="targetPoints">Target Score</label>
+          <select id="targetPoints">
+            <option value="200">200</option>
+            <option value="300">300</option>
+            <option value="500" selected>500</option>
+          </select>
+        </div>
+        <div class="card">
+          <label for="speed">Bot Speed</label>
+          <select id="speed">
+            <option value="900">Chill</option>
+            <option value="600" selected>Normal</option>
+            <option value="350">Zippy</option>
+          </select>
+        </div>
+        <div class="card">
+          <label for="botCount">Bots</label>
+          <input id="botCount" type="number" min="1" max="5" value="3" />
+        </div>
+      </div>
+
+      <div class="row actions">
+        <button id="startBtn">Start Game</button>
+        <button id="musicBtn">Music: Off</button>
+        <button id="rulesBtn">Rules</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <header>
+      <div class="title">UNO – Circle of Life</div>
+      <div class="controls">
+        <button id="newRoundBtn">New Round</button>
+        <button id="restartBtn">Restart</button>
+      </div>
+    </header>
+
+    <main class="table" id="table" aria-live="polite" aria-atomic="true">
+      <div class="row" id="topRow"></div>
+      <div class="row" style="flex-direction:column; gap:1rem">
+        <div class="piles">
+          <div class="pile" id="drawPile" aria-label="Draw pile"></div>
+          <div class="pile" id="discardPile" aria-label="Discard pile"></div>
+        </div>
+        <div class="log" id="log"></div>
+      </div>
+      <div class="row" id="bottomRow"></div>
+    </main>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <!-- SVG Sprites (our art) -->
+  <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+    <symbol id="ico-num" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="rgba(255,255,255,.1)"/><circle cx="50" cy="50" r="30" fill="rgba(255,255,255,.15)"/></symbol>
+    <symbol id="ico-skip" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="rgba(255,255,255,.22)"/><line x1="20" y1="80" x2="80" y2="20" stroke="white" stroke-width="12" stroke-linecap="round"/></symbol>
+    <symbol id="ico-rev" viewBox="0 0 100 100"><path d="M30 70c0-16 14-30 32-30h6l-8-8l8-8l18 18l-18 18l-8-8h-6c-10 0-18 8-18 18z" fill="white"/><path d="M70 30c0 16-14 30-32 30h-6l8 8l-8 8L14 58l18-18l8 8h6c10 0 18-8 18-18z" fill="white" opacity=".75"/></symbol>
+    <symbol id="ico-draw2" viewBox="0 0 100 100"><rect x="18" y="18" width="40" height="60" rx="8" ry="8" fill="rgba(255,255,255,.9)"/><rect x="42" y="22" width="40" height="60" rx="8" ry="8" fill="rgba(255,255,255,.75)"/><text x="50" y="70" text-anchor="middle" font-size="36" font-weight="900" fill="#111">+2</text></symbol>
+    <symbol id="ico-wild" viewBox="0 0 100 100"><g transform="translate(50 50)"><g transform="rotate(20)"><circle r="36" fill="rgba(0,0,0,.25)"/><path d="M0,-32 A32,32 0 0 1 32,0 L0,0 Z" fill="var(--blue)"/><path d="M32,0 A32,32 0 0 1 0,32 L0,0 Z" fill="var(--orange)"/><path d="M0,32 A32,32 0 0 1 -32,0 L0,0 Z" fill="var(--green)"/><path d="M-32,0 A32,32 0 0 1 0,-32 L0,0 Z" fill="var(--purple)"/></g></g></symbol>
+    <symbol id="ico-wild4" viewBox="0 0 100 100"><use href="#ico-wild"/><text x="50" y="90" text-anchor="middle" font-size="28" font-weight="900" fill="white">+4</text></symbol>
+    <symbol id="ico-circle" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="rgba(255,255,255,.2)"/><path d="M50 8 A42 42 0 1 0 92 50" fill="none" stroke="white" stroke-width="10" stroke-linecap="round"/><circle cx="92" cy="50" r="6" fill="white"/><text x="50" y="58" text-anchor="middle" font-size="30" font-weight="900" fill="#111">↺</text></symbol>
+  </svg>
+
+  <script src="game.js"></script>
+</body>
+</html>
