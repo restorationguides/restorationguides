@@ -1,440 +1,607 @@
-// YouTube Music-ish UI + mobile tabs + mini player + your original features
-const audio = document.getElementById('audio');
+/* Mossy Metro: Pocket Platformer
+ * - Mobile analog stick + action buttons
+ * - Keyboard fallback
+ * - Tile collisions, coins, items, melee swing, simple monster AI, door to next level
+ * Dylan, this is written to be hackable—tweak TILE, SPEED, maps, and sprites below.
+*/
 
-const $ = sel => document.querySelector(sel);
-const $$ = sel => [...document.querySelectorAll(sel)];
+(() => {
+  const canvas = document.getElementById('game');
+  const ctx = canvas.getContext('2d');
+  const levelNameEl = document.getElementById('levelName');
+  const heartsEl = document.getElementById('hearts');
+  const coinsEl = document.getElementById('coins');
+  const heldItemEl = document.getElementById('heldItem');
 
-const els = {
-  // pages & tabs
-  pages: $('#pages'),
-  tabs: $$('.tab'),
+  // Controls
+  const stick = document.getElementById('stick');
+  const stickBase = document.getElementById('stick-base');
+  const stickKnob = document.getElementById('stick-knob');
+  const btnJump = document.getElementById('btnJump');
+  const btnCrouch = document.getElementById('btnCrouch');
+  const btnPick = document.getElementById('btnPick');
+  const btnSwing = document.getElementById('btnSwing');
 
-  // pickers
-  filePicker: $('#filePicker'),
-  dirPicker: $('#dirPicker'),
+  // --------------------------------------------------
+  // Game constants
+  const TILE = 32;                 // tile size in world units (logical)
+  const GRAVITY = 0.6;
+  const MOVE_SPEED = 2.5;
+  const AIR_ACCEL = 0.25;
+  const FRICTION = 0.75;
+  const JUMP_VELOCITY = 10.25;
+  const MAX_FALL_SPEED = 16;
+  const CAM_LERP = 0.12;
 
-  // home
-  recentGrid: $('#recentGrid'),
+  // Viewport & scaling for crisp pixels on all screens
+  let scale = 1;
+  function resize() {
+    const maxW = Math.min(1100, window.innerWidth);
+    const maxH = window.innerHeight;
+    // Logical resolution (world pixels we draw) – keep ~16:9
+    const logicalW = 960;
+    const logicalH = 540;
+    // Scale to fit container
+    const s = Math.min(maxW / logicalW, maxH / logicalH);
+    scale = s;
+    canvas.width = Math.floor(logicalW * s);
+    canvas.height = Math.floor(logicalH * s);
+    ctx.imageSmoothingEnabled = false;
+  }
+  addEventListener('resize', resize, { passive:true });
+  resize();
 
-  // library
-  libSearch: $('#libSearch'),
-  library: $('#library'),
+  // --------------------------------------------------
+  // Tiny "sprite system" as colored shapes / emoji
+  const SPR = {
+    player: (x,y,w,h,flip,crouch,holding) => {
+      ctx.save();
+      ctx.translate(x*scale, y*scale);
+      ctx.scale(scale, scale);
+      if (flip) ctx.scale(-1,1);
 
-  // queue
-  queue: $('#queue'),
-  clearQueue: $('#clearQueue'),
-  saveQueueToPlaylist: $('#saveQueueToPlaylist'),
+      // body
+      ctx.fillStyle = '#6be67a';
+      ctx.fillRect(flip?-w:0, 0, w, h);
 
-  // playlists
-  playlists: $('#playlists'),
-  newPlaylistName: $('#newPlaylistName'),
-  createPlaylist: $('#createPlaylist'),
+      // visor
+      ctx.fillStyle = '#202a36';
+      ctx.fillRect(flip?-(w-4):4, 6, w-8, 12);
 
-  // mini player
-  mini: $('#mini'),
-  miniArt: $('#miniArt'),
-  miniTitle: $('#miniTitle'),
-  miniArtist: $('#miniArtist'),
-
-  // sheet player
-  sheet: $('#sheet'),
-  cover: $('#cover'),
-  title: $('#title'),
-  artist: $('#artist'),
-  seek: $('#seek'),
-  current: $('#currentTime'),
-  duration: $('#duration'),
-
-  // transport
-  playPause: $('#playPause'),
-  prev: $('#prev'),
-  next: $('#next'),
-  more: $('#more'),
-
-  playPause2: $('#playPause2'),
-  prev2: $('#prev2'),
-  next2: $('#next2'),
-  back10: $('#back10'),
-  fwd30: $('#fwd30'),
-
-  // toggles
-  shuffle: $('#shuffle'),
-  repeat: $('#repeat'),
-  rate: $('#rate'),
-  volume: $('#volume'),
-};
-
-let library = [];   // [{id,name,artist,blobUrl,fileName,size,modified}]
-let queue = [];     // array of track ids
-let index = -1;     // current queue index
-let shuffleOn = false;
-let repeatMode = 0; // 0 off, 1 all, 2 one
-let recent = [];    // most recent 12 tracks
-
-// ---------- Utilities ----------
-const formatTime = s => {
-  if (!isFinite(s)) return '0:00';
-  const m = Math.floor(s/60), ss = Math.floor(s%60).toString().padStart(2,'0');
-  return `${m}:${ss}`;
-};
-const parseTagsFallback = (file) => {
-  const base = file.name.replace(/\.[^.]+$/,'');
-  const m = base.match(/^(.*?)\s*-\s*(.+)$/);
-  return m ? { artist:m[1].trim(), title:m[2].trim() } : { artist:'', title:base };
-};
-const buildTrackFromFile = (file) => {
-  const url = URL.createObjectURL(file);
-  const { artist, title } = parseTagsFallback(file);
-  return {
-    id: crypto.randomUUID(),
-    name: title,
-    artist,
-    blobUrl: url,
-    fileName: file.name,
-    size: file.size,
-    modified: file.lastModified
+      // item indicator
+      if (holding) {
+        ctx.fillStyle = '#ffd86b';
+        ctx.fillRect(flip?-(w+6): (w-6), crouch? h-14 : 10, 6, 6);
+      }
+      ctx.restore();
+    },
+    goober: (x,y,w,h) => {
+      ctx.save();
+      ctx.translate(x*scale, y*scale);
+      ctx.scale(scale, scale);
+      // lil mushroom gremlin
+      ctx.fillStyle = '#c67bff';
+      ctx.fillRect(0, 6, w, h-6);
+      ctx.fillStyle = '#854df0';
+      ctx.fillRect(-2, 0, w+4, 10);
+      ctx.restore();
+    },
+    coin: (x,y) => {
+      drawEmoji('🪙', x, y);
+    },
+    spike: (x,y) => {
+      ctx.save();
+      ctx.translate(x*scale, y*scale);
+      ctx.scale(scale, scale);
+      ctx.fillStyle = '#9bb3c9';
+      ctx.beginPath();
+      for(let i=0;i<4;i++){
+        ctx.moveTo(i*8,16);
+        ctx.lineTo(i*8+4,0);
+        ctx.lineTo(i*8+8,16);
+      }
+      ctx.fill();
+      ctx.restore();
+    },
+    block: (x,y,type) => {
+      ctx.save();
+      ctx.translate(x*scale, y*scale);
+      ctx.scale(scale, scale);
+      if (type === '#') {
+        ctx.fillStyle = '#2b3c4f';
+        ctx.fillRect(0,0,TILE,TILE);
+        ctx.fillStyle = '#3a4f66';
+        ctx.fillRect(2,2,TILE-4,TILE-4);
+      } else if (type === '=') {
+        ctx.fillStyle = '#283a2d';
+        ctx.fillRect(0,0,TILE,TILE);
+        ctx.fillStyle = '#2f6142';
+        ctx.fillRect(0,TILE-8,TILE,8);
+      }
+      ctx.restore();
+    },
+    door: (x,y,open=true) => {
+      ctx.save();
+      ctx.translate(x*scale, y*scale);
+      ctx.scale(scale, scale);
+      ctx.fillStyle = open ? '#8cc7ff' : '#32465a';
+      ctx.fillRect(4,4,TILE-8,TILE-4);
+      ctx.fillStyle = '#1b2736';
+      ctx.fillRect(8,8,TILE-16,TILE-12);
+      ctx.restore();
+    },
+    item: (x,y) => {
+      drawEmoji('🪓', x, y);
+    }
   };
-};
 
-// ---------- Tabs ----------
-els.tabs.forEach(btn => {
-  btn.addEventListener('click', () => {
-    els.tabs.forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    $$('.page').forEach(p=>p.classList.remove('active'));
-    const id = `#page-${btn.dataset.tab}`;
-    document.querySelector(id).classList.add('active');
+  function drawEmoji(char, x, y) {
+    const px = x*scale, py = y*scale;
+    ctx.save();
+    ctx.font = `${Math.floor(24*scale)}px system-ui,apple color emoji,Segoe UI Emoji`;
+    ctx.textBaseline = 'top';
+    ctx.fillText(char, px+4, py+4);
+    ctx.restore();
+  }
+
+  // --------------------------------------------------
+  // Levels: 32x16-ish maps, tiles are 32px
+  // Legend:
+  //  # solid | = ground deco | ^ spikes | c coin | m monster | i item | D door | P player
+  const LEVELS = [
+`                                
+  c      m           c           
+###########     #######     #####
+=                              D#
+=   c       m     c      m     #
+=###########################  ###
+=                             ###
+=   c        i                 ##
+=         ######               ##
+=   m                    c     ##
+=#############       ######### ##
+=                              ##
+=   c    m       c        i    ##
+=################################
+P                               `,
+`                                
+ m      c     i      m      c   
+#############        #########  
+=                               
+=    c      m     c      m    D#
+=############################# ##
+=                               #
+=   c           i               #
+=         #######               #
+=   m                    c      #
+=###########      ###############
+=                               #
+=   c    m       c              #
+=################################
+P                               `];
+
+  // Parse level into objects
+  function parseLevel(idx) {
+    const lines = LEVELS[idx].split('\n');
+    const solids = new Set(['#']);
+    const spikes = new Set(['^']);
+    const width = Math.max(...lines.map(l => l.length));
+    const height = lines.length;
+    const tiles = [];
+    let playerSpawn = {x: 32, y: 0};
+    const coins = [];
+    const monsters = [];
+    const items = [];
+    let door = {x: (width-2)*TILE, y:(3)*TILE};
+
+    for (let y=0;y<height;y++){
+      for (let x=0;x<width;x++){
+        const ch = (lines[y][x] || ' ');
+        const px = x*TILE, py = y*TILE;
+        if (ch === 'P') playerSpawn = {x:px, y:py};
+        if (ch === 'D') door = {x:px, y:py};
+        if (ch === '#') tiles.push({x:px,y:py,type:'#'});
+        if (ch === '=') tiles.push({x:px,y:py,type:'='});
+        if (ch === '^') tiles.push({x:px,y:py,type:'^'});
+        if (ch === 'c') coins.push({x:px,y:py,collected:false});
+        if (ch === 'm') monsters.push(spawnMonster(px, py));
+        if (ch === 'i') items.push({x:px,y:py,held:false});
+      }
+    }
+    return { width: width*TILE, height: height*TILE, tiles, coins, monsters, items, door, playerSpawn };
+  }
+
+  function spawnMonster(x,y){
+    return {
+      x, y, w:22, h:26, vx: (Math.random()<.5?-1:1)*1.1, vy:0, onGround:false, dir:1, alive:true, patrolLeft:x-80, patrolRight:x+80, hitCooldown:0
+    };
+  }
+
+  // --------------------------------------------------
+  // Simple physics + collisions
+  function rectsOverlap(a,b){
+    return a.x < b.x+b.w && a.x+a.w > b.x && a.y < b.y+b.h && a.y+a.h > b.y;
+  }
+  function tileRect(x,y){ return {x,y,w:TILE,h:TILE}; }
+
+  // World state
+  let levelIndex = 0;
+  let world = parseLevel(levelIndex);
+
+  const player = {
+    x: world.playerSpawn.x, y: world.playerSpawn.y,
+    w: 20, h: 28,
+    vx: 0, vy: 0,
+    facing: 1,
+    onGround: false,
+    crouch: false,
+    hearts: 3,
+    coins: 0,
+    holding: null,
+    swingTimer: 0
+  };
+
+  let camera = { x: 0, y: 0 };
+
+  // Input state
+  const keys = new Set();
+  const input = { ax: 0, ay: 0, jump:false, crouch:false, pick:false, swing:false };
+
+  // Keyboard
+  addEventListener('keydown', (e)=>{
+    if (['ArrowLeft','ArrowRight','ArrowUp','ArrowDown',' '].includes(e.key)) e.preventDefault();
+    keys.add(e.key.toLowerCase());
   });
-});
+  addEventListener('keyup', (e)=> keys.delete(e.key.toLowerCase()));
 
-// ---------- Rendering ----------
-function renderHome() {
-  els.recentGrid.innerHTML = '';
-  recent.slice(0,12).forEach(t => {
-    const d = document.createElement('div');
-    d.className = 'card';
-    d.innerHTML = `
-      <div class="art">🎵</div>
-      <div class="meta">
-        <div class="title ellipsis">${t.name}</div>
-        <div class="artist ellipsis">${t.artist || 'Unknown artist'}</div>
-      </div>
-      <button class="ghost" data-id="${t.id}" data-act="play">Play</button>
-    `;
-    els.recentGrid.appendChild(d);
-  });
-  els.recentGrid.addEventListener('click', e=>{
-    const b = e.target.closest('button[data-id]'); if(!b) return;
-    const id = b.dataset.id;
-    addToQueue(id); loadByQueueIndex(queue.length-1);
-  }, { once:true });
-}
+  // Buttons
+  function holdButton(btn, flag){
+    let active = false;
+    const set = (v)=>{ active=v; input[flag]=v; };
+    const down = (e)=>{ e.preventDefault(); set(true); };
+    const up = (e)=>{ e.preventDefault(); set(false); };
 
-function renderLibrary() {
-  const q = (els.libSearch.value || '').toLowerCase();
-  els.library.innerHTML = '';
-  library
-    .filter(t => t.name.toLowerCase().includes(q) || t.artist.toLowerCase().includes(q))
-    .forEach(t => {
-      const li = document.createElement('li'); li.className='item';
-      li.innerHTML = `
-        <div>
-          <div class="title ellipsis">${t.name}</div>
-          <div class="sub ellipsis">${t.artist || 'Unknown artist'}</div>
-        </div>
-        <div class="actions">
-          <button data-id="${t.id}" data-act="play" class="btn">Play</button>
-          <button data-id="${t.id}" data-act="add" class="ghost">Add</button>
-          <button data-id="${t.id}" data-act="next" class="ghost">⋮</button>
-        </div>`;
-      els.library.appendChild(li);
-    });
-}
+    btn.addEventListener('touchstart', down, {passive:false});
+    btn.addEventListener('touchend', up, {passive:false});
+    btn.addEventListener('touchcancel', up, {passive:false});
+    btn.addEventListener('mousedown', down);
+    addEventListener('mouseup', up);
+  }
+  holdButton(btnJump,'jump');
+  holdButton(btnCrouch,'crouch');
+  holdButton(btnPick,'pick');
+  holdButton(btnSwing,'swing');
 
-function renderQueue() {
-  els.queue.innerHTML = '';
-  queue.forEach((id, i) => {
-    const t = library.find(x => x.id === id);
-    if (!t) return;
-    const li = document.createElement('li'); li.className='item'; li.draggable = true; li.dataset.index = i;
-    li.innerHTML = `
-      <div>
-        <div class="title ellipsis">${i === index ? '▶️ ' : ''}${t.name}</div>
-        <div class="sub ellipsis">${t.artist || 'Unknown artist'}</div>
-      </div>
-      <div class="actions">
-        <button data-i="${i}" data-act="jump" class="btn">Play</button>
-        <button data-i="${i}" data-act="remove" class="ghost">Remove</button>
-      </div>`;
-    addDragHandlers(li);
-    els.queue.appendChild(li);
-  });
-}
+  // Analog stick
+  (function initStick(){
+    let tracking = false;
+    let center = { x:0, y:0 };
+    let maxR = stick.clientWidth/2 - 8;
 
-function renderPlaylists() {
-  const lists = loadPlaylists();
-  els.playlists.innerHTML = '';
-  Object.keys(lists).forEach(name => {
-    const li = document.createElement('li'); li.className='item';
-    const count = lists[name].length;
-    li.innerHTML = `
-      <div>
-        <div class="title">${name}</div>
-        <div class="sub">${count} track${count!==1?'s':''}</div>
-      </div>
-      <div class="actions">
-        <button data-name="${name}" data-act="loadpl" class="btn">Load</button>
-        <button data-name="${name}" data-act="queuepl" class="ghost">Queue</button>
-        <button data-name="${name}" data-act="delpl" class="ghost">Delete</button>
-      </div>`;
-    els.playlists.appendChild(li);
-  });
-}
+    function setKnob(dx,dy){
+      const r = Math.hypot(dx,dy);
+      const clamped = Math.min(r, maxR);
+      const ang = Math.atan2(dy,dx) || 0;
+      const kx = Math.cos(ang)*clamped;
+      const ky = Math.sin(ang)*clamped;
+      stickKnob.style.transform = `translate(${kx}px, ${ky}px)`;
+      // Normalize to [-1,1]
+      input.ax = (kx / maxR);
+      input.ay = (ky / maxR);
+    }
+    function resetKnob(){
+      stickKnob.style.transform = `translate(0px,0px)`;
+      input.ax = 0; input.ay = 0;
+    }
+    function pointer(e, down){
+      if (down){
+        tracking = true;
+        const rect = stickBase.getBoundingClientRect();
+        center.x = rect.left + rect.width/2;
+        center.y = rect.top + rect.height/2;
+      }
+      if (!tracking) return;
+      const t = (e.touches ? e.touches[0] : e);
+      const dx = t.clientX - center.x;
+      const dy = t.clientY - center.y;
+      setKnob(dx, dy);
+    }
+    function end(){
+      tracking = false;
+      resetKnob();
+    }
+    stickBase.addEventListener('touchstart', e=>{ e.preventDefault(); pointer(e,true); }, {passive:false});
+    stickBase.addEventListener('touchmove', e=>{ e.preventDefault(); pointer(e,false); }, {passive:false});
+    stickBase.addEventListener('touchend', e=>{ e.preventDefault(); end(); }, {passive:false});
+    stickBase.addEventListener('touchcancel', e=>{ e.preventDefault(); end(); }, {passive:false});
+    stickBase.addEventListener('mousedown', e=>pointer(e,true));
+    addEventListener('mousemove', e=>pointer(e,false));
+    addEventListener('mouseup', end);
+    addEventListener('resize', ()=>{ maxR = stick.clientWidth/2 - 8; });
+  })();
 
-function updateMini(t){
-  els.miniTitle.textContent = t?.name || 'Nothing playing';
-  els.miniArtist.textContent = t?.artist || '—';
-  els.miniArt.textContent = '🎵';
-}
+  // --------------------------------------------------
+  // Update loop
+  let last = 0;
+  requestAnimationFrame(loop);
+  function loop(t){
+    const dt = Math.min(32, t-last); // cap
+    last = t;
 
-function updateSheet(t){
-  els.title.textContent = t?.name || 'No track';
-  els.artist.textContent = t?.artist || '—';
-  els.cover.textContent = '🎵';
-}
+    readKeyboard();
+    update(dt/16);
+    draw();
 
-// ---------- Playback ----------
-function loadByQueueIndex(i) {
-  if (i < 0 || i >= queue.length) return;
-  index = i;
-  const t = library.find(x => x.id === queue[index]);
-  if (!t) return;
-  audio.src = t.blobUrl;
-  audio.playbackRate = parseFloat(els.rate.value);
-  audio.volume = parseFloat(els.volume.value);
-  audio.play().catch(()=>{});
-  setPlays(true);
-  updateMini(t); updateSheet(t);
-  recent = [t, ...recent.filter(x=>x.id!==t.id)];
-  renderHome();
-  updateMediaSession(t);
-  renderQueue();
-}
+    requestAnimationFrame(loop);
+  }
 
-function nextTrack(userAction=false) {
-  if (!queue.length) return;
-  if (repeatMode === 2 && !userAction) { audio.currentTime = 0; audio.play(); return; }
-  if (shuffleOn) {
-    index = Math.floor(Math.random()*queue.length);
-  } else {
-    index++;
-    if (index >= queue.length) {
-      if (repeatMode === 1) index = 0; else { index = queue.length-1; audio.pause(); setPlays(false); return; }
+  function readKeyboard(){
+    const left = keys.has('a') || keys.has('arrowleft');
+    const right = keys.has('d') || keys.has('arrowright');
+    const up = keys.has('w') || keys.has('arrowup') || keys.has(' ');
+    const down = keys.has('s') || keys.has('arrowdown');
+
+    // Horizontal blend keyboard with stick (take whichever magnitude is larger)
+    const kbAx = (left?-1:0) + (right?1:0);
+    if (Math.abs(kbAx) > Math.abs(input.ax)) input.ax = kbAx;
+
+    input.jump = input.jump || up;
+    input.crouch = input.crouch || down;
+    input.pick = input.pick || keys.has('e');
+    input.swing = input.swing || keys.has('f');
+  }
+
+  function update(mult){
+    // Player physics
+    const want = input.ax;
+    const accel = player.onGround ? 0.6 : AIR_ACCEL;
+    player.vx += (want*MOVE_SPEED - player.vx) * accel * mult;
+
+    // Facing and crouch
+    if (Math.abs(want) > 0.05) player.facing = want > 0 ? 1 : -1;
+    player.crouch = input.crouch && player.onGround;
+    const targetH = player.crouch ? 20 : 28;
+    player.h += (targetH - player.h)*0.6;
+
+    // Jump
+    if (input.jump && player.onGround){
+      player.vy = -JUMP_VELOCITY;
+      player.onGround = false;
+    }
+
+    // Gravity
+    player.vy = Math.min(MAX_FALL_SPEED, player.vy + GRAVITY*mult);
+
+    // Apply motion with collisions
+    moveWithCollisions(player, world.tiles);
+
+    // Coins
+    for (const coin of world.coins){
+      if (!coin.collected && rectsOverlap(player, {x:coin.x+4,y:coin.y+4,w:24,h:24})){
+        coin.collected = true;
+        player.coins++;
+        updateHUD();
+      }
+    }
+
+    // Items pick/drop
+    if (input.pick){
+      if (player.holding){
+        // drop
+        player.holding.x = player.x + (player.facing>0?player.w+4:-12);
+        player.holding.y = player.y + player.h - 18;
+        player.holding.held = false;
+        player.holding = null;
+      } else {
+        for (const it of world.items){
+          if (!it.held && rectsOverlap(player, {x:it.x,y:it.y,w:22,h:22})){
+            it.held = true;
+            player.holding = it;
+            break;
+          }
+        }
+      }
+    }
+
+    // Swing
+    if (input.swing && player.swingTimer<=0){
+      player.swingTimer = 10; // frames
+    }
+    if (player.swingTimer>0) player.swingTimer--;
+
+    // Carry item follows player
+    if (player.holding){
+      player.holding.x = player.x + (player.facing>0 ? player.w+2 : -18);
+      player.holding.y = player.y + (player.crouch? player.h-16 : 6);
+    }
+
+    // Monsters
+    for (const m of world.monsters){
+      if (!m.alive) continue;
+      m.vy = Math.min(MAX_FALL_SPEED, m.vy + GRAVITY*mult);
+      // simple patrol
+      if (m.x < m.patrolLeft) m.vx = Math.abs(m.vx);
+      if (m.x > m.patrolRight) m.vx = -Math.abs(m.vx);
+      m.dir = m.vx>=0 ? 1 : -1;
+      moveWithCollisions(m, world.tiles);
+
+      // Monster vs player
+      if (rectsOverlap(player, m)){
+        // If player falling onto monster -> bonk it
+        if (player.vy > 2){
+          m.alive = false;
+          player.vy = -8;
+        } else if (m.hitCooldown<=0){
+          player.hearts = Math.max(0, player.hearts-1);
+          m.hitCooldown = 40;
+          if (player.hearts<=0) respawn();
+          updateHUD();
+        }
+      }
+      if (m.hitCooldown>0) m.hitCooldown--;
+    }
+
+    // Swing hitbox
+    if (player.swingTimer>0){
+      const sx = player.facing>0 ? player.x+player.w : player.x-18;
+      const sy = player.y + (player.crouch? player.h-14 : 4);
+      const sword = {x:sx, y:sy, w:18, h:12};
+      for (const m of world.monsters){
+        if (m.alive && rectsOverlap(sword, m)){
+          m.alive = false;
+        }
+      }
+    }
+
+    // Spikes damage
+    for (const t of world.tiles){
+      if (t.type==='^'){
+        if (rectsOverlap(player, {x:t.x,y:t.y,w:TILE,h:TILE})){
+          player.hearts = Math.max(0, player.hearts-1);
+          if (player.hearts<=0) respawn();
+          updateHUD();
+        }
+      }
+    }
+
+    // Door: next level if enough coins (or just touch)
+    if (rectsOverlap(player, {x:world.door.x+4, y:world.door.y+4, w:TILE-8, h:TILE-8})){
+      nextLevel();
+      return;
+    }
+
+    // Camera follow
+    const vw = canvas.width/scale, vh = canvas.height/scale;
+    const targetCamX = clamp(player.x - vw*0.4, 0, Math.max(0, world.width - vw));
+    const targetCamY = clamp(player.y - vh*0.6, 0, Math.max(0, world.height - vh));
+    camera.x += (targetCamX - camera.x) * CAM_LERP;
+    camera.y += (targetCamY - camera.y) * CAM_LERP;
+
+    // Clear one-shot inputs
+    input.pick = false;
+    input.swing = false;
+    input.jump = false;
+  }
+
+  function moveWithCollisions(ent, tiles){
+    // Horizontal
+    ent.x += ent.vx;
+    const collX = collidingTiles(ent, tiles);
+    for (const t of collX){
+      if (ent.vx > 0) ent.x = t.x - ent.w;
+      if (ent.vx < 0) ent.x = t.x + TILE;
+      ent.vx = 0;
+    }
+    // Vertical
+    ent.y += ent.vy;
+    ent.onGround = false;
+    const collY = collidingTiles(ent, tiles);
+    for (const t of collY){
+      if (ent.vy > 0){ ent.y = t.y - ent.h; ent.vy = 0; ent.onGround = true; }
+      if (ent.vy < 0){ ent.y = t.y + TILE; ent.vy = 0; }
     }
   }
-  loadByQueueIndex(index);
-}
-function prevTrack(){
-  if (audio.currentTime > 3) { audio.currentTime = 0; return; }
-  index = Math.max(0,index-1);
-  loadByQueueIndex(index);
-}
+  function collidingTiles(r, tiles){
+    const hits = [];
+    for (const t of tiles){
+      if (t.type==='#' && rectsOverlap(r, tileRect(t.x,t.y))){
+        hits.push(t);
+      }
+    }
+    return hits;
+  }
 
-// queue ops
-function addToQueue(id){ queue.push(id); renderQueue(); }
-function playNext(id){
-  const at = Math.min(queue.length, index+1);
-  queue.splice(at,0,id);
-  renderQueue();
-}
-function clearQueue(){ queue.length = 0; index = -1; renderQueue(); audio.pause(); setPlays(false); }
+  // --------------------------------------------------
+  // Draw
+  function draw(){
+    // Clear
+    ctx.clearRect(0,0,canvas.width,canvas.height);
 
-// ---------- Drag reorder ----------
-function addDragHandlers(el){
-  el.addEventListener('dragstart', e=>{
-    el.classList.add('dragging');
-    e.dataTransfer.setData('text/plain', el.dataset.index);
-  });
-  el.addEventListener('dragend', ()=> el.classList.remove('dragging'));
-}
-els.queue.addEventListener('dragover', e=>{
-  e.preventDefault();
-  const dragging = els.queue.querySelector('.dragging');
-  const after = getDragAfterElement(els.queue, e.clientY);
-  if (!dragging) return;
-  if (after == null) els.queue.appendChild(dragging);
-  else els.queue.insertBefore(dragging, after);
-});
-els.queue.addEventListener('drop', ()=>{
-  const idsInDom = [...els.queue.querySelectorAll('.item')].map(li => queue[li.dataset.index]);
-  queue = idsInDom;
-  renderQueue();
-});
-function getDragAfterElement(container, y){
-  const items = [...container.querySelectorAll('.item:not(.dragging)')];
-  return items.reduce((closest, child)=>{
-    const box = child.getBoundingClientRect();
-    const offset = y - box.top - box.height/2;
-    if (offset < 0 && offset > closest.offset) return { offset, element: child };
-    else return closest;
-  }, { offset: Number.NEGATIVE_INFINITY }).element;
-}
+    // Transform to camera space
+    ctx.save();
+    ctx.scale(scale, scale);
+    ctx.translate(-camera.x, -camera.y);
 
-// ---------- Playlists ----------
-const PL_KEY = 'offline_music_playlists_v1';
-function loadPlaylists(){ try{return JSON.parse(localStorage.getItem(PL_KEY))||{}}catch{return{}} }
-function savePlaylists(obj){ localStorage.setItem(PL_KEY, JSON.stringify(obj)); }
-function trackFingerprint(t){ return `${t.fileName}|${t.size}|${t.modified}`; }
+    // Sky parallax
+    drawParallax();
 
-function createPlaylist(name, ids){
-  if (!name.trim()) return;
-  const lists = loadPlaylists();
-  const fps = ids.map(id=>{
-    const t = library.find(x=>x.id===id);
-    return t ? trackFingerprint(t) : null;
-  }).filter(Boolean);
-  lists[name] = fps;
-  savePlaylists(lists);
-  renderPlaylists();
-  alert(`Saved "${name}"`);
-}
-async function resolvePlaylistToTracks(fps){
-  let ids = [];
-  const need = new Set(fps);
-  library.forEach(t=>{ const fp = trackFingerprint(t); if (need.has(fp)){ ids.push(t.id); need.delete(fp);} });
-  if (need.size === 0) return ids;
-  alert(`Some tracks missing. Pick files to complete the playlist.`);
-  const files = await pickFilesDialog();
-  addFilesToLibrary(files);
-  library.forEach(t=>{ const fp = trackFingerprint(t); if (need.has(fp)){ ids.push(t.id); need.delete(fp);} });
-  return ids;
-}
+    // Tiles
+    for (const t of world.tiles){
+      if (t.type==='#' || t.type==='=') SPR.block(t.x, t.y, t.type);
+      if (t.type==='^') SPR.spike(t.x, t.y+16);
+    }
 
-// ---------- File picking ----------
-function addFilesToLibrary(fileList){
-  if (!fileList) return;
-  const audioFiles = [...fileList].filter(f=> f.type.startsWith('audio/'));
-  const tracks = audioFiles.map(buildTrackFromFile);
-  library.push(...tracks);
-  library.sort((a,b)=> a.artist.localeCompare(b.artist) || a.name.localeCompare(b.name));
-  renderLibrary(); renderHome();
-}
-function pickFilesDialog(){
-  return new Promise(resolve=>{
-    const input = document.createElement('input');
-    input.type = 'file'; input.multiple = true; input.accept='audio/*';
-    input.onchange = ()=> resolve(input.files);
-    input.click();
-  });
-}
+    // Door
+    SPR.door(world.door.x, world.door.y);
 
-// ---------- Media Session ----------
-function updateMediaSession(t){
-  if (!('mediaSession' in navigator)) return;
-  navigator.mediaSession.metadata = new MediaMetadata({
-    title: t.name, artist: t.artist || 'Unknown', album: 'Local Files',
-  });
-  navigator.mediaSession.setActionHandler('play', ()=>{ audio.play(); setPlays(true); });
-  navigator.mediaSession.setActionHandler('pause', ()=>{ audio.pause(); setPlays(false); });
-  navigator.mediaSession.setActionHandler('previoustrack', prevTrack);
-  navigator.mediaSession.setActionHandler('nexttrack', ()=> nextTrack(true));
-  navigator.mediaSession.setActionHandler('seekbackward', ()=> audio.currentTime = Math.max(0,audio.currentTime-10));
-  navigator.mediaSession.setActionHandler('seekforward', ()=> audio.currentTime = Math.min(audio.duration||Infinity,audio.currentTime+30));
-}
+    // Coins
+    for (const c of world.coins){
+      if (!c.collected) SPR.coin(c.x, c.y);
+    }
 
-// ---------- Events ----------
-els.filePicker.addEventListener('change', e=> addFilesToLibrary(e.target.files));
-els.dirPicker.addEventListener('change', e=> addFilesToLibrary(e.target.files));
+    // Items
+    for (const it of world.items){
+      if (!it.held) SPR.item(it.x, it.y);
+    }
 
-els.libSearch.addEventListener('input', renderLibrary);
+    // Monsters
+    for (const m of world.monsters){
+      if (m.alive) SPR.goober(m.x, m.y, m.w, m.h);
+    }
 
-els.library.addEventListener('click', e=>{
-  const btn = e.target.closest('button'); if (!btn) return;
-  const id = btn.dataset.id, act = btn.dataset.act;
-  if (act === 'play'){ addToQueue(id); loadByQueueIndex(queue.length-1); }
-  if (act === 'add'){ addToQueue(id); }
-  if (act === 'next'){ playNext(id); }
-});
+    // Player + sword
+    if (player.swingTimer>0){
+      const sx = player.facing>0 ? player.x+player.w : player.x-18;
+      const sy = player.y + (player.crouch? player.h-14 : 4);
+      ctx.fillStyle = '#ffd86b';
+      ctx.fillRect(sx, sy, 18, 3);
+    }
+    SPR.player(player.x, player.y, player.w, player.h, player.facing<0, player.crouch, !!player.holding);
 
-els.queue.addEventListener('click', e=>{
-  const btn = e.target.closest('button'); if (!btn) return;
-  const i = parseInt(btn.dataset.i,10), act = btn.dataset.act;
-  if (act === 'remove'){ queue.splice(i,1); if (i<=index) index--; renderQueue(); }
-  if (act === 'jump'){ loadByQueueIndex(i); }
-});
+    ctx.restore();
+  }
 
-els.clearQueue.addEventListener('click', clearQueue);
-els.saveQueueToPlaylist.addEventListener('click', ()=>{
-  if (!queue.length) return alert('Queue is empty.');
-  const name = prompt('Playlist name?'); if (!name) return;
-  createPlaylist(name, queue.slice());
-});
-els.createPlaylist.addEventListener('click', ()=>{
-  if (!queue.length) return alert('Queue is empty.');
-  const name = (els.newPlaylistName.value||'').trim(); if (!name) return;
-  createPlaylist(name, queue.slice()); els.newPlaylistName.value='';
-});
-els.playlists.addEventListener('click', async e=>{
-  const btn = e.target.closest('button'); if (!btn) return;
-  const act = btn.dataset.act, name = btn.dataset.name;
-  const lists = loadPlaylists(); if (!(name in lists)) return;
-  if (act === 'delpl'){ delete lists[name]; savePlaylists(lists); renderPlaylists(); return; }
-  const ids = await resolvePlaylistToTracks(lists[name]);
-  if (act === 'loadpl'){ queue = ids.slice(); index = -1; renderQueue(); if (queue.length) loadByQueueIndex(0); }
-  if (act === 'queuepl'){ queue.push(...ids); renderQueue(); }
-});
+  function drawParallax(){
+    // distant blobs for vibes
+    const w = canvas.width/scale, h = canvas.height/scale;
+    const x = camera.x*0.5;
+    ctx.fillStyle = '#0b1220';
+    for (let i=0;i<6;i++){
+      const bx = (i*280 - (x%280));
+      ctx.fillRect(bx, 40, 180, 24);
+      ctx.fillRect(bx+120, 90, 140, 18);
+    }
+  }
 
-// Mini ↔ Sheet behavior
-function openSheet(){ els.sheet.classList.add('open'); }
-function closeSheet(){ els.sheet.classList.remove('open'); }
-els.mini.addEventListener('click', openSheet);
-els.sheet.querySelector('.grab').addEventListener('click', closeSheet);
+  // --------------------------------------------------
+  // Level flow
+  function updateHUD(){
+    levelNameEl.textContent = `Level ${levelIndex+1}–${levelIndex===0?'Fungal Fields':'Night Spores'}`;
+    heartsEl.textContent = '❤'.repeat(player.hearts) + '♡'.repeat(Math.max(0,3-player.hearts));
+    coinsEl.textContent = `🪙${player.coins}`;
+    heldItemEl.textContent = player.holding ? '🪓 held' : '—';
+  }
+  function nextLevel(){
+    levelIndex = (levelIndex+1) % LEVELS.length;
+    world = parseLevel(levelIndex);
+    player.x = world.playerSpawn.x;
+    player.y = world.playerSpawn.y;
+    player.vx = player.vy = 0;
+    player.holding = null;
+    player.coins = 0;
+    updateHUD();
+  }
+  function respawn(){
+    player.hearts = 3;
+    player.x = world.playerSpawn.x;
+    player.y = world.playerSpawn.y;
+    player.vx = player.vy = 0;
+    player.holding = null;
+    updateHUD();
+  }
+  updateHUD();
 
-// Play/pause sync between mini & sheet
-function setPlays(playing){
-  els.playPause.textContent = playing ? '⏸' : '▶️';
-  els.playPause2.textContent = playing ? '⏸' : '▶️';
-}
-els.playPause.addEventListener('click', (e)=>{ e.stopPropagation(); togglePlay(); });
-els.playPause2.addEventListener('click', togglePlay);
-function togglePlay(){
-  if (audio.paused){ audio.play(); setPlays(true); }
-  else { audio.pause(); setPlays(false); }
-}
-
-els.prev.addEventListener('click', (e)=>{ e.stopPropagation(); prevTrack(); });
-els.next.addEventListener('click', (e)=>{ e.stopPropagation(); nextTrack(true); });
-els.prev2.addEventListener('click', prevTrack);
-els.next2.addEventListener('click', ()=> nextTrack(true));
-els.back10.addEventListener('click', ()=> audio.currentTime = Math.max(0,audio.currentTime-10));
-els.fwd30.addEventListener('click', ()=> audio.currentTime = Math.min(audio.duration||Infinity, audio.currentTime+30));
-
-els.shuffle.addEventListener('click', ()=>{
-  shuffleOn = !shuffleOn;
-  els.shuffle.style.borderColor = shuffleOn ? '#ff4d6a' : 'var(--border)';
-});
-els.repeat.addEventListener('click', ()=>{
-  repeatMode = (repeatMode+1)%3;
-  const labels = ['🔁','🔂 All','🔂 One'];
-  els.repeat.textContent = labels[repeatMode];
-});
-els.rate.addEventListener('change', ()=> audio.playbackRate = parseFloat(els.rate.value));
-els.volume.addEventListener('input', ()=> audio.volume = parseFloat(els.volume.value));
-
-// Progress
-audio.addEventListener('timeupdate', ()=>{
-  els.current.textContent = formatTime(audio.currentTime);
-  els.duration.textContent = formatTime(audio.duration);
-  els.seek.value = audio.duration ? (audio.currentTime / audio.duration) * 100 : 0;
-});
-els.seek.addEventListener('input', ()=>{
-  if (!audio.duration) return;
-  audio.currentTime = (parseFloat(els.seek.value)/100) * audio.duration;
-});
-audio.addEventListener('ended', ()=> nextTrack(false));
-
-// ---------- Init ----------
-function initialRender(){
-  renderHome(); renderLibrary(); renderQueue(); renderPlaylists();
-}
-initialRender();
+  // --------------------------------------------------
+  // Helpers
+  function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
+})();
