@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dark Threads Markdown Notepad</title>
+<title>Dylan's Threads Notepad</title>
 <style>
   :root {
-    --bg: #101010;
-    --card: #181818;
-    --border: #2a2a2a;
-    --text: #f5f5f5;
+    --bg: #000;
+    --card: #101010;
+    --border: #1a1a1a;
+    --text: #fff;
     --muted: #aaa;
     --accent: #5e5ce6;
   }
@@ -17,142 +17,163 @@
     margin: 0;
     background: var(--bg);
     color: var(--text);
-    font-family: system-ui, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
   }
   header {
-    background: var(--card);
-    border-bottom: 1px solid var(--border);
     padding: 1rem;
+    border-bottom: 1px solid var(--border);
     display: flex;
-    justify-content: space-between;
     align-items: center;
-  }
-  h1 { font-size: 1.2rem; margin: 0; }
-  .btn {
-    background: var(--accent);
-    border: none;
-    color: white;
-    padding: .4rem .9rem;
-    border-radius: 999px;
-    cursor: pointer;
-    font-size: .9rem;
-  }
-  #composer {
+    gap: .5rem;
     background: var(--card);
-    border-bottom: 1px solid var(--border);
+  }
+  header h1 { font-size: 1.2rem; margin: 0; }
+  #composer {
+    display: flex;
+    gap: .6rem;
     padding: 1rem;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
-    border-radius: 0 0 1rem 1rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--card);
   }
-  textarea {
-    width: 100%;
-    background: var(--bg);
+  #composer img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
+  #composer textarea {
+    flex: 1;
+    background: transparent;
+    border: none;
     color: var(--text);
-    border: 1px solid var(--border);
-    border-radius: .5rem;
-    padding: .5rem;
-    resize: vertical;
+    font-size: 1rem;
+    resize: none;
+    outline: none;
   }
-  .controls {
-    margin-top: .6rem;
+  .send-btn {
+    background: transparent;
+    border: none;
+    color: var(--accent);
+    font-size: 1.4rem;
+    cursor: pointer;
+  }
+  .format-bar {
     display: flex;
     gap: .5rem;
-    flex-wrap: wrap;
-    align-items: center;
+    padding: 0 .5rem;
+    margin-top: .3rem;
   }
-  select {
-    background: var(--bg);
-    color: var(--text);
-    border: 1px solid var(--border);
-    padding: .3rem;
+  .format-btn {
+    background: var(--border);
+    border: none;
     border-radius: .3rem;
-    font-size: .85rem;
-  }
-  input[type="file"] {
-    color: var(--muted);
-    font-size: .85rem;
+    color: var(--text);
+    font-size: .9rem;
+    padding: .2rem .4rem;
+    cursor: pointer;
   }
   #timeline {
+    flex: 1;
+    overflow-y: auto;
     padding: 1rem;
-    max-width: 600px;
-    margin: auto;
   }
   .post {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 1rem;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-    position: relative;
+    display: flex;
+    gap: .6rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border);
   }
-  .post img, .post video {
-    max-width: 100%;
-    border-radius: .5rem;
-    margin-top: .5rem;
+  .post img.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
+  .post-content {
+    flex: 1;
   }
   .post-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
+  .username { font-weight: bold; }
+  .timestamp { color: var(--muted); font-size: .85rem; }
   .delete-btn {
     background: transparent;
     border: none;
     color: var(--muted);
     cursor: pointer;
-    font-size: 1rem;
   }
-  .delete-btn:hover {
-    color: red;
+  .delete-btn:hover { color: red; }
+  .post-body {
+    margin-top: .3rem;
+    white-space: pre-wrap;
   }
-  time {
-    color: var(--muted);
-    font-size: .8rem;
-    display: block;
+  .post-actions {
+    display: flex;
+    gap: 1.5rem;
+    font-size: 1.2rem;
     margin-top: .5rem;
+    color: var(--muted);
+  }
+  .bottom-nav {
+    display: flex;
+    justify-content: space-around;
+    padding: .6rem 0;
+    border-top: 1px solid var(--border);
+    background: var(--card);
+    font-size: 1.4rem;
+  }
+  input[type=file] { display: none; }
+  .post img.media, .post video {
+    margin-top: .5rem;
+    max-width: 100%;
+    border-radius: .5rem;
   }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>Markdown Threads</h1>
-  <div>
-    <button class="btn" id="exportJson">Export JSON</button>
-    <button class="btn" id="exportMd">Export MD</button>
-    <input type="file" id="importFile" accept=".json" style="display:none;">
-    <button class="btn" id="importBtn">Import</button>
-  </div>
+  <h1>Threads Notepad</h1>
+  <button id="exportJson" class="format-btn">Export JSON</button>
+  <button id="exportMd" class="format-btn">Export MD</button>
+  <input type="file" id="importFile" accept=".json">
+  <button id="importBtn" class="format-btn">Import</button>
 </header>
 
-<section id="composer">
-  <textarea id="postText" placeholder="Write in Markdown..."></textarea>
-  <div class="controls">
-    <select id="fontWeight">
-      <option value="normal">Normal Weight</option>
-      <option value="bold">Bold</option>
-      <option value="lighter">Light</option>
-    </select>
-    <select id="fontStyle">
-      <option value="normal">Normal Style</option>
-      <option value="italic">Italic</option>
-      <option value="oblique">Oblique</option>
-    </select>
-    <input type="file" id="mediaUpload" accept="image/*,video/*" multiple>
-    <button class="btn" id="postBtn">Post</button>
+<div id="composer">
+  <img src="data:image/png;base64,REPLACE_WITH_BASE64_AVATAR" alt="Avatar">
+  <div style="flex:1;">
+    <textarea id="postText" placeholder="What's new?"></textarea>
+    <div class="format-bar">
+      <button class="format-btn" id="boldBtn"><b>B</b></button>
+      <button class="format-btn" id="italicBtn"><i>I</i></button>
+      <label class="format-btn">📎
+        <input type="file" id="mediaUpload" accept="image/*,video/*" multiple>
+      </label>
+    </div>
   </div>
-</section>
+  <button class="send-btn" id="postBtn">✈️</button>
+</div>
 
-<section id="timeline"></section>
+<div id="timeline"></div>
+
+<nav class="bottom-nav">
+  <span>🏠</span>
+  <span>💬</span>
+  <span>✏️</span>
+  <span>❤️</span>
+  <span>👤</span>
+</nav>
 
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
 const postText = document.getElementById("postText");
-const fontWeightSel = document.getElementById("fontWeight");
-const fontStyleSel = document.getElementById("fontStyle");
-const mediaUpload = document.getElementById("mediaUpload");
 const postBtn = document.getElementById("postBtn");
+const mediaUpload = document.getElementById("mediaUpload");
 const timeline = document.getElementById("timeline");
 
 let posts = JSON.parse(localStorage.getItem("timelinePosts") || "[]");
@@ -160,22 +181,31 @@ let posts = JSON.parse(localStorage.getItem("timelinePosts") || "[]");
 function renderPosts() {
   timeline.innerHTML = "";
   posts.forEach((post, index) => {
-    const div = document.createElement("div");
-    div.className = "post";
-    div.innerHTML = `
-      <div class="post-header">
-        <strong style="font-size:.95rem;">Post</strong>
-        <button class="delete-btn" data-index="${index}" title="Delete Post">🗑</button>
+    const postEl = document.createElement("div");
+    postEl.className = "post";
+    postEl.innerHTML = `
+      <img src="data:image/png;base64,REPLACE_WITH_BASE64_AVATAR" class="avatar">
+      <div class="post-content">
+        <div class="post-header">
+          <span class="username">Dylan</span>
+          <span class="timestamp">${new Date(post.date).toLocaleString()}</span>
+          <button class="delete-btn" data-index="${index}">⋯</button>
+        </div>
+        <div class="post-body" style="font-weight:${post.fontWeight}; font-style:${post.fontStyle};">
+          ${marked.parse(post.text)}
+          ${post.media.map(m => m.type.startsWith("video") 
+            ? `<video controls src="${m.src}"></video>` 
+            : `<img src="${m.src}" class="media">`).join("")}
+        </div>
+        <div class="post-actions">
+          <span>❤️</span>
+          <span>💬</span>
+          <span>🔁</span>
+          <span>📤</span>
+        </div>
       </div>
-      <div style="font-weight:${post.fontWeight}; font-style:${post.fontStyle};">
-        ${marked.parse(post.text)}
-      </div>
-      ${post.media.map(m => m.type.startsWith("video") 
-        ? `<video controls src="${m.src}"></video>` 
-        : `<img src="${m.src}" alt="">`).join("")}
-      <time>${new Date(post.date).toLocaleString()}</time>
     `;
-    timeline.prepend(div);
+    timeline.prepend(postEl);
   });
 
   document.querySelectorAll(".delete-btn").forEach(btn => {
@@ -190,22 +220,28 @@ function renderPosts() {
   });
 }
 
-function savePost(text, media, fontWeight, fontStyle) {
-  posts.push({ text, media, fontWeight, fontStyle, date: new Date().toISOString() });
+function savePost(text, media) {
+  posts.push({ text, media, fontWeight: fontWeight, fontStyle: fontStyle, date: new Date().toISOString() });
   localStorage.setItem("timelinePosts", JSON.stringify(posts));
   postText.value = "";
   mediaUpload.value = "";
   renderPosts();
 }
 
+let fontWeight = "normal";
+let fontStyle = "normal";
+
+document.getElementById("boldBtn").addEventListener("click", () => {
+  fontWeight = (fontWeight === "bold") ? "normal" : "bold";
+});
+document.getElementById("italicBtn").addEventListener("click", () => {
+  fontStyle = (fontStyle === "italic") ? "normal" : "italic";
+});
+
 postBtn.addEventListener("click", () => {
   const text = postText.value.trim();
   if (!text && mediaUpload.files.length === 0) return;
-
-  const fontWeight = fontWeightSel.value;
-  const fontStyle = fontStyleSel.value;
   let mediaArray = [];
-
   if (mediaUpload.files.length > 0) {
     let loaded = 0;
     Array.from(mediaUpload.files).forEach(file => {
@@ -214,13 +250,13 @@ postBtn.addEventListener("click", () => {
         mediaArray.push({ src: e.target.result, type: file.type });
         loaded++;
         if (loaded === mediaUpload.files.length) {
-          savePost(text, mediaArray, fontWeight, fontStyle);
+          savePost(text, mediaArray);
         }
       };
       reader.readAsDataURL(file);
     });
   } else {
-    savePost(text, [], fontWeight, fontStyle);
+    savePost(text, []);
   }
 });
 
@@ -235,7 +271,7 @@ document.getElementById("exportJson").addEventListener("click", () => {
   URL.revokeObjectURL(url);
 });
 
-// Export as Markdown
+// Export Markdown
 document.getElementById("exportMd").addEventListener("click", () => {
   const mdContent = posts.map(p => p.text).join("\n\n---\n\n");
   const blob = new Blob([mdContent], { type: "text/markdown" });
@@ -272,5 +308,6 @@ document.getElementById("importFile").addEventListener("change", e => {
 
 renderPosts();
 </script>
+
 </body>
 </html>
