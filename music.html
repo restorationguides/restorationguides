@@ -1,136 +1,55 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Mossy Music</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Mossy Metro: Pocket Platformer</title>
   <link rel="stylesheet" href="music.css" />
 </head>
 <body>
-<header class="appbar">
-  <div class="left">
-    <div class="logo-dot"></div>
-    <span class="brand">Music</span>
-  </div>
-  <div class="right">
-    <label class="pill-btn">
-      Add
-      <input id="filePicker" type="file" accept="audio/*" multiple hidden />
-    </label>
-    <label class="pill-btn hide-sm">
-      Folder
-      <input id="dirPicker" type="file" webkitdirectory directory multiple accept="audio/*" hidden />
-    </label>
-  </div>
-</header>
+  <div id="game-wrap">
+    <canvas id="game" aria-label="Platformer Game Canvas"></canvas>
 
-<main id="pages">
-  <!-- HOME -->
-  <section id="page-home" class="page active">
-    <div class="section">
-      <h2>Recently Added</h2>
-      <div id="recentGrid" class="grid"></div>
-    </div>
-  </section>
-
-  <!-- LIBRARY -->
-  <section id="page-library" class="page">
-    <div class="section">
-      <div class="search-row">
-        <input id="libSearch" class="search" placeholder="Search songs & artists" />
+    <!-- HUD -->
+    <div id="hud">
+      <div class="hud-left">
+        <span id="levelName">Level 1–Fungal Fields</span>
       </div>
-      <ul id="library" class="list"></ul>
-    </div>
-  </section>
-
-  <!-- QUEUE -->
-  <section id="page-queue" class="page">
-    <div class="section header-row">
-      <h2>Up Next</h2>
-      <div class="row-actions">
-        <button id="clearQueue" class="ghost">Clear</button>
-        <button id="saveQueueToPlaylist" class="ghost">Save</button>
+      <div class="hud-right">
+        <span id="hearts">❤❤❤</span>
+        <span id="coins">🪙0</span>
+        <span id="heldItem">—</span>
       </div>
     </div>
-    <ul id="queue" class="list droppable"></ul>
-  </section>
 
-  <!-- PLAYLISTS -->
-  <section id="page-playlists" class="page">
-    <div class="section header-row">
-      <h2>Playlists</h2>
-      <div class="row-actions">
-        <input id="newPlaylistName" placeholder="New playlist name" />
-        <button id="createPlaylist" class="ghost">Create</button>
+    <!-- On-Screen Controls -->
+    <div id="controls">
+      <!-- Analog stick -->
+      <div id="stick">
+        <div id="stick-base"></div>
+        <div id="stick-knob"></div>
+      </div>
+
+      <!-- Action buttons -->
+      <div id="buttons">
+        <button class="btn btn-jump" id="btnJump" aria-label="Jump">⤴</button>
+        <button class="btn" id="btnCrouch" aria-label="Crouch">⭳</button>
+        <button class="btn" id="btnPick" aria-label="Pick Up / Drop">🖐</button>
+        <button class="btn" id="btnSwing" aria-label="Swing">🗡</button>
       </div>
     </div>
-    <ul id="playlists" class="list"></ul>
-  </section>
-</main>
 
-<!-- Sticky Now Playing (mini player) -->
-<div id="mini" class="mini">
-  <div class="meta">
-    <div class="art" id="miniArt">🎵</div>
-    <div class="text">
-      <div id="miniTitle" class="title ellipsis">Nothing playing</div>
-      <div id="miniArtist" class="artist ellipsis">—</div>
-    </div>
+    <!-- Help -->
+    <details id="help">
+      <summary>Controls</summary>
+      <div class="help-body">
+        <p><strong>Mobile:</strong> Analog stick to move. ⤴ Jump, ⭳ Crouch, 🖐 Pick/Drop, 🗡 Swing.</p>
+        <p><strong>Keyboard:</strong> A/D or ←/→ to move • W/↑/Space to jump • S/↓ to crouch • E pick/drop • F swing.</p>
+        <p>Goal: collect coins, bonk the goobers (our totally-not-copyrighted monsters), and reach the door.</p>
+      </div>
+    </details>
   </div>
-  <div class="controls">
-    <button id="prev" class="icon" title="Prev">⏮</button>
-    <button id="playPause" class="play icon" title="Play">▶️</button>
-    <button id="next" class="icon" title="Next">⏭</button>
-    <button id="more" class="icon" title="More">⋮</button>
-  </div>
-</div>
 
-<!-- Expanded player sheet -->
-<div id="sheet" class="sheet">
-  <div class="grab"></div>
-  <div class="art-lg" id="cover">🎵</div>
-  <div class="np-meta">
-    <div id="title" class="np-title ellipsis">No track</div>
-    <div id="artist" class="np-artist ellipsis">—</div>
-  </div>
-  <div class="time">
-    <span id="currentTime">0:00</span>
-    <input id="seek" type="range" min="0" max="100" value="0" />
-    <span id="duration">0:00</span>
-  </div>
-  <div class="transport">
-    <button id="back10" title="Rewind 10s" class="icon sm">⏪</button>
-    <button id="prev2" title="Previous" class="icon">⏮</button>
-    <button id="playPause2" title="Play/Pause" class="primary round">▶️</button>
-    <button id="next2" title="Next" class="icon">⏭</button>
-    <button id="fwd30" title="Forward 30s" class="icon sm">⏩</button>
-  </div>
-  <div class="toggles">
-    <button id="shuffle" title="Shuffle" class="chip">🔀</button>
-    <button id="repeat" title="Repeat" class="chip">🔁</button>
-    <label class="chip">
-      Speed
-      <select id="rate">
-        <option>0.75</option><option>0.9</option><option selected>1.0</option>
-        <option>1.25</option><option>1.5</option><option>1.75</option><option>2.0</option>
-      </select>
-    </label>
-    <label class="chip grow">
-      Volume
-      <input id="volume" type="range" min="0" max="1" step="0.01" value="1" />
-    </label>
-  </div>
-</div>
-
-<!-- Tab bar -->
-<nav class="tabs">
-  <button data-tab="home" class="tab active">Home</button>
-  <button data-tab="library" class="tab">Library</button>
-  <button data-tab="queue" class="tab">Queue</button>
-  <button data-tab="playlists" class="tab">Playlists</button>
-</nav>
-
-<audio id="audio" preload="metadata" crossorigin="anonymous"></audio>
-<script src="music.js"></script>
+  <script src="music.js"></script>
 </body>
 </html>
