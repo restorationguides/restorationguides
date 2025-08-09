@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Mossy Metro: Pocket Platformer</title>
+  <link rel="stylesheet" href="game.css" />
+</head>
+<body>
+  <div id="game-wrap">
+    <canvas id="game" aria-label="Platformer Game Canvas"></canvas>
+
+    <!-- HUD -->
+    <div id="hud">
+      <div class="hud-left">
+        <span id="levelName">Level 1–Fungal Fields</span>
+      </div>
+      <div class="hud-right">
+        <span id="hearts">❤❤❤</span>
+        <span id="coins">🪙0</span>
+        <span id="heldItem">—</span>
+      </div>
+    </div>
+
+    <!-- On-Screen Controls -->
+    <div id="controls">
+      <!-- Analog stick -->
+      <div id="stick">
+        <div id="stick-base"></div>
+        <div id="stick-knob"></div>
+      </div>
+
+      <!-- Action buttons -->
+      <div id="buttons">
+        <button class="btn btn-jump" id="btnJump" aria-label="Jump">⤴</button>
+        <button class="btn" id="btnCrouch" aria-label="Crouch">⭳</button>
+        <button class="btn" id="btnPick" aria-label="Pick Up / Drop">🖐</button>
+        <button class="btn" id="btnSwing" aria-label="Swing">🗡</button>
+      </div>
+    </div>
+
+    <details id="help">
+      <summary>Controls</summary>
+      <div class="help-body">
+        <p><strong>Mobile:</strong> Analog stick to move. ⤴ Jump, ⭳ Crouch, 🖐 Pick/Drop, 🗡 Swing.</p>
+        <p><strong>Keyboard:</strong> A/D or ←/→ to move • W/↑/Space to jump • S/↓ to crouch • E pick/drop • F swing.</p>
+        <p>Goal: collect coins, bonk the goobers, and reach the door.</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- Use ES modules -->
+  <script type="module" src="./main.js"></script>
+</body>
+</html>
