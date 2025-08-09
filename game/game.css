@@ -44,63 +44,56 @@ html,body{
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Game wrap keeps everything neatly contained */
+/* ===== Responsive layout fixes ===== */
+
+/* Use small viewport units to avoid mobile URL bar jumpiness */
 #game-wrap{
   position:relative;
-  inline-size:min(1120px, 100vw);
-  block-size:100svh;
-  margin-inline:auto;
-  display:grid;
-  grid-template-rows: 1fr;
-  padding: clamp(6px, 1.2vmin, 10px);
+  inline-size:100%;
+  block-size:100svh; /* was 100vh */
+  max-inline-size:100%;
+  margin:0;
+  padding:0;
 }
 
-/* Canvas with subtle “bezel” */
+/* Canvas stretches to fill, JS sets pixel density for sharpness */
 #game{
   display:block;
   inline-size:100%;
   block-size:100%;
-  background:
-    radial-gradient(1800px 1200px at 50% -20%, #122035 0%, #0f1523 55%, #0b0f16 86%),
-    linear-gradient(#0e1726 0 45%, #0f1a2f 45% 70%, #0b0f16 70%);
-  border-radius: calc(var(--br) + 4px);
-  box-shadow:
-    0 0 0 1px rgba(140,199,255,.08) inset,
-    var(--shadow-1);
-  outline:none;
+  /* keep your pretty background… */
+  border-radius:0; /* full-bleed on phones */
+  box-shadow:none;
 }
 
-/* ===== HUD ===== */
+/* Controls: keep inside safe areas and scale down on small screens */
+#controls{
+  inset-inline: max(8px, env(safe-area-inset-left));
+  inset-block-end: max(8px, calc(env(safe-area-inset-bottom) + 6px));
+  gap: clamp(8px, 2.5vw, 16px);
+}
 
+#stick{
+  inline-size: clamp(120px, 26vw, 180px);
+  block-size: clamp(120px, 26vw, 180px);
+}
+
+#stick-knob{ --size: clamp(56px, 11vw, 80px); }
+
+#buttons{
+  grid-template-columns:repeat(2, clamp(56px, 13vw, 88px));
+  grid-template-rows:repeat(2, clamp(56px, 13vw, 88px));
+  gap: clamp(8px, 2vw, 12px);
+}
+
+/* HUD: tighter on phones */
 #hud{
-  position:absolute;
-  inset-inline: clamp(10px, 2vw, 18px);
-  inset-block-start: clamp(10px, 1.6vh, 18px);
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:14px;
-  z-index:10;
-  padding: 10px 12px;
-  border-radius: var(--br);
-  background: linear-gradient(180deg, rgba(18,26,41,.78), rgba(16,24,37,.54));
-  border: 1px solid rgba(140,199,255,.16);
-  backdrop-filter: blur(8px) saturate(120%);
-  box-shadow: var(--shadow-2);
-  pointer-events:none; /* clicks pass through */
+  inset-inline: max(8px, env(safe-area-inset-left));
+  inset-block-start: max(8px, env(safe-area-inset-top));
+  padding: 8px 10px;
 }
-
-#hud .hud-left, #hud .hud-right{
-  display:flex; align-items:center; gap:12px;
-  pointer-events:auto;
-}
-
-#levelName{
-  font-weight:700;
-  letter-spacing:.2px;
-  color:var(--ink-0);
-  text-shadow: 0 2px 10px rgba(128, 226, 255, .18);
-}
+#levelName{ font-size: clamp(.9rem, 2.6vw, 1rem); }
+#hud .hud-right span{ font-size: clamp(.85rem, 2.4vw, .95rem); padding: 5px 8px; }
 
 /* badge chips */
 #hud .hud-right span{
