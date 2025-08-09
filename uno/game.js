@@ -392,9 +392,16 @@
   }
 
   function endTurn(){
-    state.current = nextIndex();
-    beginTurn();
-  }
+  state.current = nextIndex();
+
+  // Show a quick trivia while the next player gears up (non-blocking).
+  // If you only want it for bot turns, use:
+  // if (!getCurrent().isHuman) window.Trivia?.show(6000);
+  if (window.Trivia) window.Trivia.show(6000);
+
+  beginTurn();
+}
+    
 
   // ---- Human Interactions ----
   function onCardClick(e){
