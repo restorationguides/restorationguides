@@ -9,16 +9,18 @@ const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 let scale = 1;
 
+// --- High-DPI + fit-to-screen resize ---
 function resize() {
-  const maxW = Math.min(1100, window.innerWidth);
-  const maxH = window.innerHeight;
-  const logicalW = 960;
-  const logicalH = 540;
-  const s = Math.min(maxW / logicalW, maxH / logicalH);
-  scale = s;
-  canvas.width = Math.floor(logicalW * s);
-  canvas.height = Math.floor(logicalH * s);
+  // Let CSS control layout size; we match the *render* size to devicePixelRatio for crispness
+  const rect = canvas.getBoundingClientRect();
+  const dpr = Math.max(1, Math.min(window.devicePixelRatio || 1, 3)); // cap DPR for perf
+  canvas.width  = Math.floor(rect.width  * dpr);
+  canvas.height = Math.floor(rect.height * dpr);
+  ctx.setTransform(1,0,0,1,0,0);
   ctx.imageSmoothingEnabled = false;
+
+  // Our "logical" pixels = CSS pixels; scale == DPR so draw code can keep using world units
+  scale = dpr;
 }
 addEventListener('resize', resize, { passive:true });
 resize();
