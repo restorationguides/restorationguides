@@ -1,129 +1,139 @@
-/* YouTube Music-ish theme: clean dark, red accents, bottom mini-player, tabs */
 :root{
-  --bg:#121212; --panel:#1a1a1a; --elev:#1f1f1f;
-  --text:#fff; --muted:#c7c7c7; --border:#2a2a2a;
-  --accent:#ff0033; --accent-2:#ff4d6a;
-  --radius:16px; --shadow:0 8px 30px rgba(0,0,0,.45);
+  --bg:#0e0f14;
+  --ink:#e8f0ff;
+  --accent:#6be67a;
+  --accent2:#8cc7ff;
+  --danger:#ff6b6b;
+  --shadow: 0 6px 18px rgba(0,0,0,.35);
 }
+
 *{box-sizing:border-box}
-html,body{height:100%}
-body{
-  margin:0; color:var(--text); background:var(--bg);
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Noto Sans",sans-serif;
-}
-.ellipsis{white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+html,body{height:100%;margin:0;background:radial-gradient(1200px 600px at 50% -20%, #1c2430, #0e0f14)}
+body{font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--ink);}
 
-/* App bar */
-.appbar{
-  position:sticky; top:0; z-index:50;
-  display:flex; align-items:center; justify-content:space-between;
-  padding:14px 16px; background:rgba(18,18,18,.9); backdrop-filter:saturate(120%) blur(8px);
-  border-bottom:1px solid var(--border);
-}
-.logo-dot{width:18px;height:18px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 3px rgba(255,0,51,.18)}
-.brand{font-weight:700;margin-left:10px;letter-spacing:.2px}
-.appbar .left{display:flex;align-items:center}
-.appbar .right{display:flex;gap:10px;align-items:center}
-.pill-btn{
-  display:inline-flex;align-items:center;gap:8px;
-  padding:8px 14px;border-radius:999px;background:var(--elev);border:1px solid var(--border);cursor:pointer;
-}
-.pill-btn:hover{border-color:#3a3a3a}
-.hide-sm{display:none}
-
-/* Pages */
-#pages{padding:10px 12px 90px}
-.page{display:none}
-.page.active{display:block}
-.section{margin:8px 0 18px}
-.header-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
-
-/* Grid for Home */
-.grid{
-  display:grid; gap:12px;
-  grid-template-columns:repeat(2,1fr);
-}
-.card{
-  background:var(--elev); border:1px solid var(--border); border-radius:var(--radius);
-  padding:10px; box-shadow:var(--shadow);
-  display:flex; gap:12px; align-items:center;
-}
-.card .art{width:56px;height:56px;border-radius:8px;background:#222;display:grid;place-items:center;font-size:26px}
-.card .meta{flex:1}
-.card .title{font-weight:600}
-.card .artist{color:var(--muted);font-size:.9rem}
-
-/* Lists */
-.search{width:100%;padding:12px;border-radius:999px;border:1px solid var(--border);background:#181818;color:var(--text)}
-.list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
-.item{
-  display:grid; grid-template-columns: 1fr auto; gap:8px; align-items:center;
-  background:var(--elev); border:1px solid var(--border); border-radius:14px;
-  padding:10px 12px;
-}
-.item .title{font-weight:600}
-.item .sub{color:var(--muted);font-size:.9rem}
-.item .actions{display:flex;gap:6px}
-.btn, .ghost, .chip{
-  border:1px solid var(--border); background:#202020; color:var(--text);
-  padding:8px 10px; border-radius:12px; cursor:pointer;
-}
-.ghost:hover, .btn:hover, .chip:hover{border-color:#3a3a3a}
-
-.icon{background:#202020;border:1px solid var(--border);border-radius:12px;padding:8px 10px;cursor:pointer}
-.icon.sm{padding:6px 8px}
-.round{border-radius:999px;padding:10px 18px}
-.primary{
-  background:var(--accent); border-color:#cc002a; color:#fff;
-  box-shadow:0 6px 18px rgba(255,0,51,.25);
+#game-wrap{
+  position:relative;
+  inline-size:min(1100px, 100vw);
+  block-size:100svh;
+  margin-inline:auto;
+  display:grid;
+  grid-template-rows:auto 1fr;
 }
 
-/* Mini player */
-.mini{
-  position:fixed; left:0; right:0; bottom:56px;
-  display:flex; align-items:center; justify-content:space-between; gap:8px;
-  background:linear-gradient(0deg,#161616,#1c1c1c); border-top:1px solid var(--border);
-  padding:8px 10px; z-index:60;
+#game{
+  display:block;
+  inline-size:100%;
+  block-size:100%;
+  background:
+    linear-gradient(#0d1420 0 45%, #10192a 45% 70%, #0b0f18 70%) ;
+  outline:none;
 }
-.mini .meta{display:flex;align-items:center;gap:10px;min-width:0}
-.mini .art{width:44px;height:44px;border-radius:8px;background:#222;display:grid;place-items:center;font-size:22px}
-.mini .title{font-weight:600}
-.mini .artist{color:var(--muted);font-size:.85rem}
-.mini .controls{display:flex;gap:6px}
 
-/* Expandable sheet player */
-.sheet{
-  position:fixed; left:0; right:0; bottom:-100%;
-  background:var(--panel); border-top-left-radius:20px; border-top-right-radius:20px;
-  box-shadow:0 -10px 30px rgba(0,0,0,.5); padding:12px 14px 18px; z-index:70;
-  transition:bottom .28s ease;
+/* HUD */
+#hud{
+  position:absolute;
+  inset-block-start:8px;
+  inset-inline:8px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  font-weight:600;
+  text-shadow:0 2px 6px rgba(0,0,0,.6);
+  z-index:10;
 }
-.sheet.open{bottom:56px}
-.grab{width:50px;height:4px;border-radius:999px;background:#333;margin:6px auto 10px}
-.art-lg{width:220px;height:220px;border-radius:16px;background:#222;margin:8px auto;display:grid;place-items:center;font-size:80px}
-.np-title{font-weight:700;text-align:center;margin-top:8px}
-.np-artist{color:var(--muted);text-align:center;margin-top:2px}
-.time{display:grid;grid-template-columns:36px 1fr 36px;align-items:center;gap:8px;margin:12px 0}
-#seek{width:100%}
-.transport{display:flex;align-items:center;justify-content:center;gap:12px}
-.toggles{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px}
-.chip{border-radius:999px;padding:6px 10px;background:#1f1f1f}
+#hud .hud-right span{margin-inline-start:10px}
 
-/* Tabs */
-.tabs{
-  position:fixed; left:0; right:0; bottom:0; z-index:80;
-  display:grid; grid-template-columns:repeat(4,1fr);
-  background:#0f0f0f; border-top:1px solid var(--border);
+/* Controls */
+#controls{
+  position:absolute;
+  inset-block-end:16px;
+  inset-inline:16px;
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+  gap:12px;
+  z-index:20;
+  pointer-events:none; /* children will be clickable */
 }
-.tab{
-  background:transparent; color:#bbb; padding:10px 8px;
-  font-weight:600; border:none; border-right:1px solid #111;
+#stick{
+  position:relative;
+  inline-size:160px;
+  block-size:160px;
+  pointer-events:auto;
 }
-.tab:last-child{border-right:none}
-.tab.active{color:#fff;border-bottom:3px solid var(--accent)}
+#stick-base{
+  position:absolute;
+  inset:0;
+  border-radius:50%;
+  background:radial-gradient(circle at 35% 35%, #1b2736, #111827 65%);
+  border:2px solid #1f2a35;
+  box-shadow:var(--shadow);
+  opacity:.8;
+}
+#stick-knob{
+  --size:72px;
+  position:absolute;
+  inline-size:var(--size);
+  block-size:var(--size);
+  border-radius:50%;
+  background:linear-gradient(145deg, #3a516a, #223142);
+  border:2px solid #1f2a35;
+  box-shadow:var(--shadow);
+  inset-inline-start:calc(50% - var(--size)/2);
+  inset-block-start:calc(50% - var(--size)/2);
+  touch-action:none;
+}
 
-@media (min-width: 900px){
-  #pages{max-width:1024px;margin:0 auto;padding:10px 16px 100px}
-  .grid{grid-template-columns:repeat(4,1fr)}
-  .hide-sm{display:inline-flex}
+#buttons{
+  display:grid;
+  grid-template-columns:repeat(2, 78px);
+  grid-template-rows:repeat(2, 78px);
+  gap:10px;
+  pointer-events:auto;
+}
+.btn{
+  inline-size:100%;
+  block-size:100%;
+  border-radius:18px;
+  background:linear-gradient(180deg,#28384b,#1b2836);
+  color:var(--ink);
+  font-size:26px;
+  border:2px solid #1c2630;
+  box-shadow:var(--shadow);
+  touch-action:manipulation;
+}
+.btn:active { transform:scale(.97); }
+.btn-jump{
+  grid-column:2;
+  grid-row:1;
+  background:linear-gradient(180deg,#2e5c41,#1e3c2a);
+  border-color:#1e3c2a;
+}
+
+/* Help */
+#help{
+  position:absolute;
+  inset-inline:12px;
+  inset-block-end:12px;
+  z-index:25;
+  background:#121926cc;
+  border:1px solid #1e2a36;
+  border-radius:12px;
+  box-shadow:var(--shadow);
+  padding:8px 12px;
+  max-inline-size:min(560px, 92vw);
+}
+#help summary{cursor:pointer}
+#help .help-body{opacity:.9}
+
+/* Accessibility tap targets on very small screens */
+@media (max-width: 420px){
+  #stick{inline-size:140px; block-size:140px}
+  #buttons{grid-template-columns:repeat(2, 70px); grid-template-rows:repeat(2, 70px)}
+}
+
+/* Hide controls if user has a hardware keyboard pointer (optional) */
+@media (hover:hover) and (pointer:fine){
+  #controls{opacity:.85}
 }
