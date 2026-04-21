@@ -3,59 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Restoration Hub  - About</title>
-    <link rel="stylesheet" href="./css/global.css">
-    <link rel="stylesheet" href="./css/about.css">
-<link rel="stylesheet" href="./css/nav.css">
-  <script src="nav.js" defer></script>
+    <title>About Us | The Restoration Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/home.css">
+    <link rel="stylesheet" href="css/nav.css">
+</head>
 <body>
 
-
-    <section class="about-section">
-        <h2>📖 About This Site</h2>
-        <p><strong>The Restoration Hub</strong> was created by <strong>Dylan Worth</strong> to help professionals studying for the 
-           <strong>Water Restoration Technician (WRT) certification</strong>. This site offers interactive tools, study guides, 
-           and quizzes to improve knowledge of <strong>moisture monitoring, psychrometry, drying strategies, and the IICRC S500 standards</strong>.</p>
-    
-        <h3>🧑‍🏭 About Dylan Worth</h3>
-        <p>Dylan is an experienced mold remediation specialist and water damage expert, working toward becoming a <strong>Mold Assessor</strong>. 
-           Passionate about <strong>open-source technology</strong>, <strong>leadership</strong>, and <strong>helping others grow</strong>, he built this site as a 
-           <strong>free study resource</strong> for WRT students and future professionals.</p>
-    
-        <h3>📌 Why This Site?</h3>
-        <ul class="about-list">
-            <li>📚 A <strong>free study guide</strong> covering all major WRT topics.</li>
-            <li>🧠 An interactive <strong>psychrometric chart</strong> for real-world calculations.</li>
-            <li>✅ A <strong>quiz section</strong> to test your knowledge before the WRT exam.</li>
-        </ul>
-    
-        <h3>📅 My Journey in the Industry</h3>
-        <div class="timeline">
-            <div class="timeline-event">
-                <span class="date">2021</span>
-                <p>🛠️ Started in <strong>mold restoration</strong> at iMold, gaining hands-on experience.</p>
+    <nav class="main-nav">
+        <div class="nav-container">
+            <a href="index.html" class="logo">Restoration Hub</a>
+            <div class="nav-links">
+                <a href="study-guide.html">Study Guides</a>
+                <a href="water.html">Water Guide</a>
+                <a href="quiz-portal.html">Certification</a>
             </div>
-            <div class="timeline-event">
-                <span class="date">2025</span>
-                <p>📜 Taking the <strong>WRT certification</strong> to move closer to obtaining my <strong>Mold Assessor License</strong>.</p>
-            </div>
-            <div class="timeline-event">
-                <span class="date">2027</span>
-                <p>🏢 My goal is to <strong>own my own mold assessment company</strong> and continue helping others in the industry.</p>
+            <div class="nav-actions">
+                <button id="theme-toggle" class="theme-btn"><span id="theme-icon">Dark Mode</span></button>
             </div>
         </div>
-    
-        <h3>💙 My Mission</h3>
-        <p>I made this website to <strong>help others, including myself, study for industry exams</strong>. 
-           If you're preparing for WRT, mold assessment, or water damage restoration certifications, I hope this site gives you the tools you need to succeed. 
-           <strong>Much love. Keep grinding. 🚀</strong></p>
-    
-        <h3>🎯 Get Started</h3>
-        <p>Jump into the <a href="study-guide.html">Study Guide</a> or <a href="quiz.html">Test Yourself</a> with the WRT quiz.</p>
-    </section>
-    
+    </nav>
 
-    <footer><script src="footer.js" defer></script>
-  </footer>
+    <header class="hero">
+        <div class="hero-content fade-in">
+            <span class="badge">Professional Technical Network</span>
+            <h1>Field Verified Resources</h1>
+            <p>We are a community of restoration professionals dedicated to the mastery of IICRC standards and technical field logic.</p>
+        </div>
+    </header>
+
+    <main class="container">
+        
+        <section class="card personal-note" style="border-left: 4px solid var(--secondary); margin-bottom: 30px;">
+            <div class="card-header">
+                <h2>Our Roots</h2>
+            </div>
+            <p><strong>Made by Dylan Worth for the love of the field.</strong></p>
+            <p style="margin-top: 10px; color: var(--text-muted);">
+                The Restoration Hub didn't start as a commercial project. It began as a personal guide—a way to help myself and a few colleagues wrap our heads around the complexities of the WRT certification. What started as a study sheet evolved into a comprehensive technical resource for we professionals who take pride in the science of restoration.
+            </p>
+        </section>
+
+        <div class="main-grid">
+            <section class="card">
+                <div class="card-header">
+                    <h2>Our Mission</h2>
+                </div>
+                <div class="resource-stack">
+                    <div class="resource-item">
+                        <p>High-level technical information should be accessible, accurate, and field-ready. We bridge the gap between classroom theory and the variables we face on-site every day.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card standards-highlight">
+                <div class="card-header">
+                    <h2>The Four Pillars</h2>
+                </div>
+                <div class="compliance-body">
+                    <ul class="compliance-list">
+                        <li><strong>Precision:</strong> Data-driven drying.</li>
+                        <li><strong>Safety:</strong> Strict PPE protocols.</li>
+                        <li><strong>Integrity:</strong> Unbiased verification.</li>
+                        <li><strong>Mastery:</strong> Continuous education.</li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+
+        <section class="card" style="margin-top: 30px;">
+            <div class="card-header">
+                <h2>The Restoration Perspective</h2>
+            </div>
+            <p style="color: var(--text-muted);">
+                In this industry, we don't just "clean" surfaces—we restore environments. Whether it's Sunday at 7 AM or a midnight emergency call, we nerd out on the physics and chemistry of the job because that’s what it takes to do it right.
+            </p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 The Restoration Hub. Technical Field Operations.</p>
+    </footer>
+
+    <script src="nav.js" defer></script>
 </body>
 </html>

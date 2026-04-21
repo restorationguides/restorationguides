@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Water Mitigation Guide | The Restoration Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/home.css">
+    <link rel="stylesheet" href="css/nav.css">
+</head>
+<body>
+
+    <nav class="main-nav">
+        <div class="nav-container">
+            <a href="index.html" class="logo">Restoration Hub</a>
+            <div class="nav-links">
+                <a href="study-guide.html">Study Guides</a>
+                <a href="water.html" class="active">Water Guide</a>
+                <a href="quiz-portal.html">Certification</a>
+            </div>
+            <div class="nav-actions">
+                <button id="theme-toggle" class="theme-btn"><span id="theme-icon">Dark Mode</span></button>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-content fade-in">
+            <span class="badge">ANSI/IICRC S500 Standards</span>
+            <h1>Water Mitigation Guide</h1>
+            <p>Advanced structural drying protocols, psychrometric management, and moisture extraction for we professionals.</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- 1. Categories & Classes Section -->
+        <div class="main-grid">
+            <section class="card">
+                <div class="card-header">
+                    <h2>Water Categories (Sanitary Description)</h2>
+                </div>
+                <div class="resource-stack">
+                    <div class="resource-item">
+                        <div class="content">
+                            <h4>Category 1: Clean Water</h4>
+                            <p>Originates from a sanitary source (e.g., broken supply lines, tub overflow without contaminants).</p>
+                        </div>
+                    </div>
+                    <div class="resource-item">
+                        <div class="content">
+                            <h4>Category 2: Gray Water</h4>
+                            <p>Significant contamination; potential to cause discomfort or illness (e.g., dishwasher/washing machine discharge).</p>
+                        </div>
+                    </div>
+                    <div class="resource-item">
+                        <div class="content">
+                            <h4>Category 3: Black Water</h4>
+                            <p>Grossly contaminated; contains pathogenic, toxigenic, or other harmful agents (e.g., sewage, rising water).</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card">
+                <div class="card-header">
+                    <h2>Classes of Water (Evaporative Load)</h2>
+                </div>
+                <div class="compliance-body">
+                    <ul class="compliance-list">
+                        <li><strong>Class 1:</strong> Least amount of water/evaporation (low porosity materials).</li>
+                        <li><strong>Class 2:</strong> Significant amount (carpet, cushion, 5-40% of room surfaces).</li>
+                        <li><strong>Class 3:</strong> Greatest amount (water from above, >40% of surfaces affected).</li>
+                        <li><strong>Class 4:</strong> Specialty drying (bound water in hardwood, brick, concrete).</li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+
+        <!-- 2. Psychrometric Table -->
+        <section class="card" style="margin-top: 30px;">
+            <div class="card-header">
+                <h2>Psychrometric Targets</h2>
+            </div>
+            <div class="table-container" style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                    <thead>
+                        <tr style="text-align: left; border-bottom: 2px solid var(--bg);">
+                            <th style="padding: 12px;">Metric</th>
+                            <th style="padding: 12px;">Target Range</th>
+                            <th style="padding: 12px;">Professional Technical Logic</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid var(--bg);">
+                            <td style="padding: 12px;"><strong>Relative Humidity</strong></td>
+                            <td style="padding: 12px;">Below 40%</td>
+                            <td style="padding: 12px; color: var(--text-muted);">Encourages evaporation by maintaining low vapor pressure in the air.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--bg);">
+                            <td style="padding: 12px;"><strong>Temperature</strong></td>
+                            <td style="padding: 12px;">70°F - 90°F</td>
+                            <td style="padding: 12px; color: var(--text-muted);">Increases the energy of water molecules and the air's moisture capacity.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--bg);">
+                            <td style="padding: 12px;"><strong>GPP Depression</strong></td>
+                            <td style="padding: 12px;">> 5 GPP</td>
+                            <td style="padding: 12px; color: var(--text-muted);">Verifies the dehumidifier is actively pulling moisture from the environment.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 3. Resource Actions -->
+        <section class="card" style="margin-top: 30px; text-align: center;">
+            <h2>Technical Documentation</h2>
+            <p style="margin-bottom: 20px;">Download field-ready CSV templates for water damage tracking.</p>
+            <div style="display: flex; gap: 15px; justify-content: center;">
+                <a href="#" class="download-link">Download Psychro Log (CSV)</a>
+                <a href="#" class="download-link">Download Class Factor Sheet (CSV)</a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 The Restoration Hub. Standards based on ANSI/IICRC S500.</p>
+    </footer>
+
+    <script src="nav.js" defer></script>
+</body>
+</html>

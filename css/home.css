@@ -1,324 +1,304 @@
-/* General Styling */
+/* --- Base Styles & Resets --- */
+/* Color System */
+:root {
+    --primary: #0f172a;    
+    --secondary: #2563eb;  
+    --bg: #f1f5f9;         
+    --card-bg: #ffffff;
+    --border: #e2e8f0;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --hero-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+}
+
+/* Dark Mode Overrides */
+[data-theme="dark"] {
+    --primary: #1e293b;
+    --secondary: #3b82f6;
+    --bg: #0f172a;         /* Deepest Navy */
+    --card-bg: #1e293b;    /* Slate Card */
+    --border: #334155;
+    --text-main: #f1f5f9;
+    --text-muted: #94a3b8;
+    --hero-gradient: linear-gradient(135deg, #020617 0%, #0f172a 100%);
+}
+
+/* Ensure images and tables adjust to dark mode */
+[data-theme="dark"] img {
+    opacity: 0.8;
+}
+
+[data-theme="dark"] .download-link {
+    border-color: #10b981;
+    color: #10b981;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    text-align: center;
-    margin: 0;
-    padding: 0;
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg);
+    color: var(--text-main);
+    line-height: 1.6;
+    overflow-x: hidden;
 }
 
-/* Header & Navigation */
-header {
-    background: #2c3e50;
-    color: white;
-    padding: 15px 0;
-}
-
-nav ul {
-    list-style: none;
-    padding: 0;
-}
-
-nav ul li {
-    display: inline;
-    margin: 0 15px;
-}
-
-nav ul li a {
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-nav ul li a:hover {
-    text-decoration: underline;
-}
-
-/* Hero Section */
+/* --- Hero Section --- */
 .hero {
-    background: linear-gradient(90deg, #3498db, #2980b9);
+    background: linear-gradient(135deg, var(--primary) 0%, #1e293b 100%);
     color: white;
-    padding: 50px 20px;
+    padding: 100px 20px;
+    text-align: center;
 }
 
-.hero h2 {
-    font-size: 2em;
+.hero-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.badge {
+    background: rgba(37, 99, 235, 0.2);
+    color: #60a5fa;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.hero h1 {
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    margin: 20px 0;
+    font-weight: 700;
 }
 
 .hero p {
-    font-size: 1.2em;
+    font-size: 1.2rem;
+    color: #94a3b8;
+    margin-bottom: 30px;
 }
 
-.hero-btn {
-    display: inline-block;
-    padding: 12px 25px;
-    background: #ffcc00;
-    color: black;
-    font-weight: bold;
-    border-radius: 5px;
-    text-decoration: none;
-    margin-top: 10px;
-    transition: 0.3s;
+/* --- Layout Container --- */
+.container {
+    max-width: 1200px;
+    margin: -60px auto 60px;
+    padding: 0 20px;
 }
 
-.hero-btn:hover {
-    background: #ff9900;
+/* --- Discipline Cards (Water, Fire, Mold, Bio) --- */
+.discipline-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
 }
 
-/* News Section */
-.news-section {
-    background: white;
+.discipline-card {
+    background: var(--card-bg);
     padding: 30px;
-    margin: 30px auto;
-    width: 90%;
-    max-width: 1000px;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    text-align: left;
+    border-radius: var(--radius);
+    border-top: 5px solid var(--secondary);
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
 }
 
-.news-section h2 {
-    color: #2c3e50;
-    text-align: center;
+.discipline-card:hover {
+    transform: translateY(-8px);
+}
+
+.discipline-card h4 {
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+    color: var(--primary);
+}
+
+.discipline-card p {
+    font-size: 0.9rem;
+    color: var(--text-muted);
     margin-bottom: 20px;
 }
 
-.news-item {
-    background: #ecf0f1;
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 15px;
-    border-left: 5px solid #3498db;
+/* --- Main Tools Grid --- */
+.main-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 30px;
 }
 
-.news-item h3 {
-    margin: 0;
-    color: #2c3e50;
+@media (max-width: 900px) {
+    .main-grid { grid-template-columns: 1fr; }
 }
 
-.news-item p {
-    color: #555;
+.card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 35px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
 }
 
-.news-item a {
+.card-header h2 {
+    font-size: 1.4rem;
+    margin-bottom: 25px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--bg);
+}
+
+/* --- Resource Items --- */
+.resource-item {
+    display: flex;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--bg);
+}
+
+.resource-item h4 {
+    font-size: 1rem;
+    margin-bottom: 5px;
+}
+
+.resource-item p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+/* --- Buttons & Links --- */
+.btn-primary, .btn-secondary, .btn-accent, .btn-white {
     display: inline-block;
+    padding: 14px 28px;
+    border-radius: 6px;
     text-decoration: none;
-    color: #3498db;
-    font-weight: bold;
-    margin-top: 10px;
-}
-
-.news-item a:hover {
-    text-decoration: underline;
-}
-
-/* Study Resources Section */
-.home-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 20px;
-    margin: 30px auto;
-    width: 90%;
-    max-width: 1200px;
-}
-
-.left-column, .right-column {
-    width: 48%;
-    min-width: 300px;
-}
-
-/* Full width on mobile */
-@media (max-width: 768px) {
-    .left-column, .right-column {
-        width: 100%;
-    }
-}
-
-.resources-section, .psychro-calculator {
-    background: white;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
-    text-align: center;
-}
-
-.resource-grid {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-}
-
-.resource-box {
-    background: #ecf0f1;
-    padding: 20px;
-    width: 30%;
-    min-width: 250px;
-    border-radius: 10px;
-    margin: 10px;
-    text-align: center;
-}
-
-.resource-box h3 {
-    color: #2c3e50;
-}
-
-.resource-box a {
-    display: inline-block;
-    text-decoration: none;
-    color: #3498db;
-    font-weight: bold;
-    margin-top: 10px;
-}
-
-.resource-box a:hover {
-    text-decoration: underline;
-}
-
-/* Psychrometric Calculator */
-.psychro-calculator {
-    background: white;
-    padding: 20px;
-    margin: 30px auto;
-    width: 90%;
-    max-width: 600px;
-    border-radius: 12px;
-    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
-    text-align: center;
-}
-.psychro-calculator h2 {
-    color: #2c3e50;
-    margin-bottom: 10px;
-    font-size: 1.6em;
-}
-
-.psychro-calculator p {
-    color: #666;
-    font-size: 1em;
-    margin-bottom: 15px;
-}
-
-/* Calculator Form */
-.calculator-form {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding: 10px;
-}
-
-.calculator-form label {
-    font-weight: bold;
-    font-size: 1em;
-    text-align: left;
-}
-
-.calculator-form input {
-    padding: 12px;
-    font-size: 1em;
-    border: 2px solid #ddd;
-    border-radius: 8px;
-}
-
-.calculator-form input:focus {
-    border-color: #3498db;
-    box-shadow: 0 0 8px rgba(52, 152, 219, 0.3);
-}
-
-/* Button Styling */
-#calculate {
-    padding: 12px;
-    font-size: 1em;
-    background: #3498db;
-    color: white;
-    font-weight: bold;
-    border-radius: 8px;
-    border: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: 0.2s ease;
     cursor: pointer;
-    transition: all 0.3s ease-in-out;
+    border: none;
 }
 
-#calculate:hover {
-    background: #217dbb;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
+.btn-primary { background: var(--secondary); color: white; margin-right: 15px; }
+.btn-secondary { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.3); }
+.btn-accent { background: var(--primary); color: white; width: 100%; margin-top: 15px; }
+.btn-white { background: white; color: var(--primary); }
 
-/* Results Box */
-#results {
-    margin-top: 20px;
-    padding: 15px;
-    background: #ecf0f1;
-    border-radius: 10px;
-    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
-    font-size: 1.1em;
-}
-
-#results p {
-    font-weight: bold;
-    color: #2c3e50;
-}
-
-#classFactor:disabled {
-    background: #ddd;
-    color: #777;
-    cursor: not-allowed;
-}
-
-/* Hide results until calculation is done */
-.hidden {
-    display: none;
-}
-
-/* Quiz Section */
-.quiz-section {
-    background: #2c3e50;
-    color: white;
-    padding: 40px 20px;
-    margin-top: 30px;
-}
-
-.quiz-section h2 {
-    font-size: 2em;
-}
-
-.quiz-btn {
+.btn-primary:hover { background: #1d4ed8; }
+.text-link { color: var(--secondary); font-weight: 700; text-decoration: none; }
+.download-link {
     display: inline-block;
-    padding: 12px 25px;
-    background: #ffcc00;
-    color: black;
-    font-weight: bold;
-    border-radius: 5px;
+    margin-top: 12px;
+    font-size: 0.75rem;
+    color: #059669;
+    border: 1px solid #059669;
+    padding: 5px 12px;
+    border-radius: 4px;
     text-decoration: none;
-    margin-top: 10px;
-    transition: 0.3s;
+    font-weight: 600;
 }
 
-.quiz-btn:hover {
-    background: #ff9900;
+/* --- Calculator Specifics --- */
+.input-group {
+    margin-bottom: 20px;
 }
 
-/* Responsive Fix */
-@media (max-width: 600px) {
-    .psychro-calculator {
-        width: 95%;
-        padding: 15px;
-    }
+label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text-muted);
 }
 
-/* Footer */
-footer {
-    background: #2c3e50;
+input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: #f8fafc;
+}
+
+.result-display {
+    margin-top: 25px;
+    background: #f1f5f9;
+    padding: 20px;
+    border-radius: 6px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    text-align: center;
+}
+
+.hidden { display: none; }
+
+/* --- Footer CTA --- */
+.bottom-cta {
+    background: var(--primary);
     color: white;
-    padding: 10px 0;
-    margin-top: 30px;
+    padding: 80px 20px;
+    text-align: center;
 }
 
-
-/* Fade-in effect */
+/* --- Animations --- */
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .fade-in {
-    animation: fadeIn 1s ease-in-out;
+    animation: fadeIn 0.8s ease-out forwards;
 }
+
+/* --- Mobile FAB --- */
+.chat-fab {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    padding: 0 25px;
+    height: 50px;
+    background: var(--primary);
+    color: white;
+    border-radius: 25px;
+    border: none;
+    font-weight: 600;
+    box-shadow: 0 10px 15px rgba(0,0,0,0.2);
+    cursor: pointer;
+}
+/* Modal Overlay Styling */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 23, 42, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 5000;
+    backdrop-filter: blur(5px);
+}
+
+.modal-card {
+    background: var(--card-bg);
+    width: 90%;
+    max-width: 600px;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--border);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 2px solid var(--bg);
+    padding-bottom: 15px;
+}
+
+.atp-table {
+    width: 100%;
+    margin: 20px 0;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+.atp-table th { background: var(--bg); padding: 10px; text-align: left; }
+.atp-table td { padding: 10px; border-bottom: 1px solid var(--border); }
+
+.hidden { display: none !important; }

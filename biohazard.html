@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biohazard Technical Guide | The Restoration Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/home.css">
+    <link rel="stylesheet" href="css/nav.css">
+    <link rel="stylesheet" href="css/quiz.css">
+</head>
+<body>
+
+    <nav class="main-nav">
+        <div class="nav-container">
+            <a href="index.html" class="logo">Restoration Hub</a>
+            <div class="nav-links">
+                <a href="study-guide.html">Study Guides</a>
+                <a href="water.html">Water Guide</a>
+                <a href="fire.html">Fire Guide</a>
+                <a href="mold.html">Mold Guide</a>
+                <a href="biohazard.html" class="active">Biohazard Guide</a>
+                <a href="quiz-portal.html">Certification</a>
+            </div>
+            <div class="nav-actions">
+                <button id="theme-toggle" class="theme-btn"><span id="theme-icon">Dark Mode</span></button>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-content fade-in">
+            <span class="badge">ANSI/IICRC S540 Standards</span>
+            <h1>Biohazard & Trauma Response</h1>
+            <p>Pathogen neutralization, medical waste compliance, and trauma scene remediation for we professionals.</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="discipline-grid">
+            <div class="discipline-card">
+                <h4>Universal Precautions</h4>
+                <p>We treat all biological fluids as if they are known to be infectious. Adherence to OSHA 29 CFR 1910.1030 is non-negotiable for field safety.</p>
+            </div>
+            <div class="discipline-card">
+                <h4>PPE Level C</h4>
+                <p>Baseline protection includes chemical-resistant suits, double-gloving, and full-face respirators with P100/Organic Vapor filtration.</p>
+            </div>
+            <div class="discipline-card">
+                <h4>Chain of Custody</h4>
+                <p>Medical waste requires licensed transport and manifesting. We maintain strict records to mitigate long-term legal liability.</p>
+            </div>
+        </section>
+
+        <div class="main-grid">
+            <section class="card">
+                <div class="card-header">
+                    <h2>Remediation Strategy</h2>
+                </div>
+                <div class="resource-stack">
+                    <div class="resource-item">
+                        <div class="content">
+                            <h4>Physical Removal</h4>
+                            <p>Saturated porous materials (carpet, cushion, drywall) are removed and discarded. We do not attempt to clean biological fluid from porous substrates.</p>
+                        </div>
+                    </div>
+                    <div class="resource-item">
+                        <div class="content">
+                            <h4><a href="#" id="atp-trigger" class="text-link">ATP Validation Testing</a></h4>
+                            <p>We utilize bioluminescence monitoring to quantify biological soil levels and verify sanitization efficacy.</p>
+                        </div>
+                    </div>
+                    <div class="resource-item">
+                        <div class="content">
+                            <h4>Decontamination Chambers</h4>
+                            <p>3-stage decon zones prevent cross-contamination. Buffer zones are utilized for transition and PPE donning/doffing.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card standards-highlight">
+                <div class="card-header">
+                    <h2>Neutralization Logic</h2>
+                </div>
+                <div class="compliance-body">
+                    <ul class="compliance-list">
+                        <li><strong>Dwell Time:</strong> We observe strict 10-minute wet-contact times for EPA-registered broad-spectrum disinfectants.</li>
+                        <li><strong>Surface Loading:</strong> Gross filth must be physically removed before the final application of disinfectants to ensure chemical efficacy.</li>
+                        <li><strong>Validation:</strong> Surfaces must be returned to a "Condition 1" (Sanitary) state prior to release.</li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <div id="atp-modal" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Technical Brief: ATP Validation</h3>
+                <button id="close-atp" class="close-btn">Close</button>
+            </div>
+            <div class="modal-body">
+                <p>We use <strong>Adenosine Triphosphate (ATP)</strong> monitoring to provide quantitative proof of cleanliness. When ATP reacts with luciferase in our swabs, it produces light measured in <strong>Relative Light Units (RLU)</strong>.</p>
+                
+                <table class="atp-table">
+                    <thead>
+                        <tr>
+                            <th>Surface Result</th>
+                            <th>RLU Range</th>
+                            <th>Professional Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Pass (Sanitary)</td>
+                            <td>0 - 10</td>
+                            <td>Documentation & Release</td>
+                        </tr>
+                        <tr>
+                            <td>Caution</td>
+                            <td>11 - 30</td>
+                            <td>Re-clean & Re-test</td>
+                        </tr>
+                        <tr>
+                            <td>Fail (Pathogen Risk)</td>
+                            <td>31+</td>
+                            <td>Immediate Re-remediation</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="pro-tip card">
+                    <strong>Field Logic:</strong> ATP testing detects biological presence, indicating the surface can no longer support pathogen growth.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="nav.js" defer></script>
+</body>
+</html>

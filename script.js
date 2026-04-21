@@ -1,3 +1,5 @@
+
+   // The questions array provided by you remains the same here
 const questions = [
         { question: "What is the primary goal of water damage restoration?", options: ["A) Aesthetic appeal", "B) Moisture removal & prevention", "C) Increasing property value", "D) HVAC maintenance"], answer: "B" },
         { question: "Which category of water is considered grossly contaminated and poses serious health risks?", options: ["A) Category 1", "B) Category 2", "C) Category 3", "D) Category 4"], answer: "C" },
@@ -83,104 +85,116 @@ const questions = [
         { question: "Drying goals include reversing cupping and reaching final EMC within?", options: ["A) 5–10%", "B) 1–2%", "C) 2–4%", "D) 0–5%"], answer: "C"}
 
 
+];
 
+let currentQuestionIndex = 0;
+let score = 0;
 
+document.addEventListener("DOMContentLoaded", function () {
+    const questionElement = document.getElementById("question");
+    const optionsContainer = document.getElementById("quiz-options");
+    const feedbackElement = document.getElementById("feedback");
+    const nextButton = document.getElementById("next-button");
+    const restartButton = document.getElementById("restart-button");
+    const scoreElement = document.getElementById("score-display"); // Updated ID
+    const progressFill = document.getElementById("progress-fill"); // Progress bar ID
 
-    ];
-    
-    
-    let currentQuestionIndex = 0;
-    let score = 0;
-    
-    document.addEventListener("DOMContentLoaded", function () {
-        const questionElement = document.getElementById("question");
-        const optionsContainer = document.getElementById("quiz-options");
-        const feedbackElement = document.getElementById("feedback");
-        const nextButton = document.getElementById("next-button");
-        const restartButton = document.getElementById("restart-button");
-        const scoreElement = document.getElementById("score");
-    
-        function shuffleQuestions() {
-            questions.sort(() => Math.random() - 0.5); // Randomizes questions each restart
+    function shuffleQuestions() {
+        questions.sort(() => Math.random() - 0.5);
+    }
+
+    function updateProgress() {
+        const progressPercent = ((currentQuestionIndex) / questions.length) * 100;
+        progressFill.style.width = `${progressPercent}%`;
+        scoreElement.textContent = `Score: ${score} / ${questions.length}`;
+    }
+
+    function loadQuestion() {
+        if (currentQuestionIndex >= questions.length) {
+            showResults();
+            return;
         }
-    
-        function loadQuestion() {
-            if (currentQuestionIndex >= questions.length) {
-                showResults();
-                return;
-            }
-    
-            const currentQuestion = questions[currentQuestionIndex];
-            questionElement.textContent = currentQuestion.question;
-            optionsContainer.innerHTML = "";
-    
-            currentQuestion.options.forEach((option) => {
-                const optionButton = document.createElement("button");
-                optionButton.textContent = option;
-                optionButton.classList.add("option-button");
-                optionButton.dataset.choice = option.charAt(0);
-                optionButton.onclick = () => checkAnswer(optionButton);
-                optionsContainer.appendChild(optionButton);
+
+        updateProgress();
+
+        const currentQuestion = questions[currentQuestionIndex];
+        questionElement.textContent = currentQuestion.question;
+        optionsContainer.innerHTML = "";
+
+        currentQuestion.options.forEach((option) => {
+            const optionButton = document.createElement("button");
+            optionButton.textContent = option;
+            optionButton.classList.add("quiz-option"); // Using modernized class
+            optionButton.dataset.choice = option.charAt(0);
+            optionButton.onclick = () => checkAnswer(optionButton);
+            optionsContainer.appendChild(optionButton);
+        });
+
+        feedbackElement.textContent = "";
+        nextButton.style.display = "none";
+    }
+
+    function checkAnswer(selectedButton) {
+        const correctAnswer = questions[currentQuestionIndex].answer;
+        const userChoice = selectedButton.dataset.choice;
+
+        // Disable all buttons immediately
+        const buttons = document.querySelectorAll(".quiz-option");
+        buttons.forEach(button => {
+            button.style.pointerEvents = "none";
+        });
+
+        if (userChoice === correctAnswer) {
+            selectedButton.classList.add("correct");
+            feedbackElement.textContent = "CORRECT: Environment Stabilization verified.";
+            feedbackElement.style.color = "var(--success)";
+            score++;
+        } else {
+            selectedButton.classList.add("incorrect");
+            // Highlight the correct answer for learning purposes
+            buttons.forEach(button => {
+                if(button.dataset.choice === correctAnswer) {
+                    button.classList.add("correct");
+                }
             });
-    
-            feedbackElement.textContent = "";
-            nextButton.style.display = "none";
-        }
-    
-        function checkAnswer(selectedButton) {
-            const correctAnswer = questions[currentQuestionIndex].answer;
-            const userChoice = selectedButton.dataset.choice;
-    
-            document.querySelectorAll(".option-button").forEach(button => {
-                button.disabled = true;
-                button.style.cursor = "not-allowed";
-            });
-    
-            if (userChoice === correctAnswer) {
-                selectedButton.style.backgroundColor = "green";
-                feedbackElement.textContent = "Correct";
-                feedbackElement.style.color = "green";
-                score++;
-            } else {
-                selectedButton.style.backgroundColor = "red";
-                feedbackElement.textContent = "Incorrect";
-                feedbackElement.style.color = "red";
-            }
-    
-            scoreElement.textContent = `Score: ${score} / ${questions.length}`;
-            nextButton.style.display = "block";
-            nextButton.classList.add("fade-in");
-
-        }
-    
-        function nextQuestion() {
-            currentQuestionIndex++;
-            loadQuestion();
-        }
-    
-        function showResults() {
-            questionElement.textContent = `Quiz Complete! Your final score: ${score} / ${questions.length}`;
-            optionsContainer.innerHTML = "";
-            feedbackElement.textContent = "";
-            nextButton.style.display = "none";
-            restartButton.style.display = "block";
-        }
-    
-        function restartQuiz() {
-            currentQuestionIndex = 0;
-            score = 0;
-            scoreElement.textContent = `Score: 0 / ${questions.length}`;
-            restartButton.style.display = "none";
-            shuffleQuestions(); // Randomize questions
-            loadQuestion();
+            feedbackElement.textContent = `INCORRECT: The standard protocol was Choice ${correctAnswer}.`;
+            feedbackElement.style.color = "var(--error)";
         }
 
-        
-    
-        nextButton.addEventListener("click", nextQuestion);
-        restartButton.addEventListener("click", restartQuiz);
-    
-        shuffleQuestions(); // Randomize questions on first load
+        scoreElement.textContent = `Score: ${score} / ${questions.length}`;
+        nextButton.style.display = "block";
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
         loadQuestion();
-    });
-    
+    }
+
+    function showResults() {
+        progressFill.style.width = "100%";
+        questionElement.textContent = "Examination Complete";
+        optionsContainer.innerHTML = `
+            <div class="results-summary">
+                <p>Final Score: <strong>${score}</strong> out of ${questions.length}</p>
+                <p>Accuracy: <strong>${((score/questions.length)*100).toFixed(1)}%</strong></p>
+            </div>
+        `;
+        feedbackElement.textContent = score >= 60 ? "PASS: Minimum certification threshold met." : "FAIL: Review technical documentation and retry.";
+        nextButton.style.display = "none";
+        restartButton.style.display = "block";
+    }
+
+    function restartQuiz() {
+        currentQuestionIndex = 0;
+        score = 0;
+        restartButton.style.display = "none";
+        shuffleQuestions();
+        loadQuestion();
+    }
+
+    nextButton.addEventListener("click", nextQuestion);
+    restartButton.addEventListener("click", restartQuiz);
+
+    shuffleQuestions();
+    loadQuestion();
+});

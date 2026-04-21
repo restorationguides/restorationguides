@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fire & Smoke Technical Guide | The Restoration Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/home.css">
+    <link rel="stylesheet" href="css/nav.css">
+</head>
+<body>
+
+    <nav class="main-nav">
+        <div class="nav-container">
+            <a href="index.html" class="logo">Restoration Hub</a>
+            <div class="nav-links">
+                <a href="study-guide.html">Study Guides</a>
+                <a href="water.html">Water Guide</a>
+                <a href="fire.html" class="active">Fire Guide</a>
+                <a href="quiz-portal.html">Certification</a>
+            </div>
+            <div class="nav-actions">
+                <button id="theme-toggle" class="theme-btn"><span id="theme-icon">Dark Mode</span></button>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-content fade-in">
+            <span class="badge">ANSI/IICRC S700 Standards</span>
+            <h1>Fire & Smoke Restoration</h1>
+            <p>Corrosion control, soot profile identification, and structural deodorization protocols for we professionals.</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <section id="soot-profiles" class="discipline-grid">
+            <div class="discipline-card">
+                <h4>Dry Soot (Natural)</h4>
+                <p>Derived from wood, paper, or natural fibers. High-heat fires. It is powdery and lacks oils, making it easier to remove via dry-cleaning methods.</p>
+                <span class="badge" style="background:rgba(5, 150, 105, 0.1); color:#059669;">Dry Removal Only</span>
+            </div>
+            <div class="discipline-card">
+                <h4>Wet Soot (Synthetic)</h4>
+                <p>Derived from plastics, rubber, and polymers. Low-heat, smoldering fires. Oily, smeary, and high-odor. Requires chemical bond-breaking.</p>
+                <span class="badge" style="background:rgba(37, 99, 235, 0.1); color:#2563eb;">Alkaline Degreasing</span>
+            </div>
+            <div class="discipline-card">
+                <h4>Protein Soot</h4>
+                <p>Derived from kitchen fires (fats/oils). Virtually invisible but causes extreme pungent odors and permanent discoloration to finishes.</p>
+                <span class="badge" style="background:rgba(245, 158, 11, 0.1); color:#d97706;">Enzyme Treatment</span>
+            </div>
+            <div class="discipline-card">
+                <h4>Fuel Oil (Puff-back)</h4>
+                <p>Result of furnace or boiler malfunction. Distributes heavy soot through HVAC systems. Requires specialized mechanical remediation.</p>
+                <span class="badge" style="background:rgba(220, 38, 38, 0.1); color:#dc2626;">HVAC Replacement</span>
+            </div>
+        </section>
+
+        <div class="main-grid">
+            <section class="card">
+                <div class="card-header">
+                    <h2>Restorative Cleaning Protocols</h2>
+                </div>
+                <div class="resource-stack">
+                    <div class="resource-item">
+                        <div class="content">
+                            <h4>Initial Corrosion Control</h4>
+                            <p>We prioritize metal surfaces immediately to prevent permanent pitting from acidic soot residues.</p>
+                        </div>
+                    </div>
+                    <div class="resource-item">
+                        <div class="content">
+                            <h4>Structural Deodorization</h4>
+                            <p>Multi-step process: Debris removal, thermal fogging (penetration), and Ozone/Hydroxyl (atmospheric neutralization).</p>
+                        </div>
+                    </div>
+                    <div class="resource-item">
+                        <div class="content">
+                            <h4>HVAC Integrity</h4>
+                            <p>Flex duct and fiberboard must be replaced. Metal ductwork requires camera-verified mechanical cleaning.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card standards-highlight">
+                <div class="card-header">
+                    <h2>The pH Factor</h2>
+                </div>
+                <div class="compliance-body">
+                    <p>Understanding chemical bonds is critical for soot removal:</p>
+                    <ul class="compliance-list">
+                        <li><strong>Alkaline (pH 8-14):</strong> Required for wet/synthetic soot and protein-based residues.</li>
+                        <li><strong>Acidic (pH 0-6):</strong> Used for neutralizing alkaline salts or removing mineralized fire residues.</li>
+                        <li><strong>Dry Sponges:</strong> Used exclusively for Natural (Dry) soot to prevent pushing particles deeper into porous surfaces.</li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+
+        <section class="card" style="margin-top:30px; text-align:center;">
+            <h2>Field Resources</h2>
+            <p>Download technical documentation for fire residue assessment.</p>
+            <div style="display:flex; gap:15px; justify-content:center; margin-top:20px;">
+                <a href="#" class="download-link">S700 Inspection CSV</a>
+                <a href="#" class="download-link">Corrosion Control Log</a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 The Restoration Hub. ANSI/IICRC S700 Standards Compliance.</p>
+    </footer>
+
+    <script src="nav.js" defer></script>
+</body>
+</html>

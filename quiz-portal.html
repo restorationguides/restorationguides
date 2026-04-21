@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certification Portal | The Restoration Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/home.css">
+    <link rel="stylesheet" href="css/nav.css">
+    <link rel="stylesheet" href="css/quiz.css">
+</head>
+<body>
+
+    <nav class="main-nav">
+        <div class="nav-container">
+            <a href="index.html" class="logo">Restoration Hub</a>
+            <div class="nav-links">
+                <a href="study-guide.html">Study Guides</a>
+                <a href="water.html">Water Guide</a>
+                <a href="quiz-portal.html" class="active">Certification</a>
+            </div>
+            <div class="nav-actions">
+                <button id="theme-toggle" class="theme-btn">
+                    <span id="theme-icon">Dark Mode</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-content fade-in">
+            <span class="badge">Professional Examination Environment</span>
+            <h1>Certification Portal</h1>
+            <p>Select a discipline to begin your technical proficiency assessment. All exams follow current IICRC standards.</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="portal-grid fade-in">
+            
+            <div class="portal-card">
+                <div class="card-status">82 Questions Available</div>
+                <h3>Water Restoration (WRT)</h3>
+                <p>Testing knowledge on IICRC S500 standards, advanced psychrometry, and structural drying protocols for we professionals.</p>
+                <a href="wrt-quiz.html" class="btn-primary">Start WRT Exam</a>
+            </div>
+
+            <div class="portal-card">
+                <div class="card-status">Practice Mode</div>
+                <h3>Applied Microbial (AMRT)</h3>
+                <p>Assessment of IICRC S520 guidelines, containment engineering, and professional remediation techniques.</p>
+                <a href="amrt-quiz.html" class="btn-secondary">Start AMRT Exam</a>
+            </div>
+
+            <div class="portal-card disabled">
+                <div class="card-status">Coming Soon</div>
+                <h3>Fire & Smoke (S700)</h3>
+                <p>Technical evaluation for structural deodorization, soot profile identification, and corrosion control.</p>
+                <span class="status-label">Modules Loading</span>
+            </div>
+
+            <div class="portal-card disabled">
+                <div class="card-status">Coming Soon</div>
+                <h3>Biohazard (S540)</h3>
+                <p>Assessment for trauma scene remediation, bloodborne pathogen protocols, and legal compliance.</p>
+                <span class="status-label">Modules Loading</span>
+            </div>
+
+        </section>
+
+        <div class="card portal-note">
+            <h4>Examination Integrity</h4>
+            <p>These mock exams are designed to simulate the rigor of actual certification. We recommend a consistent score of 80% or higher before scheduling your IICRC proctored examination.</p>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 The Restoration Hub. Professional Standards Division.</p>
+    </footer>
+
+    <script src="nav.js" defer></script>
+</body>
+</html>

@@ -1,70 +1,85 @@
-document.addEventListener("DOMContentLoaded", function () {
-  const toggleBtn = document.getElementById("toggleCalculator");
-  const closeBtn = document.getElementById("closeCalculator");
-  const calculator = document.getElementById("calculatorModal");
-  const display = document.getElementById("calcDisplay");
-  const buttons = calculator.querySelectorAll(".calc-btn");
-  
+document.addEventListener('DOMContentLoaded', () => {
+    const display = document.getElementById('calcDisplay');
+    const buttons = document.querySelectorAll('.calc-btn');
+    const drawer = document.getElementById('calculatorModal');
+    const toggleBtn = document.getElementById('toggleCalculator');
+    const closeBtn = document.getElementById('closeCalculator');
 
-  // ✨ Sparkle class injection
-  const sparkle = () => {
-    toggleBtn.classList.add("sparkle");
-    setTimeout(() => {
-      toggleBtn.classList.remove("sparkle");
-      toggleBtn.textContent = "🧮"; // Reset to normal
-    }, 2000);
-  };
-
-  // Toggle calculator visibility
-  toggleBtn.addEventListener("click", () => {
-    calculator.classList.toggle("show");
-  });
-
-  closeBtn.addEventListener("click", () => {
-    calculator.classList.remove("show");
-  });
-
-  // Handle button input
-  buttons.forEach(btn => {
-    btn.addEventListener("click", () => {
-      const val = btn.textContent;
-
-      if (val === "=") {
-        try {
-          const result = eval(display.value);
-          display.value = result;
-          display.scrollLeft = display.scrollWidth;
-
-          // 🎉 Easter Eggs
-          switch (String(result)) {
-            case "69":
-              toggleBtn.textContent = "✨ Nice!";
-              sparkle();
-              break;
-            case "420":
-              toggleBtn.textContent = "✨ Blaze it!";
-              sparkle();
-              break;
-            case "42":
-              toggleBtn.textContent = "✨ 42!";
-              sparkle();
-              break;
-            case "80085":
-              toggleBtn.textContent = "✨ Classic!";
-              sparkle();
-              break;
-          }
-        } catch {
-          display.value = "Error";
-        }
-      } else if (val === "C") {
-        display.value = "";
-      } else if (val === "⌫") {
-        display.value = display.value.slice(0, -1);
-      } else {
-        display.value += val;
-        display.scrollLeft = display.scrollWidth;
-      }
+    // 1. Drawer UI Logic
+    toggleBtn.addEventListener('click', () => {
+        drawer.classList.toggle('open');
+        toggleBtn.textContent = drawer.classList.contains('open') ? "Close Calculator" : "Open Calculator";
     });
-  });
+
+    closeBtn.addEventListener('click', () => {
+        drawer.classList.remove('open');
+        toggleBtn.textContent = "Open Calculator";
+    });
+
+    // 2. Calculator Functional Logic
+    buttons.forEach(button => {
+        button.addEventListener('click', () => {
+            const value = button.textContent;
+
+            if (button.classList.contains('equal')) {
+                calculateResult();
+            } else if (button.classList.contains('clear')) {
+                clearDisplay();
+            } else if (button.classList.contains('backspace')) {
+                handleBackspace();
+            } else {
+                appendToDisplay(value);
+            }
+        });
+    });
+
+    function appendToDisplay(value) {
+        // Replace visual symbols with math symbols if necessary
+        if (display.value === "0" || display.value === "Error") {
+            display.value = value;
+        } else {
+            display.value += value;
+        }
+    }
+
+    function clearDisplay() {
+        display.value = "";
+    }
+
+    function handleBackspace() {
+        display.value = display.value.slice(0, -1);
+    }
+
+    function calculateResult() {
+        try {
+            // We use Function constructor as a safer alternative to eval() for this specific use case
+            // It allows for parenthesis and complex restoration math like (12000 * 4) / 60
+            const result = new Function('return ' + display.value)();
+            
+            if (result === Infinity || isNaN(result)) {
+                display.value = "Error";
+            } else {
+                // Round to 2 decimal places for cleaner GPP/PPD readings
+                display.value = Number(Math.round(result + 'e2') + 'e-2');
+            }
+        } catch (error) {
+            display.value = "Error";
+        }
+    }
+
+    // Optional: Allow keyboard support for we professionals who prefer typing
+    document.addEventListener('keydown', (e) => {
+        if (!drawer.classList.contains('open')) return;
+
+        const key = e.key;
+        if (/[0-9\+\-\*\/\.\(\)]/.test(key)) {
+            appendToDisplay(key);
+        } else if (key === 'Enter') {
+            calculateResult();
+        } else if (key === 'Backspace') {
+            handleBackspace();
+        } else if (key === 'Escape') {
+            clearDisplay();
+        }
+    });
 });

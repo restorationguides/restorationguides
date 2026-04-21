@@ -3,80 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Restoration Hub - WRT Quiz</title>
-    <link rel="stylesheet" href="css/global.css">
+    <title>WRT Examination | The Restoration Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/home.css">
+    <link rel="stylesheet" href="css/nav.css">
     <link rel="stylesheet" href="css/quiz.css">
-    <link rel="stylesheet" href="css/calc.css">
-<link rel="stylesheet" href="./css/nav.css">
-  <script src="nav.js" defer></script>
-<body>
-   
+</head>
+<body class="exam-mode">
 
-    <section class="quiz-container">
-        <h2>🎯 WRT Certification Practice Quiz</h2>
-        <p>Test your knowledge with this interactive quiz covering key WRT topics.</p>
-        <div id="quiz-container">
-            <h2 id="question"></h2>
-            <div id="quiz-options"></div>
-            <p id="feedback"></p>
-            <button id="next-button" class="next-button" style="display: none;">Next Question</button>
-            <button id="restart-button" style="display:none;">Restart Quiz</button>
-            <p id="score">Score: 0 / 82</p>
-
+    <nav class="main-nav">
+        <div class="nav-container">
+            <a href="index.html" class="logo">Restoration Hub</a>
+            <div class="nav-links">
+                <a href="study-guide.html">Study Guides</a>
+                <a href="quiz-portal.html" class="active">Certification</a>
+            </div>
+            <div class="nav-actions">
+                <button id="theme-toggle" class="theme-btn"><span id="theme-icon">Dark Mode</span></button>
+            </div>
         </div>
-        <p id="quiz-score"></p>
-    </section>
+    </nav>
 
+    <main class="quiz-main-container">
+        <div class="quiz-card fade-in">
+            <div class="quiz-progress">
+                <div class="progress-meta">
+                    <span id="score-display">Score: 0 / 82</span>
+                    <span id="question-count">Question 1 of 82</span>
+                </div>
+                <div class="progress-bar-bg">
+                    <div id="progress-fill" style="width: 0%;"></div>
+                </div>
+            </div>
 
-<!-- Calculator Toggle -->
-<button id="toggleCalculator" class="calc-toggle">🧮</button>
+            <div id="quiz-content">
+                <h2 id="question">Initialising WRT Question Bank...</h2>
+                <div id="quiz-options" class="options-grid">
+                    </div>
+                <div id="feedback" class="feedback-area"></div>
+            </div>
 
-<!-- Calculator Modal -->
-<div id="calculatorModal" class="calc-modal">
-  <div class="calc-header">
-    <span>Calculator</span>
-    <button id="closeCalculator">✖</button>
-  </div>
-  <input type="text" id="calcDisplay" readonly />
-  <div class="calc-grid">
-    <button class="calc-btn">(</button>
-    <button class="calc-btn">)</button>
-    <button class="calc-btn">/</button>
-    <button class="calc-btn" onclick="backspace()">⌫</button>
+            <div class="quiz-actions">
+                <button id="next-button" class="btn-primary" style="display: none;">Submit & Next</button>
+                <button id="restart-button" class="btn-secondary" style="display:none;">Restart Examination</button>
+            </div>
+        </div>
+    </main>
 
-    <button class="calc-btn">*</button>
-    <button class="calc-btn">7</button>
-    <button class="calc-btn">8</button>
-    <button class="calc-btn">9</button>
-
-    <button class="calc-btn">-</button>
-    <button class="calc-btn">4</button>
-    <button class="calc-btn">5</button>
-    <button class="calc-btn">6</button>
-
-    <button class="calc-btn">+</button>
-    <button class="calc-btn">1</button>
-    <button class="calc-btn">2</button>
-    <button class="calc-btn">3</button>
-
-    <button class="calc-btn equal">=</button>
-    <button class="calc-btn">0</button>
-    <button class="calc-btn">.</button>
-  </div>
-  <button class="calc-btn clear">C</button>
-</div>
-
-
-
-
-    <script src="script.js"></script>
-    <script src="calc.js"></script>
-
+    <button id="toggleCalculator" class="btn-calc-toggle">Open Calculator</button>
     
+    <div id="calculatorModal" class="calc-drawer">
+        <div class="calc-header">
+            <span>Technical Calculator</span>
+            <button id="closeCalculator">Close</button>
+        </div>
+        <div class="calc-body">
+            <input type="text" id="calcDisplay" readonly placeholder="0">
+            <div class="calc-grid">
+                <button class="calc-btn operator">(</button>
+                <button class="calc-btn operator">)</button>
+                <button class="calc-btn operator">/</button>
+                <button class="calc-btn backspace">⌫</button>
 
-    <footer><script src="footer.js" defer></script>
-  </footer>
+                <button class="calc-btn">7</button>
+                <button class="calc-btn">8</button>
+                <button class="calc-btn">9</button>
+                <button class="calc-btn operator">*</button>
 
+                <button class="calc-btn">4</button>
+                <button class="calc-btn">5</button>
+                <button class="calc-btn">6</button>
+                <button class="calc-btn operator">-</button>
 
+                <button class="calc-btn">1</button>
+                <button class="calc-btn">2</button>
+                <button class="calc-btn">3</button>
+                <button class="calc-btn operator">+</button>
+
+                <button class="calc-btn">0</button>
+                <button class="calc-btn">.</button>
+                <button class="calc-btn clear">C</button>
+                <button class="calc-btn equal">=</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="nav.js" defer></script>
+    <script src="script.js" defer></script>
+    <script src="calc.js" defer></script>
 </body>
 </html>

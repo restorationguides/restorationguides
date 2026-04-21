@@ -54,38 +54,50 @@ document.addEventListener("DOMContentLoaded", function () {
     fetchIndustryNews();
 });
 
-    document.addEventListener("DOMContentLoaded", function () {
-        const calculateBtn = document.getElementById("calculateGPP");
+    let logData = [["Timestamp", "Temp (F)", "RH (%)", "GPP", "Dew Point (F)"]];
 
+document.addEventListener('DOMContentLoaded', () => {
+    const calcBtn = document.getElementById('calculateGPP');
+    const downloadBtn = document.getElementById('downloadLog');
 
-      calculateBtn.addEventListener("click", function () {
-        const temperature = parseFloat(document.getElementById("temperature").value);
-        const humidity = parseFloat(document.getElementById("humidity").value);
+    calcBtn.addEventListener('click', () => {
+        const tempF = parseFloat(document.getElementById('temperature').value);
+        const rh = parseFloat(document.getElementById('humidity').value);
 
-        if (isNaN(temperature) || isNaN(humidity)) {
-          alert("Please enter valid values.");
-          return;
+        if (isNaN(tempF) || isNaN(rh) || rh < 0 || rh > 100) {
+            alert("Invalid input. Temperature must be numeric and RH between 0-100.");
+            return;
         }
 
-        const atmosphericPressure = 29.92;
-        const A = 6.116441, m = 7.591386, Tn = 240.7263;
-        const tempC = (temperature - 32) * 5 / 9;
-        const es = A * Math.pow(10, (m * tempC) / (tempC + Tn));
-        const e = (humidity / 100) * es;
-        const vaporPressure = e * 0.02953;
-        const gpp = (7000 * 0.622 * vaporPressure) / (atmosphericPressure - vaporPressure);
+        // Calculations
+        const tempC = (tempF - 32) * 5 / 9;
+        const Es = 6.112 * Math.exp((17.67 * tempC) / (tempC + 243.5));
+        const Ea = Es * (rh / 100);
+        
+        const alpha = Math.log(rh / 100) + (17.67 * tempC) / (243.5 + tempC);
+        const dpC = (243.5 * alpha) / (17.67 - alpha);
+        const dpF = (dpC * 9 / 5) + 32;
+        
+        const gpp = 4354 * (Ea / (1013.25 - Ea));
 
-        const lnRH = Math.log(humidity / 100);
-        const alpha = ((m * tempC) / (Tn + tempC)) + lnRH;
-        const dewPointC = (Tn * alpha) / (m - alpha);
-        const dewPointF = (dewPointC * 9 / 5) + 32;
+        // Update UI
+        document.getElementById('gpp').textContent = gpp.toFixed(2);
+        document.getElementById('dewPoint').textContent = dpF.toFixed(1);
+        document.getElementById('results').classList.remove('hidden');
 
-        document.getElementById("dewPoint").textContent = dewPointF.toFixed(2);
-        document.getElementById("gpp").textContent = gpp.toFixed(2);
-        document.getElementById("vaporPressure").textContent = vaporPressure.toFixed(4);
-        document.getElementById("results").classList.remove("hidden");
-      });
+        // Add to CSV Log array
+        logData.push([new Date().toLocaleString(), tempF, rh, gpp.toFixed(2), dpF.toFixed(1)]);
     });
 
-
-
+    downloadBtn.addEventListener('click', () => {
+        let csvContent = "data:text/csv;charset=utf-8," 
+            + logData.map(e => e.join(",")).join("\n");
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "restoration_hub_reading.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    });
+});

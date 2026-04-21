@@ -1,25 +1,46 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const nav = document.createElement('nav');
-    nav.innerHTML = `
-      <div class="nav-container">
-        <h1>The Restoration Hub</h1>
-        <button class="nav-toggle" aria-label="Toggle Menu">☰</button>
-        <ul class="nav-links">
-          <li><a href="index.html">Home</a></li>
-          <li><a href="study-guide.html">Study Guide</a></li>
-          <li><a href="wrt-quiz.html">WRT Quiz</a></li>
-          <li><a href="amrt-quiz.html">AMRT Quiz</a></li>
-          <li><a href="about.html">About</a></li>
-          <li><a href="contact.html">Contact</a></li>
-        </ul>
-      </div>
-    `;
-    document.body.prepend(nav);
-  
-    const toggle = document.querySelector('.nav-toggle');
-    const links = document.querySelector('.nav-links');
-    toggle.addEventListener('click', () => {
-      links.classList.toggle('open');
+document.addEventListener('DOMContentLoaded', () => {
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+    const currentTheme = localStorage.getItem('theme');
+
+    // 1. Check for saved user preference
+    if (currentTheme) {
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        if (currentTheme === 'dark') {
+            themeIcon.textContent = 'Light Mode';
+        }
+    }
+
+    // 2. Toggle Theme Function
+    themeToggle.addEventListener('click', () => {
+        let theme = document.documentElement.getAttribute('data-theme');
+        
+        if (theme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'light');
+            localStorage.setItem('theme', 'light');
+            themeIcon.textContent = 'Dark Mode';
+        } else {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            localStorage.setItem('theme', 'dark');
+            themeIcon.textContent = 'Light Mode';
+        }
     });
-  });
-  
+});
+
+// Add to your existing nav.js to handle the modal
+const atpModal = document.getElementById('atp-modal');
+const atpTrigger = document.getElementById('atp-trigger');
+const closeAtp = document.getElementById('close-atp');
+
+if (atpTrigger) {
+    atpTrigger.addEventListener('click', (e) => {
+        e.preventDefault();
+        atpModal.classList.remove('hidden');
+    });
+}
+
+if (closeAtp) {
+    closeAtp.addEventListener('click', () => {
+        atpModal.classList.add('hidden');
+    });
+}

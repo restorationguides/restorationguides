@@ -1,179 +1,111 @@
-/* Study Guide Styles - Based on SOP Global Styling */
-
-/* General Styling */
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+/* Study Guide Specific Styles */
+.study-header {
+    background: var(--primary);
+    color: white;
+    padding: 60px 20px;
     text-align: center;
-    margin: 0;
-    padding: 0;
 }
 
-/* Header & Navigation */
-header {
-    background: #2c3e50;
-    color: white;
-    padding: 15px 0;
+.study-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 40px;
+    padding: 0 20px;
 }
 
-nav ul {
-    list-style: none;
-    padding: 0;
+@media (max-width: 900px) {
+    .study-container { grid-template-columns: 1fr; }
+    .sidebar-sticky { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 10px; }
+    .sidebar-btn { white-space: nowrap; width: auto; }
 }
 
-nav ul li {
-    display: inline;
-    margin: 0 15px;
+.sidebar-sticky {
+    position: sticky;
+    top: 90px;
 }
 
-nav ul li a {
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-nav ul li a:hover {
-    text-decoration: underline;
-}
-
-/* Study Guide Section */
-.study-guide {
-    background: white;
-    padding: 30px;
-    margin: 30px auto;
-    width: 90%;
-    max-width: 1000px;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    text-align: left;
-}
-it
-.study-guide h2, .study-guide h3, .study-guide h4 {
-    color: #2c3e50;
-    text-decoration: underline;
-}
-
-.study-guide ul {
-    padding-left: 20px;
-    list-style-type: none;
-}
-
-.study-guide ul li {
-    margin: 10px 0;
-    position: relative;
-    padding-left: 20px;
-}
-
-.study-guide ul li:before {
-    content: '\2714';
-    position: absolute;
-    left: 0;
-    color: #3498db;
-}
-
-/* Table Styling */
-table {
+.sidebar-btn {
+    display: block;
     width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    background: #ecf0f1;
-    color: black;
-    border: 2px solid #2c3e50;
+    padding: 15px 20px;
+    text-align: left;
+    background: none;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    color: var(--text-muted);
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 5px;
+    transition: 0.2s;
 }
 
-table, th, td {
-    border: 2px solid #2c3e50;
+.sidebar-btn.active {
+    background: var(--card-bg);
+    color: var(--secondary);
+    border-color: var(--border);
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
 }
 
-th, td {
-    padding: 10px;
-    text-align: center;
-    font-size: 0.9em;
+.content-card {
+    background: var(--card-bg);
+    padding: 40px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
 }
 
-th {
-    background: #3498db;
-    color: white;
-}
+.tab-pane { display: none; }
+.tab-pane.active { display: block; animation: fadeIn 0.4s ease; }
 
-/* Quiz Button */
-.quiz-button {
-    display: inline-block;
-    padding: 12px 25px;
-    background: #ffcc00;
-    color: black;
-    font-weight: bold;
-    border-radius: 5px;
-    text-decoration: none;
-    margin-top: 10px;
-    transition: 0.3s;
-}
-
-.quiz-button:hover {
-    background: #ff9900;
-}
-
-/* Footer */
-footer {
-    background: #2c3e50;
-    color: white;
-    padding: 10px 0;
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
     margin-top: 30px;
 }
-/* Tabs */
-.tab-container {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 20px;
+
+.info-box {
+    background: var(--bg);
+    padding: 25px;
+    border-radius: 8px;
 }
 
-.tab-button {
-    background: #2c3e50;
+.info-box h3 {
+    font-size: 0.9rem;
+    color: var(--secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+}
+
+.info-box ul { padding-left: 18px; }
+.info-box li { margin-bottom: 10px; font-size: 0.9rem; }
+
+.formula-card {
+    background: var(--primary);
+    color: #38bdf8;
+    padding: 15px;
+    border-radius: 6px;
+    font-family: 'Courier New', Courier, monospace;
+    margin-bottom: 10px;
+}
+
+.toxin-item {
+    padding: 15px;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.95rem;
+}
+
+.quiz-cta {
+    display: inline-block;
+    margin-top: 30px;
+    background: var(--secondary);
     color: white;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    border-radius: 5px;
-    font-weight: bold;
-    transition: 0.3s;
+    padding: 15px 30px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 700;
 }
 
-.tab-button:hover {
-    background: #1a252f;
-}
-
-.tab-button.active {
-    background: #ffcc00;
-    color: black;
-}
-
-/* Tab Content */
-.tab-content {
-    display: none;
-    background: white;
-    padding: 20px;
-    margin: 20px auto;
-    width: 90%;
-    max-width: 1000px;
-    border-radius: 10px;
-    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
-    text-align: left;
-}
-
-.tab-content.active {
-    display: block;
-}
-
-/* Headers */
-h2, h3 {
-    color: #2c3e50;
-}
-.tab-button.active {
-    background-color: #3498db;
-    color: white;
-  }
-  .tab-content {
-    display: none;
-  }
-  
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
